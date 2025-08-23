@@ -3699,9 +3699,19 @@ async function openPlaid() {
 // Hook the button
 document.getElementById('connect-bank')?.addEventListener('click', openPlaid);
 </script>
+  <!-- Always-visible Connect button -->
+<div id="plaid-cta" style="position:fixed;right:16px;top:16px;z-index:999999;">
+  <button id="connect-bank"
+    style="background:#7c3aed;color:#fff;padding:10px 14px;border-radius:12px;border:none;
+           box-shadow:0 8px 24px rgba(124,58,237,.35);font-weight:600;cursor:pointer;">
+    Connect Bank
+  </button>
+</div>
+
 
 
 
 </body>
 </html>
+
 
