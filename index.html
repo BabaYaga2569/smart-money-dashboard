@@ -3624,6 +3624,84 @@ console.log('  PhenomenalAI.getCashFlowToPayday() - Get payday analysis');
 console.log('💎 Your original beautiful design + 247 transactions + Export features!');
 console.log('🔥 Now includes Google Sheets style cash flow tracker!');
 </script>
+  <script>
+  // Backend API (Render)
+  const API_BASE = 'https://smart-money-api.onrender.com';
+
+  // Stable user ID stored in the browser so your link persists
+  const USER_ID_KEY = 'smd_user_id';
+  let USER_ID = localStorage.getItem(USER_ID_KEY);
+  if (!USER_ID) {
+    USER_ID = 'user-' + Math.random().toString(36).slice(2);
+    localStorage.setItem(USER_ID_KEY, USER_ID);
+  }
+</script>
+  <!-- Plaid Link script -->
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script>
+// If your page already has a "Connect Bank" button, make sure it has id="connect-bank".
+// If not, this will insert one into the page header:
+if (!document.getElementById('connect-bank')) {
+  const btn = document.createElement('button');
+  btn.id = 'connect-bank';
+  btn.textContent = 'Connect Bank';
+  btn.style.cssText = 'position:fixed;right:16px;top:16px;z-index:9999;padding:10px 14px;border-radius:12px;border:none;cursor:pointer;';
+  document.body.appendChild(btn);
+}
+
+async function openPlaid() {
+  try {
+    // 1) Ask backend for a Link token
+    const tk = await fetch(`${API_BASE}/api/create_link_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: USER_ID })
+    }).then(r => r.json());
+
+    if (!tk || !tk.link_token) {
+      alert('Could not create Link token. Check API logs.');
+      return;
+    }
+
+    // 2) Open Plaid Link
+    const handler = Plaid.create({
+      token: tk.link_token,
+      onSuccess: async (public_token) => {
+        // 3) Exchange for access token (saved in Postgres)
+        const ex = await fetch(`${API_BASE}/api/exchange_public_token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ public_token, userId: USER_ID })
+        }).then(r => r.json());
+
+        if (!ex || ex.ok !== true) {
+          alert('Token exchange failed. See API logs.');
+          return;
+        }
+
+        // 4) Fetch transactions (last 30 days)
+        const tx = await fetch(`${API_BASE}/api/transactions?userId=${encodeURIComponent(USER_ID)}`)
+          .then(r => r.json());
+
+        console.log('Transactions:', tx);
+        alert(`Linked! Loaded ${tx?.txns?.length || 0} transactions.`);
+      },
+      onExit: (err) => { if (err) console.error('Plaid exit', err); }
+    });
+
+    handler.open();
+  } catch (e) {
+    console.error(e);
+    alert('Something went wrong opening Plaid.');
+  }
+}
+
+// Hook the button
+document.getElementById('connect-bank')?.addEventListener('click', openPlaid);
+</script>
+
+
 
 </body>
 </html>
+
