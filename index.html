@@ -3687,6 +3687,8 @@ async function openPlaid()
           alert('Token exchange failed. See API logs.');
           return;
         }
+        await refreshConnectedCount();
+
 
         // 4) Fetch transactions (last 30 days)
         const tx = await fetch(`${API_BASE}/api/transactions?userId=${encodeURIComponent(USER_ID)}`)
@@ -3799,6 +3801,37 @@ async function openPlaid()
 })();
 </script>
 <!-- END: Drop-in Plaid wiring -->
+  <script>
+  async function refreshConnectedCount() {
+    try {
+      const userId = localStorage.getItem('smd_user_id');
+      if (!userId) return;
+
+      const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      // works if the API returns { accounts:[...] } or a plain array
+      const accounts = Array.isArray(data?.accounts) ? data.accounts
+                     : Array.isArray(data) ? data
+                     : [];
+      const count = accounts.length;
+
+      const label = document.getElementById('connectionCount');
+      if (label) label.textContent = `${count} Banks Connected`;
+
+      // optional: hide the floating CTA if at least one bank exists
+      const cta = document.getElementById('plaid-cta');
+      if (cta) cta.style.display = count > 0 ? 'none' : '';
+    } catch (e) {
+      console.warn('Could not refresh bank count:', e);
+    }
+  }
+
+  // update on page load
+  document.addEventListener('DOMContentLoaded', refreshConnectedCount);
+</script>
+
  
 
 
@@ -3806,6 +3839,7 @@ async function openPlaid()
 
 </body>
 </html>
+
 
 
 
