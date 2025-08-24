@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Smart Money — Backend Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial,sans-serif;margin:24px;line-height:1.4}
+    code{background:#f4f4f7;padding:2px 6px;border-radius:4px}
+    .row{margin:12px 0}
+    button{padding:10px 14px;border-radius:8px;border:0;background:#4f46e5;color:#fff;cursor:pointer}
+    button.secondary{background:#0ea5e9}
+    pre{background:#0b1020;color:#d6e1ff;padding:12px;border-radius:8px;overflow:auto;max-height:300px}
+    .ok{color:#10b981}.bad{color:#ef4444}
+  </style>
+  <!-- IMPORTANT: only one Plaid script on the page -->
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+</head>
+<body>
+  <h1>Smart Money API – Live Backend Test</h1>
+
+  <div class="row">API base: <code id="api"></code></div>
+  <div class="row">User ID: <code id="uid"></code></div>
+  <div class="row">Health: <span id="health">checking…</span></div>
+
+  <div class="row">
+    <button id="btnLink">Connect / Reconnect Bank</button>
+    <button id="btnTx" class="secondary">Get Transactions</button>
+    <button id="btnAccts" class="secondary">Get Accounts</button>
+  </div>
+
+  <h3>Response</h3>
+  <pre id="out"></pre>
+
+<script>
+const API_BASE = 'https://smart-money-api.onrender.com';
+const USER_KEY = 'smd_user_id';
+let USER_ID = localStorage.getItem(USER_KEY);
+if (!USER_ID) {
+  USER_ID = 'user-' + Math.random().toString(36).slice(2,10);
+  localStorage.setItem(USER_KEY, USER_ID);
+}
+
+// helpers
+const $ = sel => document.querySelector(sel);
+const print = obj => { $('#out').textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); };
+const j = (r) => r.ok ? r.json() : r.json().catch(()=>({})).then(b => Promise.reject({status:r.status, body:b}));
+
+$('#api').textContent = API_BASE;
+$('#uid').textContent = USER_ID;
+
+// health check
+fetch(`${API_BASE}/api/health`).then(j).then(d=>{
+  $('#health').innerHTML = `<span class="ok">OK</span> (env: ${d.plaidEnv})`;
+}).catch(e=>{
+  $('#health').innerHTML = `<span class="bad">DOWN</span>`;
+  print(e);
+});
+
+// link flow
+async function openLink(){
+  print('Creating link token…');
+  const lt = await fetch(`${API_BASE}/api/create_link_token`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ userId: USER_ID })
+  }).then(j);
+
+  print({step:'link_token', ...lt});
+
+  const handler = Plaid.create({
+    token: lt.link_token,
+    onSuccess: async (public_token, meta) => {
+      print({step:'onSuccess', public_token, institution: meta?.institution});
+      const ex = await fetch(`${API_BASE}/api/exchange_public_token`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ public_token, userId: USER_ID })
+      }).then(j).catch(e => { print(e); throw e; });
+      print({step:'exchanged', result: ex});
+    },
+    onExit: (err, meta) => {
+      if (err) print({step:'exit', err, meta});
+    }
+  });
+  handler.open();
+}
+
+async function getTx(){
+  print('Fetching transactions…');
+  const r = await fetch(`${API_BASE}/api/transactions?userId=${encodeURIComponent(USER_ID)}`).then(j);
+  print(r);
+}
+async function getAccts(){
+  print('Fetching accounts…');
+  const r = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(USER_ID)}`).then(j);
+  print(r);
+}
+
+$('#btnLink').addEventListener('click', openLink);
+$('#btnTx').addEventListener('click', getTx);
+$('#btnAccts').addEventListener('click', getAccts);
+</script>
+</body>
+</html>
