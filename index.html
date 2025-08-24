@@ -915,9 +915,9 @@ button,input,select,textarea{
       <button class="btn ai-btn" onclick="toggleAIAssistant()">
         🧠 AI Assistant
       </button>
-      <button class="btn plaid-btn" onclick="connectNewBank()">
-        🔗 Connect Bank
-      </button>
+      <button class="btn plaid-btn" id="connect-bank" type="button" onclick="openPlaid()">
+        🔗 Connect Bank  
+        </button>
       <button class="btn neural-btn" onclick="showExportModal()">
         📊 Export Data
       </button>
@@ -3815,4 +3815,5 @@ document.getElementById('connect-bank')?.addEventListener('click', openPlaid);
 
 </body>
 </html>
+
 
