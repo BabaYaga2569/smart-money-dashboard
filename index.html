@@ -3801,56 +3801,49 @@ async function openPlaid()
 })();
 </script>
 <!-- END: Drop-in Plaid wiring -->
-  <script>
-async function refreshConnectedCount() {
-  try {
-    const userId = localStorage.getItem('smd_user_id');
-    if (!userId) return;
+ <script>
+;(() => {
+  async function refreshConnectedCount() {
+    try {
+      const userId = localStorage.getItem('smd_user_id');
+      if (!userId) return;
 
-    const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+      const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
 
-    // Normalize to an array of account objects
-    const accounts = Array.isArray(data?.accounts) ? data.accounts
-                    : Array.isArray(data)           ? data
-                    : [];
+      // Normalize to array of accounts
+      const accounts = Array.isArray(data?.accounts) ? data.accounts : (Array.isArray(data) ? data : []);
 
-    // Deduplicate by institution-ish key
-    const instKeys = new Set();
-    for (const a of accounts) {
-      const key =
-        a.institution_id ||
-        a.item_id ||
-        (a.institution && (a.institution.id || a.institution.name)) ||
-        a.institution_name ||
-        a.institution ||            // sometimes backend stores a string
-        null;
+      // De-dupe by institution-ish key
+      const instKeys = new Set();
+      for (const a of accounts) {
+        const key =
+          a.institution_id ??
+          a.item_id ??
+          (a.institution && (a.institution.id || a.institution.name)) ??
+          a.institution_name ??
+          null;
+        if (key) instKeys.add(key);
+      }
 
-      if (key) instKeys.add(key);
+      // Fallback: if no keys but accounts exist, show 1
+      const count = instKeys.size || (accounts.length > 0 ? 1 : 0);
+
+      const label = document.getElementById('connectionCount');
+      if (label) label.textContent = `${count} Banks Connected`;
+
+      const cta = document.getElementById('plaid-cta');
+      if (cta) cta.style.display = count > 0 ? 'none' : '';
+    } catch (e) {
+      console.warn('Could not refresh bank count:', e);
     }
-
-    // Fallback: if we couldn't find any institution keys, fall back to 1 if there are accounts,
-    // or accounts.length (rare backends). This avoids showing 0 when accounts exist.
-    const count = instKeys.size || (accounts.length ? 1 : 0);
-
-    const label = document.getElementById('connectionCount');
-    if (label) {
-      const noun = count === 1 ? 'Bank' : 'Banks';
-      label.textContent = `${count} ${noun} Connected`;
-    }
-
-    // Hide floating CTA if at least one bank is connected
-    const cta = document.getElementById('plaid-cta');
-    if (cta) cta.style.display = count > 0 ? 'none' : '';
-
-  } catch (e) {
-    console.warn('Could not refresh bank count:', e);
   }
-}
 
-// update on page load
-document.addEventListener('DOMContentLoaded', refreshConnectedCount);
+  // Run on page load + expose for manual testing
+  document.addEventListener('DOMContentLoaded', refreshConnectedCount);
+  window.refreshConnectedCount = refreshConnectedCount;
+})();
 </script>
 
  
@@ -3860,6 +3853,7 @@ document.addEventListener('DOMContentLoaded', refreshConnectedCount);
 
 </body>
 </html>
+
 
 
 
