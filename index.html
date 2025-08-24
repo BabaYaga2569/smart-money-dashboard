@@ -915,7 +915,7 @@ button,input,select,textarea{
       <button class="btn ai-btn" onclick="toggleAIAssistant()">
         🧠 AI Assistant
       </button>
-      <button class="btn plaid-btn" id="connect-bank" type="button" onclick="openPlaid()">
+      <button class="btn plaid-btn" id="connect-bank" type="button">
         🔗 Connect Bank  
         </button>
       <button class="btn neural-btn" onclick="showExportModal()">
@@ -3653,9 +3653,12 @@ async function openPlaid()
 <script>
   // Attach the Connect Bank button to openPlaid()
   document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('connect-bank');
-    if (btn) btn.addEventListener('click', openPlaid);
+  ['connect-bank', 'connect-bank-cta'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', openPlaid);
   });
+});
+
 </script>
  {
   try {
@@ -3705,11 +3708,10 @@ async function openPlaid()
 }
 
 // Hook the button
-document.getElementById('connect-bank')?.addEventListener('click', openPlaid);
 </script>
   <!-- Always-visible Connect button -->
 <div id="plaid-cta" style="position:fixed;right:16px;top:16px;z-index:999999;">
-  <button id="connect-bank"
+  3712: <button id="connect-bank-cta"
     style="background:#7c3aed;color:#fff;padding:10px 14px;border-radius:12px;border:none;
            box-shadow:0 8px 24px rgba(124,58,237,.35);font-weight:600;cursor:pointer;">
     Connect Bank
@@ -3815,5 +3817,6 @@ document.getElementById('connect-bank')?.addEventListener('click', openPlaid);
 
 </body>
 </html>
+
 
 
