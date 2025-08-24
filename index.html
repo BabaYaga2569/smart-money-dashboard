@@ -3803,6 +3803,8 @@ async function openPlaid()
 <!-- END: Drop-in Plaid wiring -->
  <script>
 ;(() => {
+  <script>
+(() => {
   async function refreshConnectedCount() {
     try {
       const userId = localStorage.getItem('smd_user_id');
@@ -3812,27 +3814,35 @@ async function openPlaid()
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
-      // Normalize to array of accounts
-      const accounts = Array.isArray(data?.accounts) ? data.accounts : (Array.isArray(data) ? data : []);
+      // Normalize to an array of account objects
+      const accounts = Array.isArray(data?.accounts) ? data.accounts
+                      : Array.isArray(data)             ? data
+                      : [];
 
-      // De-dupe by institution-ish key
-      const instKeys = new Set();
-      for (const a of accounts) {
+      // Build a set of keys that uniquely identify a *bank connection* (Plaid item)
+      const keys = new Set();
+      accounts.forEach(a => {
         const key =
-          a.institution_id ??
-          a.item_id ??
-          (a.institution && (a.institution.id || a.institution.name)) ??
-          a.institution_name ??
+          a.item_id ||
+          a.institution?.id ||
+          a.institution_id ||
+          a.institution_name ||
+          a.institution ||       // sometimes backend stores a string name
+          a.official_name ||     // very last resort
           null;
-        if (key) instKeys.add(key);
+        if (key) keys.add(key);
+      });
+
+      // Fallback: if we couldn’t extract any keys but accounts exist, show 1
+      const count = keys.size || (accounts.length > 0 ? 1 : 0);
+
+      // Update the header chip
+      const label = document.getElementById('connectionCount');
+      if (label) {
+        label.textContent = `${count} ${count === 1 ? 'Bank' : 'Banks'} Connected`;
       }
 
-      // Fallback: if no keys but accounts exist, show 1
-      const count = instKeys.size || (accounts.length > 0 ? 1 : 0);
-
-      const label = document.getElementById('connectionCount');
-      if (label) label.textContent = `${count} Banks Connected`;
-
+      // Hide the floating CTA if at least one bank is connected
       const cta = document.getElementById('plaid-cta');
       if (cta) cta.style.display = count > 0 ? 'none' : '';
     } catch (e) {
@@ -3840,11 +3850,12 @@ async function openPlaid()
     }
   }
 
-  // Run on page load + expose for manual testing
+  // Run on page load and expose for manual calls
   document.addEventListener('DOMContentLoaded', refreshConnectedCount);
   window.refreshConnectedCount = refreshConnectedCount;
 })();
 </script>
+
 
  
 
@@ -3853,6 +3864,7 @@ async function openPlaid()
 
 </body>
 </html>
+
 
 
 
