@@ -3806,53 +3806,61 @@ async function openPlaid()
   <script>
 (() => {
   async function refreshConnectedCount() {
-    try {
-      const userId = localStorage.getItem('smd_user_id');
-      if (!userId) return;
+  try {
+    const userId = localStorage.getItem('smd_user_id');
+    if (!userId) return;
 
-      const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+    const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const raw = await res.json();
 
-      // Normalize to an array of account objects
-      const accounts = Array.isArray(data?.accounts) ? data.accounts
-                      : Array.isArray(data)             ? data
-                      : [];
+    // Normalize to array
+    const accounts = Array.isArray(raw?.accounts) ? raw.accounts
+                    : Array.isArray(raw) ? raw
+                    : [];
 
-      // Build a set of keys that uniquely identify a *bank connection* (Plaid item)
-      const keys = new Set();
-      accounts.forEach(a => {
-        const key =
-          a.item_id ||
-          a.institution?.id ||
-          a.institution_id ||
-          a.institution_name ||
-          a.institution ||       // sometimes backend stores a string name
-          a.official_name ||     // very last resort
-          null;
-        if (key) keys.add(key);
-      });
-
-      // Fallback: if we couldn’t extract any keys but accounts exist, show 1
-      const count = keys.size || (accounts.length > 0 ? 1 : 0);
-
-      // Update the header chip
-      const label = document.getElementById('connectionCount');
-      if (label) {
-        label.textContent = `${count} ${count === 1 ? 'Bank' : 'Banks'} Connected`;
-      }
-
-      // Hide the floating CTA if at least one bank is connected
-      const cta = document.getElementById('plaid-cta');
-      if (cta) cta.style.display = count > 0 ? 'none' : '';
-    } catch (e) {
-      console.warn('Could not refresh bank count:', e);
+    // Prefer real IDs; fall back to brand-ish names
+    const keys = new Set();
+    for (const a of accounts) {
+      const key =
+        a.institution_id ||
+        a.item_id ||
+        a.institution?.id ||
+        a.institution?.name ||
+        a.institution_name ||
+        a.institution ||
+        a.bank_name ||
+        null;
+      if (key) keys.add(String(key).trim().toLowerCase());
     }
-  }
 
-  // Run on page load and expose for manual calls
-  document.addEventListener('DOMContentLoaded', refreshConnectedCount);
-  window.refreshConnectedCount = refreshConnectedCount;
+    let count = keys.size;
+
+    if (!count) {
+      // If no IDs, infer by brand-ish names or finally by #accounts
+      const brands = new Set(
+        accounts
+          .map(a => (a.institution_name || a.bank_name || a.institution || '').toString().toLowerCase())
+          .filter(Boolean)
+      );
+      count = brands.size || Math.min(accounts.length, 10);
+    }
+
+    const label = document.getElementById('connectionCount');
+    if (label) label.textContent = `${count} ${count === 1 ? 'Bank' : 'Banks'} Connected`;
+
+    // Hide floating CTA if anything is connected
+    const cta = document.getElementById('plaid-cta');
+    if (cta) cta.style.display = count > 0 ? 'none' : '';
+  } catch (e) {
+    console.warn('Could not refresh bank count:', e);
+  }
+}
+
+// Run on load + allow manual refresh
+document.addEventListener('DOMContentLoaded', refreshConnectedCount);
+window.refreshConnectedCount = refreshConnectedCount;
+
 })();
 </script>
 
@@ -3864,6 +3872,7 @@ async function openPlaid()
 
 </body>
 </html>
+
 
 
 
