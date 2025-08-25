@@ -3801,85 +3801,65 @@ async function openPlaid()
 })();
 </script>
 <!-- END: Drop-in Plaid wiring -->
- <script>
-;(() => {
-  <script>
+<script>
 (() => {
   async function refreshConnectedCount() {
-  try {
-    const userId = localStorage.getItem('smd_user_id');
-    if (!userId) return;
+    try {
+      const userId = localStorage.getItem('smd_user_id');
+      if (!userId) return;
 
-    const res = await fetch(`${API_BASE}/api/accounts?userId=${encodeURIComponent(userId)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const raw = await res.json();
+      // Use the existing global if it was set earlier; otherwise default.
+      const API = window.API_BASE || 'https://smart-money-api.onrender.com';
 
-    // Normalize to array
-    const accounts = Array.isArray(raw?.accounts) ? raw.accounts
-                    : Array.isArray(raw) ? raw
+      const res = await fetch(`${API}/api/accounts?userId=${encodeURIComponent(userId)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw = await res.json();
+
+      // Normalize to an array of account objects
+      const accounts = Array.isArray(raw?.accounts) ? raw.accounts
+                    : Array.isArray(raw)           ? raw
                     : [];
 
-    // Prefer real IDs; fall back to brand-ish names
-    const keys = new Set();
-    for (const a of accounts) {
-      const key =
-        a.institution_id ||
-        a.item_id ||
-        a.institution?.id ||
-        a.institution?.name ||
-        a.institution_name ||
-        a.institution ||
-        a.bank_name ||
-        null;
-      if (key) keys.add(String(key).trim().toLowerCase());
+      // Build a set of keys that uniquely identify a "bank connection"
+      const keys = new Set();
+      for (const a of accounts) {
+        const key =
+          a.institution_id ||
+          a.item_id ||
+          (a.institution && (a.institution.id || a.institution.name)) ||
+          a.bank_name ||
+          a.institution ||
+          null;
+        if (key) keys.add(String(key).trim().toLowerCase());
+      }
+
+      // If no keys but accounts exist, fall back to brand-ish names or count
+      let count = keys.size;
+      if (!count && accounts.length) {
+        const brands = new Set(
+          accounts
+            .map(a => (a.bank_name || a.bank || a.institution || '').toString().toLowerCase())
+            .filter(Boolean)
+        );
+        count = brands.size || Math.min(accounts.length, 10);
+      }
+
+      // Update the header chip
+      const label = document.getElementById('connectionCount');
+      if (label) label.textContent = `${count} ${count === 1 ? 'Bank' : 'Banks'} Connected`;
+
+      // Hide the floating CTA if at least one bank is connected
+      const cta = document.getElementById('plaid-cta');
+      if (cta) cta.style.display = count > 0 ? 'none' : '';
+    } catch (e) {
+      console.warn('Could not refresh bank count:', e);
     }
-
-    let count = keys.size;
-
-    if (!count) {
-      // If no IDs, infer by brand-ish names or finally by #accounts
-      const brands = new Set(
-        accounts
-          .map(a => (a.institution_name || a.bank_name || a.institution || '').toString().toLowerCase())
-          .filter(Boolean)
-      );
-      count = brands.size || Math.min(accounts.length, 10);
-    }
-
-    const label = document.getElementById('connectionCount');
-    if (label) label.textContent = `${count} ${count === 1 ? 'Bank' : 'Banks'} Connected`;
-
-    // Hide floating CTA if anything is connected
-    const cta = document.getElementById('plaid-cta');
-    if (cta) cta.style.display = count > 0 ? 'none' : '';
-  } catch (e) {
-    console.warn('Could not refresh bank count:', e);
   }
-}
 
-// Run on load + allow manual refresh
-document.addEventListener('DOMContentLoaded', refreshConnectedCount);
-window.refreshConnectedCount = refreshConnectedCount;
-
+  // Run on page load and expose for manual testing
+  document.addEventListener('DOMContentLoaded', refreshConnectedCount);
+  window.refreshConnectedCount = refreshConnectedCount;
 })();
 </script>
-
-
- 
-
-
-
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
