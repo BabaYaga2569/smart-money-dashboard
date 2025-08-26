@@ -3901,112 +3901,156 @@ async function openPlaid() {
   const SEMI_MONTHLY_DAYS = [1, 15];
   const MONTHLY_DAY = 1;
   const DEFAULT_BILLS = [
-    { name:'Rent', amount:1500, cadence:'monthly', day:1 },
-    { name:'Electric', amount:120, cadence:'monthly', day:10 },
-    { name:'Phone', amount:85, cadence:'monthly', day:20 },
-    { name:'Car Insurance', amount:140, cadence:'monthly', day:18 }
+    { name: 'Rent', amount: 1500, cadence: 'monthly', day: 1 },
+    { name: 'Electric', amount: 120, cadence: 'monthly', day: 10 },
+    { name: 'Phone', amount: 85, cadence: 'monthly', day: 20 },
+    { name: 'Car Insurance', amount: 140, cadence: 'monthly', day: 18 }
   ];
 
-  const fmt = n => n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+  const fmt = n => n.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   const today = () => new Date(new Date().toDateString());
-  const parseISO = s => new Date(s+'T00:00:00');
+  const parseISO = s => new Date(s + 'T00:00:00');
 
-  function nextPayday(){
-    const d=today();const anchor=parseISO(PAY_ANCHOR);let next=new Date(anchor);
-    const addDays=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
-    if(PAY_FREQUENCY==='weekly'){while(next<=d)next=addDays(next,7);return next;}
-    if(PAY_FREQUENCY==='biweekly'){while(next<=d)next=addDays(next,14);return next;}
-    if(PAY_FREQUENCY==='semimonthly'){
-      const cand=[];SEMI_MONTHLY_DAYS.forEach(day=>{cand.push(new Date(d.getFullYear(),d.getMonth(),day));cand.push(new Date(d.getFullYear(),d.getMonth()+1,day));});
-      cand.sort((a,b)=>a-b);return cand.find(x=>x>d);}
-    if(PAY_FREQUENCY==='monthly'){
-      const thisM=new Date(d.getFullYear(),d.getMonth(),MONTHLY_DAY);
-      const nextM=new Date(d.getFullYear(),d.getMonth()+1,MONTHLY_DAY);
-      return (thisM>d)?thisM:nextM;}
-    while(next<=d)next=addDays(next,14);return next;
-  }
+  function nextPayday() {
+    const d = today();
+    const anchor = parseISO(PAY_ANCHOR);
+    let next = new Date(anchor);
+    const addDays = (dt, n) => { const x = new Date(dt); x.setDate(x.getDate() + n); return x; };
 
-  function daysBetween(a,b){return Math.ceil((b-a)/(1000*60*60*24));}
-
-  const BILLS_KEY='smd_bills';
-  function loadBills(){try{const x=JSON.parse(localStorage.getItem(BILLS_KEY)||'null');if(Array.isArray(x))return x;}catch{}return DEFAULT_BILLS;}
-  function saveBills(list){try{localStorage.setItem(BILLS_KEY,JSON.stringify(list));}catch{}}
-
-  const USER_ID_KEY='smd_user_id';let USER_ID=localStorage.getItem(USER_ID_KEY);
-  if(!USER_ID){USER_ID='user-'+Math.random().toString(36).slice(2);localStorage.setItem(USER_ID_KEY,USER_ID);}
-
-  // DEMO mode: triggers if ?demo=1 OR if API_BASE missing
-   const params = new URLSearchParams(window.location.search);
-   const DEMO_MODE = (params.has('demo') && params.get('demo') === '1') || !window.API_BASE;
-
-
-  async function getBalances(){
-    if(!window.API_BASE||DEMO_MODE)return[{name:'Demo Checking',current:2450},{name:'Demo Savings',current:3200}];
-    try{
-      const res=await fetch(`${window.API_BASE}/api/balances?userId=${encodeURIComponent(USER_ID)}`);
-      if(!res.ok)throw new Error(res.status);
-      const arr=await res.json();
-      return arr.map(a=>({name:a.name||a.mask||a.official_name||'Account',current:a.balances?.current??0}));
-    }catch{return[];}
-  }
-
-  function billsDueBefore(dateEnd){
-    const b=loadBills();const d0=today();const items=[];let sum=0;
-    for(const bill of b){
-      let due;const now=d0;const y=now.getFullYear(),m=now.getMonth();
-      if(bill.cadence==='monthly'){const thisM=new Date(y,m,bill.day||1);const nextM=new Date(y,m+1,bill.day||1);due=(thisM>=now)?thisM:nextM;}
-      else if(bill.cadence==='weekly'){const cand=new Date(now);cand.setDate(cand.getDate()+7);due=cand;}
-      else if(bill.cadence==='biweekly'){const cand=new Date(now);cand.setDate(cand.getDate()+14);due=cand;}
-      else{const thisM=new Date(y,m,bill.day||1);const nextM=new Date(y,m+1,bill.day||1);due=(thisM>=now)?thisM:nextM;}
-      if(due<=dateEnd){items.push({name:bill.name,due,amount:Number(bill.amount)||0});sum+=Number(bill.amount)||0;}
+    if (PAY_FREQUENCY === 'weekly') { while (next <= d) next = addDays(next, 7); return next; }
+    if (PAY_FREQUENCY === 'biweekly') { while (next <= d) next = addDays(next, 14); return next; }
+    if (PAY_FREQUENCY === 'semimonthly') {
+      const cand = [];
+      SEMI_MONTHLY_DAYS.forEach(day => {
+        cand.push(new Date(d.getFullYear(), d.getMonth(), day));
+        cand.push(new Date(d.getFullYear(), d.getMonth() + 1, day));
+      });
+      cand.sort((a, b) => a - b);
+      return cand.find(x => x > d);
     }
-    items.sort((a,b)=>a.due-b.due);return{items,sum};
+    if (PAY_FREQUENCY === 'monthly') {
+      const thisM = new Date(d.getFullYear(), d.getMonth(), MONTHLY_DAY);
+      const nextM = new Date(d.getFullYear(), d.getMonth() + 1, MONTHLY_DAY);
+      return (thisM > d) ? thisM : nextM;
+    }
+    while (next <= d) next = addDays(next, 14);
+    return next;
   }
 
-  async function refreshPaycycle(){
-    const next=nextPayday();const daysLeft=Math.max(1,daysBetween(today(),next));
-    const balances=await getBalances();const total=balances.reduce((s,a)=>s+(Number(a.current)||0),0);
-    const due=billsDueBefore(next);const afterBills=Math.max(0,total-due.sum);const daily=Math.max(0,Math.floor(afterBills/daysLeft));
-    byId('pc-spendable').textContent=fmt(afterBills);
-    byId('pc-remaining-after-bills').textContent=`After ${due.items.length} bill${due.items.length===1?'':'s'} before payday`;
-    byId('pc-daily').textContent=`${fmt(daily)}/day`;
-    byId('pc-days-left').textContent=String(daysLeft);
-    byId('pc-next-payday').textContent=next.toLocaleDateString();
-    byId('pc-bills-sum').textContent=fmt(due.sum);
-   byId('pc-bills-list').textContent = due.items.length === 0
-     ? 'No bills due before payday.'
-     : due.items.map(x => `${x.due.toLocaleDateString()} — ${x.name}: ${fmt(x.amount)}`).join('\n');
+  function daysBetween(a, b) { return Math.ceil((b - a) / (1000 * 60 * 60 * 24)); }
 
+  const BILLS_KEY = 'smd_bills';
+  function loadBills() { try { const x = JSON.parse(localStorage.getItem(BILLS_KEY) || 'null'); if (Array.isArray(x)) return x; } catch {} return DEFAULT_BILLS; }
+  function saveBills(list) { try { localStorage.setItem(BILLS_KEY, JSON.stringify(list)); } catch {} }
 
-');
-    const whatIfEl=byId('pc-whatif');const whatIfVal=byId('pc-whatif-val');const whatIfSpendable=byId('pc-whatif-spendable');const whatIfDaily=byId('pc-whatif-daily');
-    const updateWhatIf=()=>{const p=Number(whatIfEl.value)||0;whatIfVal.textContent=fmt(p);const ns=Math.max(0,afterBills-p);whatIfSpendable.textContent=fmt(ns);whatIfDaily.textContent=`${fmt(Math.max(0,Math.floor(ns/daysLeft)))}/day`;};
-    whatIfEl.oninput=updateWhatIf;updateWhatIf();
+  const USER_ID_KEY = 'smd_user_id';
+  let USER_ID = localStorage.getItem(USER_ID_KEY);
+  if (!USER_ID) { USER_ID = 'user-' + Math.random().toString(36).slice(2); localStorage.setItem(USER_ID_KEY, USER_ID); }
+
+  const params = new URLSearchParams(window.location.search);
+  const DEMO_MODE = (params.has('demo') && params.get('demo') === '1') || !window.API_BASE;
+
+  async function getBalances() {
+    if (DEMO_MODE) return [{ name: 'Demo Checking', current: 2450 }, { name: 'Demo Savings', current: 3200 }];
+    try {
+      const res = await fetch(`${window.API_BASE}/api/balances?userId=${encodeURIComponent(USER_ID)}`);
+      if (!res.ok) throw new Error(res.status);
+      const arr = await res.json();
+      return arr.map(a => ({ name: a.name || a.mask || a.official_name || 'Account', current: a.balances?.current ?? 0 }));
+    } catch { return []; }
   }
 
-  function byId(id){return document.getElementById(id);}
-  function manageBills(){
-    const b=loadBills();
-    const text=b.map(x=>`${x.name}|${x.amount}|${x.cadence}|${x.day??''}`).join('
-');
-    const hint='Edit one per line as: Name|Amount|Cadence(monthly/weekly/biweekly)|Day(1-31)';
-    const updated=prompt(hint,text);if(updated==null)return;
-    const lines=updated.split('
-').map(s=>s.trim()).filter(Boolean);const out=[];
-    for(const line of lines){const [name,amount,cadence,day]=line.split('|').map(s=>s?.trim());if(!name)continue;
-      out.push({name,amount:Number(amount)||0,cadence:(cadence||'monthly').toLowerCase(),day:day?Number(day):undefined});}
-    saveBills(out);refreshPaycycle();
+  function billsDueBefore(dateEnd) {
+    const b = loadBills(); const d0 = today(); const items = []; let sum = 0;
+    for (const bill of b) {
+      let due; const now = d0; const y = now.getFullYear(), m = now.getMonth();
+      if (bill.cadence === 'monthly') {
+        const thisM = new Date(y, m, bill.day || 1);
+        const nextM = new Date(y, m + 1, bill.day || 1);
+        due = (thisM >= now) ? thisM : nextM;
+      } else if (bill.cadence === 'weekly') {
+        const cand = new Date(now); cand.setDate(cand.getDate() + 7); due = cand;
+      } else if (bill.cadence === 'biweekly') {
+        const cand = new Date(now); cand.setDate(cand.getDate() + 14); due = cand;
+      } else {
+        const thisM = new Date(y, m, bill.day || 1);
+        const nextM = new Date(y, m + 1, bill.day || 1);
+        due = (thisM >= now) ? thisM : nextM;
+      }
+      if (due <= dateEnd) { items.push({ name: bill.name, due, amount: Number(bill.amount) || 0 }); sum += Number(bill.amount) || 0; }
+    }
+    items.sort((a, b) => a.due - b.due);
+    return { items, sum };
   }
 
-  function wireButtons(){
-    const r=byId('pc-refresh');if(r)r.onclick=refreshPaycycle;
-    const m=byId('pc-manage-bills');if(m)m.onclick=manageBills;
+  async function refreshPaycycle() {
+    const next = nextPayday();
+    const daysLeft = Math.max(1, daysBetween(today(), next));
+    const balances = await getBalances();
+    const total = balances.reduce((s, a) => s + (Number(a.current) || 0), 0);
+
+    const due = billsDueBefore(next);
+    const afterBills = Math.max(0, total - due.sum);
+    const daily = Math.max(0, Math.floor(afterBills / daysLeft));
+
+    byId('pc-spendable').textContent = fmt(afterBills);
+    byId('pc-remaining-after-bills').textContent = `After ${due.items.length} bill${due.items.length === 1 ? '' : 's'} before payday`;
+    byId('pc-daily').textContent = `${fmt(daily)}/day`;
+    byId('pc-days-left').textContent = String(daysLeft);
+    byId('pc-next-payday').textContent = next.toLocaleDateString();
+    byId('pc-bills-sum').textContent = fmt(due.sum);
+    byId('pc-bills-list').textContent = due.items.length === 0
+      ? 'No bills due before payday.'
+      : due.items.map(x => `${x.due.toLocaleDateString()} — ${x.name}: ${fmt(x.amount)}`).join('\n');
+
+    const whatIfEl = byId('pc-whatif');
+    const whatIfVal = byId('pc-whatif-val');
+    const whatIfSpendable = byId('pc-whatif-spendable');
+    const whatIfDaily = byId('pc-whatif-daily');
+    const updateWhatIf = () => {
+      const p = Number(whatIfEl.value) || 0;
+      whatIfVal.textContent = fmt(p);
+      const ns = Math.max(0, afterBills - p);
+      whatIfSpendable.textContent = fmt(ns);
+      whatIfDaily.textContent = `${fmt(Math.max(0, Math.floor(ns / daysLeft)))}/day`;
+    };
+    whatIfEl.oninput = updateWhatIf;
+    updateWhatIf();
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{wireButtons();refreshPaycycle();});
+  function byId(id) { return document.getElementById(id); }
+
+  function manageBills() {
+    const b = loadBills();
+    const text = b.map(x => `${x.name}|${x.amount}|${x.cadence}|${x.day ?? ''}`).join('\n');
+    const hint = 'Edit one per line as: Name|Amount|Cadence(monthly/weekly/biweekly)|Day(1-31)';
+    const updated = prompt(hint, text);
+    if (updated == null) return;
+    const lines = updated.split('\n').map(s => s.trim()).filter(Boolean);
+    const out = [];
+    for (const line of lines) {
+      const [name, amount, cadence, day] = line.split('|').map(s => s?.trim());
+      if (!name) continue;
+      out.push({ name, amount: Number(amount) || 0, cadence: (cadence || 'monthly').toLowerCase(), day: day ? Number(day) : undefined });
+    }
+    saveBills(out);
+    refreshPaycycle();
+  }
+
+  function wireButtons() {
+    const r = byId('pc-refresh'); if (r) r.onclick = refreshPaycycle;
+    const m = byId('pc-manage-bills'); if (m) m.onclick = manageBills;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    wireButtons();
+    refreshPaycycle();
+  });
 })();
 </script>
+
 </body>
 </html>
+
 
 
