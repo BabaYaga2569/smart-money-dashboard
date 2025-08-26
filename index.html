@@ -3973,7 +3973,11 @@ async function openPlaid() {
     byId('pc-days-left').textContent=String(daysLeft);
     byId('pc-next-payday').textContent=next.toLocaleDateString();
     byId('pc-bills-sum').textContent=fmt(due.sum);
-    byId('pc-bills-list').textContent=due.items.length===0?'No bills due before payday.':due.items.map(x=>`${x.due.toLocaleDateString()} — ${x.name}: ${fmt(x.amount)}`).join('
+   byId('pc-bills-list').textContent = due.items.length === 0
+     ? 'No bills due before payday.'
+     : due.items.map(x => `${x.due.toLocaleDateString()} — ${x.name}: ${fmt(x.amount)}`).join('\n');
+
+
 ');
     const whatIfEl=byId('pc-whatif');const whatIfVal=byId('pc-whatif-val');const whatIfSpendable=byId('pc-whatif-spendable');const whatIfDaily=byId('pc-whatif-daily');
     const updateWhatIf=()=>{const p=Number(whatIfEl.value)||0;whatIfVal.textContent=fmt(p);const ns=Math.max(0,afterBills-p);whatIfSpendable.textContent=fmt(ns);whatIfDaily.textContent=`${fmt(Math.max(0,Math.floor(ns/daysLeft)))}/day`;};
@@ -4004,4 +4008,5 @@ async function openPlaid() {
 </script>
 </body>
 </html>
+
 
