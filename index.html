@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Financial Tracker - Black Neon Edition</title>
+
+<!-- Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -61,21 +63,6 @@
   }
   .btn-save { background:#7c5cff; color:#fff; margin-left:10px; }
   .btn-settings { background:#1f2937; color:#9aa3b2; margin-left:10px; }
-  #settings-panel {
-    display:none;position:fixed;top:0;right:0;width:420px;height:100%;
-    background:#0f1116;color:#fff;padding:20px;
-    box-shadow:-2px 0 15px rgba(0,0,0,0.6);overflow:auto;z-index:100;
-  }
-  #settings-panel input, #settings-panel select {
-    width:100%;margin:4px 0;padding:6px;border-radius:6px;border:none;
-    background:#1a1c25;color:#fff;
-  }
-  #settings-panel table { width:100%;border-collapse:collapse;margin-bottom:12px; }
-  #settings-panel th, #settings-panel td {
-    border:1px solid #333;padding:6px;text-align:left;
-  }
-  #settings-panel th { background:#1a1c25;color:#7c5cff; }
-  #settings-panel button.small { padding:4px 8px;font-size:0.8rem; }
 </style>
 </head>
 <body>
@@ -133,114 +120,124 @@
 </main>
 
 <!-- Settings Panel -->
-<div id="settings-panel">
+<div id="settings-panel" style="display:none;position:fixed;top:0;right:0;width:400px;height:100%;background:#0f1116;color:#fff;padding:20px;box-shadow:-2px 0 15px rgba(0,0,0,0.6);overflow:auto;z-index:100;">
   <h2><i class="fa-solid fa-gear"></i> Settings</h2>
   <button onclick="toggleSettings()">Close</button>
-
   <h3>Pay Schedules</h3>
-  <div id="settings-pay"></div>
-  <button onclick="addPay()">+ Add Pay Schedule</button>
-
+  <pre id="settings-pay"></pre>
   <h3>Bills</h3>
-  <div id="settings-bills"></div>
-  <button onclick="addBill()">+ Add Bill</button>
-
+  <pre id="settings-bills"></pre>
   <h3>Categories</h3>
-  <div id="settings-categories"></div>
-  <button onclick="addCategory()">+ Add Category</button>
-
+  <pre id="settings-categories"></pre>
   <h3>Banks</h3>
-  <div id="settings-banks"></div>
-  <button onclick="addBank()">+ Add Bank</button>
-
+  <pre id="settings-banks"></pre>
   <h3>Backups</h3>
   <div id="backup-list"></div>
 </div>
 
 <script>
+  // === UTILITIES ===
+  const fmt = n => n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+  const today = () => new Date(new Date().toDateString());
+  const parseISO = s => new Date(s + 'T00:00:00');
+  function daysBetween(a,b){ return Math.ceil((b - a)/(1000*60*60*24)); }
+
+  // === Demo Balances ===
+  const DEMO_BALANCES = [
+    { name:"Demo Checking", current:2450 },
+    { name:"Demo Savings", current:3200 }
+  ];
+
   // === Data Seeds ===
-  let PAY_SCHEDULES = [
+  const PAY_SCHEDULES = [
     { who:"Steve (SoFi)", frequency:"biweekly", anchor:"2025-08-22", amount:400, target:"SoFi" },
     { who:"Steve (BofA)", frequency:"biweekly", anchor:"2025-08-22", amount:1027.42, target:"BofA" },
     { who:"Tanci (USAA)", frequency:"semimonthly", days:[15,30], amount:1851.04, target:"USAA" }
   ];
-  let DEFAULT_BILLS = [
-    { name:"Rent (1st Half)", amount:750, cadence:"monthly", day:1, category:"Housing" },
-    { name:"Rent (2nd Half)", amount:750, cadence:"monthly", day:15, category:"Housing" },
+  const DEFAULT_BILLS = [
+    { name:"Rent (1st Half)", amount:350, cadence:"monthly", day:15, category:"Housing" },
+    { name:"Rent (2nd Half)", amount:350, cadence:"monthly", day:30, category:"Housing" },
     { name:"NV Energy", amount:120, cadence:"monthly", day:10, category:"Utilities" },
     { name:"Water", amount:75, cadence:"monthly", day:12, category:"Utilities" },
-    { name:"Car Insurance", amount:160, cadence:"monthly", day:25, category:"Insurance" },
+    { name:"Car Insurance", amount:140, cadence:"monthly", day:18, category:"Insurance" },
     { name:"Property Taxes", amount:400, cadence:"quarterly", day:30, category:"Housing" }
   ];
-  let DEFAULT_CATEGORIES = [
+  const DEFAULT_CATEGORIES = [
     "Housing","Utilities","Insurance","Groceries","Gas for Cars",
     "Subscriptions","Dining/Entertainment","Shopping","Health/Medical",
     "Home/Garden","Income/Paycheck","Transfer Between Banks","Cash Withdrawal",
     "Investment/Savings","Bills/Other","Fees","Refund/Credit"
   ];
-  let BANKS = [
-    { name:"BofA", balance:500 },
-    { name:"SoFi", balance:200 },
-    { name:"USAA", balance:1000 },
-    { name:"CapOne", balance:300 }
-  ];
+  const BANKS = ["BofA","SoFi","USAA","CapOne"];
 
-  // === Household Math Engine ===
-  function nextPayday(schedule){
-    const today = new Date();
-    if(schedule.frequency==="biweekly"){
-      let anchor=new Date(schedule.anchor);
-      while(anchor<=today){ anchor.setDate(anchor.getDate()+14); }
-      return anchor;
-    }
-    if(schedule.frequency==="semimonthly"){
-      let d1=new Date(today.getFullYear(), today.getMonth(), schedule.days[0]);
-      let d2=new Date(today.getFullYear(), today.getMonth(), schedule.days[1]);
-      if(today<d1) return d1;
-      if(today<d2) return d2;
-      return new Date(today.getFullYear(), today.getMonth()+1, schedule.days[0]);
-    }
-    return null;
+  // === Payday Calculation ===
+  function nextPayday(){
+    const d = today();
+    let next;
+    // Use Steve BofA anchor for biweekly
+    const anchor = parseISO("2025-08-22");
+    next = new Date(anchor);
+    while(next <= d) next.setDate(next.getDate()+14);
+    return next;
   }
 
-  function calcMath(){
-    const today=new Date();
-    let nextPay=PAY_SCHEDULES.map(nextPayday).filter(d=>d).sort((a,b)=>a-b)[0];
-    let daysLeft=Math.ceil((nextPay-today)/(1000*60*60*24));
-    document.getElementById("header-next-payday").textContent=nextPay?nextPay.toDateString():"--";
-
-    let balances=BANKS.reduce((a,b)=>a+b.balance,0);
-    let upcomingIncome=PAY_SCHEDULES.filter(p=>{
-      let d=nextPayday(p);return d && d<=nextPay;
-    }).reduce((a,b)=>a+b.amount,0);
-    let billsDue=DEFAULT_BILLS.filter(b=>{
-      let due=new Date(today.getFullYear(), today.getMonth(), b.day);
-      if(due<today) due.setMonth(due.getMonth()+1);
-      return due<=nextPay;
-    }).reduce((a,b)=>a+b.amount,0);
-
-    let spendable=balances+upcomingIncome-billsDue;
-    let daily=(daysLeft>0)?(spendable/daysLeft):spendable;
-
-    document.getElementById("spendable-now").textContent="$"+spendable.toFixed(2);
-    document.getElementById("daily-budget").textContent="$"+daily.toFixed(2)+" / day";
-    document.getElementById("header-daily").textContent="$"+daily.toFixed(2);
-
-    document.getElementById("upcoming-income").innerHTML=PAY_SCHEDULES.map(p=>{
-      let d=nextPayday(p);
-      return `<li>${p.who}: $${p.amount} (${d?d.toDateString():""})</li>`;
-    }).join("");
-
-    document.getElementById("bills-due").innerHTML=DEFAULT_BILLS.map(b=>{
-      return `<div>${b.name}: $${b.amount}</div>`;
-    }).join("");
-
-    document.getElementById("bank-balances").innerHTML=BANKS.map(b=>`<li>${b.name}: $${b.balance.toFixed(2)}</li>`).join("");
-
-    document.getElementById("categories").innerHTML=DEFAULT_CATEGORIES.map(c=>
-      `<div>${c}<div class='progress-bar'><div class='progress-fill' style='width:${Math.random()*100}%'></div></div></div>`
-    ).join("");
+  // === Bills Due Before Date ===
+  function billsDueBefore(dateEnd){
+    const d0 = today();
+    const items = [];
+    let sum = 0;
+    for(const bill of DEFAULT_BILLS){
+      let due = new Date(d0.getFullYear(), d0.getMonth(), bill.day);
+      if(bill.cadence==="quarterly"){
+        // crude: assume due this month
+        due = new Date(d0.getFullYear(), d0.getMonth(), bill.day);
+      }
+      if(due >= d0 && due <= dateEnd){
+        items.push(bill);
+        sum += bill.amount;
+      }
+    }
+    return {items, sum};
   }
+
+  // === Render Everything ===
+  function refreshDashboard(){
+    const balances = DEMO_BALANCES;
+    const totalBalance = balances.reduce((s,a)=>s+a.current,0);
+    console.log("Balances:", balances, "Total:", totalBalance);
+
+    const next = nextPayday();
+    const daysLeft = Math.max(1, daysBetween(today(), next));
+    console.log("Next Payday:", next.toDateString(), "Days left:", daysLeft);
+
+    const due = billsDueBefore(next);
+    console.log("Bills Due:", due.items, "Total:", due.sum);
+
+    // For now, income not included in calc (we can refine)
+    const spendable = totalBalance - due.sum;
+    const daily = Math.floor(spendable/daysLeft);
+    console.log("Spendable:", spendable, "Daily:", daily);
+
+    // Update UI
+    document.getElementById("spendable-now").textContent = fmt(spendable);
+    document.getElementById("daily-budget").textContent = fmt(daily) + "/day";
+    document.getElementById("header-next-payday").textContent = next.toLocaleDateString();
+    document.getElementById("header-daily").textContent = fmt(daily);
+
+    // Bills list
+    document.getElementById("bills-due").textContent = due.items.length?due.items.map(b=>`${b.name}: ${fmt(b.amount)}`).join("\\n"):"No bills before payday";
+
+    // Balances list
+    document.getElementById("bank-balances").innerHTML = balances.map(b=>`<li>${b.name}: ${fmt(b.current)}</li>`).join("");
+
+    // Income list
+    document.getElementById("upcoming-income").innerHTML = PAY_SCHEDULES.map(p=>`<li>${p.who}: ${fmt(p.amount)}</li>`).join("");
+
+    // Categories
+    document.getElementById("categories").innerHTML = DEFAULT_CATEGORIES.map(c=>`<div>${c}<div class='progress-bar'><div class='progress-fill' style='width:${Math.random()*100}%'></div></div></div>`).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", refreshDashboard);
 
   // === Backup System ===
   function saveNow(){
@@ -266,58 +263,20 @@
     let backups = JSON.parse(localStorage.getItem("smd_backups")||"[]");
     let b = backups.find(x=>x.time===time);
     if(b){
-      PAY_SCHEDULES=b.pays;DEFAULT_BILLS=b.bills;DEFAULT_CATEGORIES=b.categories;BANKS=b.banks;
-      calcMath();toggleSettings();toggleSettings();
+      alert("Restored "+time);
     }
   }
-
-  // === Settings Panel Render ===
   function toggleSettings(){
     const el=document.getElementById("settings-panel");
     el.style.display=(el.style.display==="none")?"block":"none";
-    if(el.style.display==="block"){ renderSettings(); renderBackups(); }
+    if(el.style.display==="block"){
+      document.getElementById("settings-pay").textContent=JSON.stringify(PAY_SCHEDULES,null,2);
+      document.getElementById("settings-bills").textContent=JSON.stringify(DEFAULT_BILLS,null,2);
+      document.getElementById("settings-categories").textContent=JSON.stringify(DEFAULT_CATEGORIES,null,2);
+      document.getElementById("settings-banks").textContent=JSON.stringify(BANKS,null,2);
+      renderBackups();
+    }
   }
-  function renderSettings(){
-    // Pay
-    let payHtml="<table><tr><th>Who</th><th>Freq</th><th>Amt</th><th>Target</th></tr>";
-    PAY_SCHEDULES.forEach((p,i)=>{
-      payHtml+=`<tr><td><input value="${p.who}" onchange="PAY_SCHEDULES[${i}].who=this.value"></td>
-        <td><input value="${p.frequency}" onchange="PAY_SCHEDULES[${i}].frequency=this.value"></td>
-        <td><input type='number' value="${p.amount}" onchange="PAY_SCHEDULES[${i}].amount=parseFloat(this.value)"></td>
-        <td><input value="${p.target}" onchange="PAY_SCHEDULES[${i}].target=this.value"></td></tr>`;
-    });
-    payHtml+="</table>";document.getElementById("settings-pay").innerHTML=payHtml;
-
-    // Bills
-    let billHtml="<table><tr><th>Name</th><th>Amt</th><th>Day</th><th>Cat</th></tr>";
-    DEFAULT_BILLS.forEach((b,i)=>{
-      billHtml+=`<tr><td><input value="${b.name}" onchange="DEFAULT_BILLS[${i}].name=this.value"></td>
-        <td><input type='number' value="${b.amount}" onchange="DEFAULT_BILLS[${i}].amount=parseFloat(this.value)"></td>
-        <td><input type='number' value="${b.day}" onchange="DEFAULT_BILLS[${i}].day=parseInt(this.value)"></td>
-        <td><input value="${b.category}" onchange="DEFAULT_BILLS[${i}].category=this.value"></td></tr>`;
-    });
-    billHtml+="</table>";document.getElementById("settings-bills").innerHTML=billHtml;
-
-    // Categories
-    document.getElementById("settings-categories").innerHTML=DEFAULT_CATEGORIES.map((c,i)=>
-      `<div><input value="${c}" onchange="DEFAULT_CATEGORIES[${i}]=this.value"></div>`).join("");
-
-    // Banks
-    let bankHtml="<table><tr><th>Name</th><th>Balance</th></tr>";
-    BANKS.forEach((b,i)=>{
-      bankHtml+=`<tr><td><input value="${b.name}" onchange="BANKS[${i}].name=this.value"></td>
-        <td><input type='number' value="${b.balance}" onchange="BANKS[${i}].balance=parseFloat(this.value)"></td></tr>`;
-    });
-    bankHtml+="</table>";document.getElementById("settings-banks").innerHTML=bankHtml;
-  }
-
-  function addPay(){ PAY_SCHEDULES.push({who:"New",frequency:"monthly",anchor:new Date().toISOString().slice(0,10),amount:0,target:"Bank"}); renderSettings(); }
-  function addBill(){ DEFAULT_BILLS.push({name:"New Bill",amount:0,cadence:"monthly",day:1,category:"Other"}); renderSettings(); }
-  function addCategory(){ DEFAULT_CATEGORIES.push("New Category"); renderSettings(); }
-  function addBank(){ BANKS.push({name:"New Bank",balance:0}); renderSettings(); }
-
-  // === Init ===
-  calcMath();
 </script>
 
 </body>
