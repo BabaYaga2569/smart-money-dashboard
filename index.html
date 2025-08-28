@@ -3,196 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Family Finance - Phase 2 Interactive Beast Mode (Patched)</title>
+<title>Smart Family Finance - Phase 3 Plaid Ready</title>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --card: #14161b;
-    --text: #e7ecf3;
-    --accent: #7c5cff;
-    --accent2: #00d7c0;
-    --good: #17c964;
-    --warn: #ffb703;
-    --bad: #ff5470;
-  }
-  body {
-    background: var(--bg);
-    font-family: 'Inter', sans-serif;
-    color: var(--text);
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    padding: 1em;
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--accent2);
-    text-shadow: 0 0 15px var(--accent);
-  }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1em; margin: 1em; }
-  .tile { background: var(--card); border-radius: 20px; padding: 1em; box-shadow: 0 0 15px var(--accent); transition: transform 0.3s, box-shadow 0.3s; }
-  .tile:hover { transform: translateY(-5px); box-shadow: 0 0 25px var(--accent2); }
-  .btn { background: var(--accent); color: white; border: none; padding: 0.5em 1em; margin: 0.2em; border-radius: 20px; cursor: pointer; transition: 0.3s; }
-  .btn:hover { background: var(--accent2); }
-  .bank-boxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5em; }
-  .bank-box { background: #1a1d25; padding: 0.5em; border-radius: 12px; text-align: center; box-shadow: 0 0 8px var(--accent); cursor: pointer; }
-  .progress { background: #1c1f26; border-radius: 10px; height: 12px; margin-top: 0.5em; overflow: hidden; }
-  .progress-bar { background: var(--accent2); height: 100%; width: 100%; transition: width 0.5s ease; }
-  .chart { width: 100%; height: 200px; border-radius: 15px; background: #1c1f26; display: flex; align-items: center; justify-content: center; color: var(--warn); font-style: italic; }
-  .motivation { font-size: 1.2em; text-align: center; margin-top: 0.5em; color: var(--accent2); text-shadow: 0 0 8px var(--accent); animation: fadeIn 2s infinite alternate; }
-  @keyframes fadeIn { from { opacity: 0.6; } to { opacity: 1; } }
-  table { width: 100%; border-collapse: collapse; margin-top: 0.5em; }
-  td, th { border-bottom: 1px solid #2a2d35; padding: 0.4em; }
-  .transaction-list { text-align: left; font-size: 0.9em; margin-top: 0.5em; }
-  .hidden { display: none; }
-  .menu-dots { cursor: pointer; padding: 0 5px; font-size: 18px; color: var(--accent2); }
-  .menu-popup { position: absolute; background: #1c1f26; border: 1px solid var(--accent); border-radius: 8px; padding: 0.5em; display: none; z-index: 10; }
-  .menu-popup button { background: none; border: none; color: var(--text); display: block; width: 100%; text-align: left; padding: 0.3em; cursor: pointer; }
-  .menu-popup button:hover { background: var(--accent); color: white; }
+  body { background:#0a0a0f; font-family: 'Inter', sans-serif; color:#e7ecf3; margin:0; padding:0; }
+  header { padding:1em; text-align:center; font-size:1.5em; font-weight:bold; color:#00d7c0; text-shadow:0 0 15px #7c5cff; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1em; margin:1em; }
+  .tile { background:#14161b; border-radius:20px; padding:1em; box-shadow:0 0 15px #7c5cff; transition:0.3s; }
+  .tile:hover { transform:translateY(-5px); box-shadow:0 0 25px #00d7c0; }
+  .btn { background:#7c5cff; color:white; border:none; padding:0.5em 1em; margin:0.2em; border-radius:20px; cursor:pointer; transition:0.3s; }
+  .btn:hover { background:#00d7c0; }
+  .bank-boxes { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:0.5em; }
+  .bank-box { background:#1a1d25; padding:0.5em; border-radius:12px; text-align:center; box-shadow:0 0 8px #7c5cff; cursor:pointer; }
+  .motivation { font-size:1.2em; text-align:center; margin-top:0.5em; color:#00d7c0; text-shadow:0 0 8px #7c5cff; animation:fadeIn 2s infinite alternate; }
+  @keyframes fadeIn { from{opacity:0.6;} to{opacity:1;} }
+  table { width:100%; border-collapse:collapse; margin-top:0.5em; }
+  td,th { border-bottom:1px solid #2a2d35; padding:0.4em; }
+  .transaction-list { text-align:left; font-size:0.9em; margin-top:0.5em; }
 </style>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 </head>
 <body>
-<header>💰 Smart Family Finance - Phase 2 Interactive Beast Mode (Patched)</header>
+<header>💰 Smart Family Finance - Phase 3 Plaid Ready</header>
 
 <div class="grid">
-  <div class="tile">
-    <h2>Spendable Now</h2>
-    <div id="spendable-now">$0.00</div>
-    <canvas id="spendable-trend" width="250" height="60"></canvas>
-  </div>
-  <div class="tile">
-    <h2>Daily Budget</h2>
-    <div id="daily-budget">$0.00/day</div>
-    <div id="days-left"></div>
-    <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
-  </div>
-  <div class="tile">
-    <h2>Next Payday</h2>
-    <div id="steve-payday"></div>
-    <div id="tanci-payday"></div>
-    <div id="next-payday"></div>
-    <div id="payday-countdown"></div>
-  </div>
-  <div class="tile">
-    <h2>Banks</h2>
-    <div class="bank-boxes" id="bank-boxes"></div>
-    <div id="transactions" class="transaction-list hidden"></div>
-  </div>
-  <div class="tile">
-    <h2>Recurring Bills</h2>
-    <ul id="bill-list"></ul>
-    <button class="btn" onclick="addBill()">+ Add Bill</button>
-  </div>
-  <div class="tile">
-    <h2>Spending by Category</h2>
-    <div>Total: <span id="category-total">$0.00</span></div>
-    <div class="chart">[Neon Chart Placeholder]</div>
-    <table id="category-table"></table>
-  </div>
-  <div class="tile">
-    <h2>AI Insights</h2>
-    <div id="ai-insights">--</div>
-    <div class="motivation" id="motivation"></div>
-  </div>
-  <div class="tile">
-    <h2>Settings</h2>
-    Mode: 
-    <select id="mode-toggle">
+  <div class="tile"><h2>Spendable Now</h2><div id="spendable-now">$0.00</div></div>
+  <div class="tile"><h2>Daily Budget</h2><div id="daily-budget">$0.00/day</div></div>
+  <div class="tile"><h2>Next Payday</h2><div id="next-payday">--</div><div id="payday-countdown"></div></div>
+  <div class="tile"><h2>Banks</h2><div class="bank-boxes" id="bank-boxes"></div><div id="transactions" class="transaction-list hidden"></div></div>
+  <div class="tile"><h2>Recurring Bills</h2><ul id="bill-list"></ul></div>
+  <div class="tile"><h2>Spending by Category</h2><div>Total: <span id="category-total">$0.00</span></div><table id="category-table"></table></div>
+  <div class="tile"><h2>AI Insights</h2><div id="ai-insights">--</div><div class="motivation" id="motivation"></div></div>
+  <div class="tile"><h2>Settings</h2>
+    Mode:
+    <select id="mode-toggle" onchange="toggleMode()">
       <option value="demo">Demo</option>
       <option value="live">Live</option>
-    </select><br><br>
-    <button class="btn" onclick="saveNow()">Save</button>
-    <button class="btn" onclick="restoreNow()">Restore</button>
-    <button class="btn" onclick="exportJSON()">Export</button>
-    <input type="file" id="import-file" style="display:none" onchange="importJSON(event)">
-    <button class="btn" onclick="document.getElementById('import-file').click()">Import</button>
+    </select>
   </div>
 </div>
 
-<div id="menu-popup" class="menu-popup"></div>
-
 <script>
-// Demo balances, bills, categories (same as working file)
-const DEMO_BALANCES = [
-  {name: "BofA", balance: 1027.42, transactions:["Deposit +$500","Grocery -$50","Rent -$900"]},
-  {name: "SoFi", balance: 400.00, transactions:["Transfer +$200","Gas -$60"]},
-  {name: "USAA", balance: 1851.04, transactions:["Paycheck +$1850","Utilities -$120"]},
-  {name: "Capital One", balance: 600.00, transactions:["Fun -$80","Disneyland -$220"]}
+// Demo data
+const DEMO_BALANCES=[
+ {name:"BofA",balance:1027.42,transactions:["Deposit +$500","Grocery -$50","Rent -$900"]},
+ {name:"SoFi",balance:400.00,transactions:["Transfer +$200","Gas -$60"]},
+ {name:"USAA",balance:1851.04,transactions:["Paycheck +$1850","Utilities -$120"]},
+ {name:"Capital One",balance:600.00,transactions:["Fun -$80","Disneyland -$220"]}
 ];
-let DEMO_BILLS = [
-  {name:"Rent (part 1)", amount:900, due:"2025-09-01"},
-  {name:"NV Energy", amount:150, due:"2025-09-05"},
-  {name:"Internet", amount:80, due:"2025-09-07"},
-  {name:"Car Insurance", amount:200, due:"2025-09-10"},
-  {name:"Property Taxes", amount:500, due:"2025-09-30"}
+let DEMO_BILLS=[
+ {name:"Rent (part 1)",amount:900,due:"2025-09-01"},
+ {name:"NV Energy",amount:150,due:"2025-09-05"},
+ {name:"Internet",amount:80,due:"2025-09-07"}
 ];
-const DEMO_CATEGORIES = [
-  {name:"Rent/Mortgage", amount:900},
-  {name:"Utilities", amount:230},
-  {name:"Food & Dining", amount:400},
-  {name:"Gas & Transport", amount:150},
-  {name:"Subscriptions", amount:60},
-  {name:"Fun / Disneyland", amount:300},
-  {name:"Travel", amount:500},
-  {name:"Shopping", amount:250},
-  {name:"Misc", amount:100}
-];
-const MOTIVATION_MESSAGES = [
-  "💪 You're crushing it!",
-  "⚡ 3 days till payday — hold strong!",
-  "🚀 Roof's off, keep going!",
-  "✅ Smart money, smart moves!"
+const DEMO_CATEGORIES=[
+ {name:"Rent/Mortgage",amount:900},
+ {name:"Utilities",amount:230},
+ {name:"Food & Dining",amount:400}
 ];
 
-let motIndex = 0;
-function rotateMotivation(){ document.getElementById("motivation").innerText = MOTIVATION_MESSAGES[motIndex]; motIndex = (motIndex+1) % MOTIVATION_MESSAGES.length; }
-setInterval(rotateMotivation, 4000);
+// Motivation
+const MOTIVATION_MESSAGES=["💪 You're crushing it!","⚡ Hold strong!","🚀 Keep going!"];
+let motIndex=0;
+function rotateMotivation(){document.getElementById("motivation").innerText=MOTIVATION_MESSAGES[motIndex];motIndex=(motIndex+1)%MOTIVATION_MESSAGES.length;}
+setInterval(rotateMotivation,4000);
 
-// Payday helpers (modified to return both Steve and Tanci)
-function isHoliday(d){ return US_BANK_HOLIDAYS_2025.some(h=>h.toDateString()===d.toDateString()); }
-function adjustForWeekend(d){ if(d.getDay()===0) d.setDate(d.getDate()-2); if(d.getDay()===6) d.setDate(d.getDate()-1); return d; }
-function rollbackWeekendHoliday(d){ let x=new Date(d); x=adjustForWeekend(x); while(isHoliday(x)||x.getDay()===0||x.getDay()===6){ x.setDate(x.getDate()-1); x=adjustForWeekend(x);} return x; }
-function nextBiweekly(anchorISO, from=new Date()){ const anchor=new Date(anchorISO+"T00:00:00"); const ms14=14*24*3600*1000; if(from<=anchor) return rollbackWeekendHoliday(anchor); let t=anchor.getTime(); while(t<=from.getTime()) t+=ms14; return rollbackWeekendHoliday(new Date(t)); }
-function nextSemiMonthly(days=[15,30], from=new Date()){ const candidates=[]; for(let m=0;m<3;m++){ const d=new Date(from.getFullYear(), from.getMonth()+m, 1); days.forEach(day=>{ let dom=day===30?new Date(d.getFullYear(), d.getMonth()+1,0).getDate():day; const cand=new Date(d.getFullYear(), d.getMonth(), dom); if(cand>from) candidates.push(rollbackWeekendHoliday(cand)); }); } candidates.sort((a,b)=>a-b); return candidates[0] ?? rollbackWeekendHoliday(new Date(from)); }
-function computeNextPaydays(){ const from=new Date(); const steveNext=nextBiweekly("2025-08-22", from); const tanciNext=nextSemiMonthly([15,30], from); return {steveNext,tanciNext,earliest:(steveNext<tanciNext?steveNext:tanciNext)}; }
-
-// Add/Edit/Delete Bills via 3-dot menu
-function addBill(){ const name=prompt("Bill name:"); const amount=parseFloat(prompt("Amount:")); const due=prompt("Due date (YYYY-MM-DD):"); if(name&&amount&&due){ DEMO_BILLS.push({name,amount,due}); refreshDashboard(); } }
-function editBill(i){ const b=DEMO_BILLS[i]; const name=prompt("Edit name:",b.name); const amount=parseFloat(prompt("Edit amount:",b.amount)); const due=prompt("Edit due date:",b.due); if(name&&amount&&due){ DEMO_BILLS[i]={name,amount,due}; refreshDashboard(); } }
-function deleteBill(i){ if(confirm("Delete this bill?")){ DEMO_BILLS.splice(i,1); refreshDashboard(); } }
-function showMenu(event,i){ const menu=document.getElementById("menu-popup"); menu.innerHTML=`<button onclick='editBill(${i})'>✏ Edit</button><button onclick='deleteBill(${i})'>🗑 Delete</button>`; menu.style.left=event.pageX+"px"; menu.style.top=event.pageY+"px"; menu.style.display="block"; }
-document.addEventListener("click",(e)=>{ if(!e.target.classList.contains("menu-dots")) document.getElementById("menu-popup").style.display="none"; });
+// Toggle Demo/Live
+async function toggleMode(){
+  const mode=document.getElementById("mode-toggle").value;
+  if(mode==="demo"){
+    refreshDashboard({balances:DEMO_BALANCES,bills:DEMO_BILLS,categories:DEMO_CATEGORIES});
+    document.getElementById("ai-insights").innerText="💡 Running in Demo Mode";
+  } else {
+    try{
+      const res=await fetch('/.netlify/functions/create_link_token');
+      const data=await res.json();
+      if(data.link_token){
+        const handler=Plaid.create({
+          token:data.link_token,
+          onSuccess:(public_token,metadata)=>{
+            document.getElementById("ai-insights").innerText="✅ Plaid Connected!";
+            // TODO: send public_token to Netlify backend for exchange
+          },
+          onExit:(err,metadata)=>{
+            document.getElementById("ai-insights").innerText="⚠️ Plaid exited.";
+          }
+        });
+        handler.open();
+      } else {
+        document.getElementById("ai-insights").innerText="❌ Failed to get link_token";
+      }
+    }catch(err){document.getElementById("ai-insights").innerText="❌ Error: "+err.message;}
+  }
+}
 
 // Refresh Dashboard
-function formatCurrency(v){ return "$"+v.toFixed(2); }
 function refreshDashboard(data={balances:DEMO_BALANCES,bills:DEMO_BILLS,categories:DEMO_CATEGORIES}){
-  const balances=data.balances; const bills=data.bills; const categories=data.categories;
-  const total=balances.reduce((s,a)=>s+a.balance,0);
-  document.getElementById("bank-boxes").innerHTML=balances.map((a,i)=>`<div class="bank-box" onclick="showTransactions(${i})">${a.name}<br>${formatCurrency(a.balance)}</div>`).join("");
-  document.getElementById("bill-list").innerHTML=bills.map((b,i)=>`<li>${b.name}: ${formatCurrency(b.amount)} (due ${b.due}) <span class='menu-dots' onclick='showMenu(event,${i})'>⋮</span></li>`).join("");
-
-  const {steveNext,tanciNext,earliest}=computeNextPaydays(); const today=new Date(); const daysLeft=Math.max(1, Math.ceil((earliest-today)/(1000*3600*24)));
-  document.getElementById("steve-payday").innerText=`Steve's Next: ${steveNext.toDateString()}`;
-  document.getElementById("tanci-payday").innerText=`Tanci's Next: ${tanciNext.toDateString()}`;
-  document.getElementById("next-payday").innerText=`Earliest: ${earliest.toDateString()}`;
-  const diff=earliest-today; const hrs=Math.floor(diff/36e5)%24; const mins=Math.floor(diff/6e4)%60;
-  document.getElementById("payday-countdown").innerText=`Countdown: ${daysLeft} days ${hrs}h ${mins}m`;
-
-  document.getElementById("spendable-now").innerText=formatCurrency(total);
-  document.getElementById("daily-budget").innerText=formatCurrency(total/daysLeft)+"/day";
-  document.getElementById("days-left").innerText=`${daysLeft} days left`;
-  document.getElementById("progress-bar").style.width=(100/daysLeft*daysLeft)+"%";
-
-  const totalCat=categories.reduce((s,c)=>s+c.amount,0);
-  document.getElementById("category-total").innerText=formatCurrency(totalCat);
-  document.getElementById("category-table").innerHTML=categories.map(c=>`<tr><td>${c.name}</td><td>${formatCurrency(c.amount)}</td></tr>`).join("");
-
-  const ctx=document.getElementById("spendable-trend").getContext("2d"); ctx.clearRect(0,0,250,60); ctx.beginPath(); ctx.strokeStyle=total>1000? "#17c964":"#ff5470"; ctx.lineWidth=2;
-  let demoTrend=[total-200,total-100,total-300,total-50,total-500,total,total];
-  demoTrend.forEach((v,i)=>{ const x=i*(250/(demoTrend.length-1)); const y=60-(v/total*60); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+  document.getElementById("bank-boxes").innerHTML=data.balances.map((a,i)=>`<div class="bank-box" onclick="showTransactions(${i})">${a.name}<br>$${a.balance.toFixed(2)}</div>`).join("");
+  document.getElementById("bill-list").innerHTML=data.bills.map(b=>`<li>${b.name}: $${b.amount} (due ${b.due})</li>`).join("");
+  document.getElementById("category-table").innerHTML=data.categories.map(c=>`<tr><td>${c.name}</td><td>$${c.amount}</td></tr>`).join("");
+  document.getElementById("spendable-now").innerText="$"+data.balances.reduce((s,a)=>s+a.balance,0).toFixed(2);
+  document.getElementById("category-total").innerText="$"+data.categories.reduce((s,c)=>s+c.amount,0).toFixed(2);
 }
-function showTransactions(i){ const bank=DEMO_BALANCES[i]; document.getElementById("transactions").innerHTML=`<strong>${bank.name} Transactions:</strong><ul>`+bank.transactions.map(t=>`<li>${t}</li>`).join("")+"</ul>"; document.getElementById("transactions").classList.remove("hidden"); }
+function showTransactions(i){
+  const bank=DEMO_BALANCES[i];
+  document.getElementById("transactions").innerHTML=`<strong>${bank.name} Transactions:</strong><ul>`+bank.transactions.map(t=>`<li>${t}</li>`).join("")+"</ul>";
+  document.getElementById("transactions").classList.remove("hidden");
+}
+
+// Init
 document.addEventListener("DOMContentLoaded",()=>{refreshDashboard();rotateMotivation();});
 </script>
 </body>
