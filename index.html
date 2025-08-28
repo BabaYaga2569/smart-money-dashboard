@@ -113,5 +113,49 @@ function showTransactions(i){
 // Init
 document.addEventListener("DOMContentLoaded",()=>{refreshDashboard();rotateMotivation();});
 </script>
+    <!-- your other content, tiles, etc. -->
+
+  <button id="plaid-connect-btn">Connect Bank</button>
+
+  <!-- Plaid script loader (only once in the file) -->
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+  <!-- Your Plaid integration code -->
+  <script>
+  async function openPlaidLink() {
+    try {
+      const response = await fetch('/.netlify/functions/create_link_token');
+      const data = await response.json();
+
+      if (!data.link_token) {
+        throw new Error('No link_token returned: ' + JSON.stringify(data));
+      }
+
+      const handler = Plaid.create({
+        token: data.link_token,
+        onSuccess: function(public_token, metadata) {
+          console.log('Public Token: ', public_token);
+          alert("✅ Plaid connected!");
+        },
+        onExit: function(err, metadata) {
+          console.log('Plaid exited', err, metadata);
+        }
+      });
+
+      handler.open();
+    } catch (err) {
+      console.error('Error creating link token:', err);
+      alert('❌ Error: ' + err.message);
+    }
+  }
+
+  document.getElementById('plaid-connect-btn')
+    .addEventListener('click', openPlaidLink);
+  </script>
 </body>
 </html>
+
+  
+</body>
+</html>
+
