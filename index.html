@@ -3,45 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Family Finance Dashboard</title>
+  <title>Smart Family Finance Dashboard - Phase 2 Skeleton</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-  body {
-    background: linear-gradient(-45deg,#0f1116,#14161b,#1a1a2e,#0d0f1a);
-    background-size:400% 400%;
-    animation:gradientShift 20s ease infinite;
-    color:#e7ecf3; font-family:system-ui,sans-serif;
-    margin:0; min-height:100vh;
-  }
-  @keyframes gradientShift {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  header {background:rgba(20,22,27,0.9); padding:20px; border-bottom:1px solid #1f2937;
-    box-shadow:0 0 20px rgba(124,92,255,0.6); display:flex; justify-content:space-between; align-items:center;}
-  header h1{margin:0;font-size:1.5rem;color:#7c5cff;}
-  .motivation{font-size:1rem;margin-top:6px;color:#00d7c0;}
-  main.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding:20px;}
-  .tile{background:#0d0d12;border-radius:12px;padding:16px;border:1px solid rgba(124,92,255,0.3);
-    box-shadow:0 0 12px rgba(124,92,255,0.4);transition:transform 0.25s ease,box-shadow 0.35s ease;min-height:140px;}
-  .tile:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 25px rgba(124,92,255,0.8),0 0 15px rgba(0,215,192,0.6),0 0 8px rgba(231,236,243,0.3);}
-  .tile:active{transform:translateY(2px) scale(0.98);box-shadow:0 0 12px rgba(124,92,255,0.6),0 0 8px rgba(0,215,192,0.4);}
-  .tile h2{color:#a78bfa;font-size:1.2rem;margin:0 0 10px;}
-  .tile i{margin-right:6px;color:#00d7c0;}
-  .btn-refresh{padding:10px 18px;background:linear-gradient(90deg,#7c5cff,#00d7c0);border:none;border-radius:8px;
-    color:white;font-weight:bold;cursor:pointer;transition:all 0.3s ease;box-shadow:0 0 10px rgba(124,92,255,0.5);}
-  .btn-refresh:hover{background:linear-gradient(90deg,#00d7c0,#7c5cff);box-shadow:0 0 20px rgba(0,215,192,0.9),0 0 14px rgba(124,92,255,0.7);transform:scale(1.05);}
-  .gauge-container{position:relative;width:150px;height:150px;margin:auto;}
-  .gauge{width:100%;height:100%;transform:rotate(-90deg);}
-  .gauge .bg{fill:none;stroke:#1f2937;stroke-width:3;}
-  .gauge .bar{fill:none;stroke:url(#gradient);stroke-width:3;stroke-linecap:round;transition:stroke-dasharray 1s ease;}
-  .gauge-value{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.2rem;font-weight:700;color:#7c5cff;}
-  #settings-panel{display:none;position:fixed;top:0;right:0;width:800px;height:100%;background:#0f1116;color:#fff;
-    box-shadow:-2px 0 15px rgba(0,0,0,0.6);z-index:100;display:flex;}
-  #settings-sidebar{width:200px;background:#14161b;border-right:1px solid #1f2937;display:flex;flex-direction:column;}
-  #settings-sidebar button{background:none;border:none;color:#9aa3b2;padding:15px;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #1f2937;}
-  #settings-sidebar button.active{background:#1f2937;color:#7c5cff;font-weight:600;}
-  #settings-content{flex:1;padding:20px;overflow-y:auto;}
-  #settings-content h3{color:#7c5cff;margin-top:0;}
-  input,select{background:#0b0c0e;color:#fff;border:1px solid #1f2937;padding:8px;border-radius:6px;margin:5px 0;width:100%;}
-  .field{margin-bottom:12px;}
+  body {background:#0f1116;color:#e7ecf3;font-family:system-ui,sans-serif;margin:0;min-height:100vh;}
+  header {padding:20px;background:#14161b;border-bottom:1px solid #1f2937;display:flex;justify-content:space-between;align-items:center;}
+  header h1{margin:0;color:#7c5cff;}
+  .stats{font-size:0.9rem;}
+  main.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px;}
+  .tile{background:#14161b;border-radius:10px;padding:16px;box-shadow:0 0 10px rgba(124,92,255,0.4);}
+  .tile h2{margin:0 0 10px;font-size:1.1rem;color:#a78bfa;}
+  .btn{padding:8px 12px;background:#7c5cff;border:none;border-radius:6px;color:#fff;cursor:pointer;}
   #toasts{position:fixed;bottom:20px;right:20px;z-index:200;}
   .toast{background:#14161b;color:#fff;padding:10px 16px;margin-top:10px;border-radius:6px;
     box-shadow:0 0 10px rgba(124,92,255,0.7);animation:fadein 0.5s,fadeout 0.5s 3s;}
@@ -51,121 +23,58 @@
 </head>
 <body>
 <header>
-  <div><h1><i class="fa-solid fa-coins"></i> Smart Family Finance Dashboard</h1><div class="motivation" id="motivation-banner">Loading...</div></div>
+  <h1>💰 Smart Family Finance - Phase 2 Skeleton</h1>
   <div class="stats">
-    Mode: <select id="mode-toggle" onchange="refreshDashboard()"><option value="live">Live</option><option value="demo">Demo</option></select>
-    | Next Payday: <span id="header-next-payday">--</span> | Daily: <span id="header-daily">$--</span>
-    <button class="btn-refresh" onclick="saveNow()">💾 Save</button><button class="btn-refresh" onclick="toggleSettings()">⚙️ Settings</button>
+    Mode: <select id="mode-toggle" onchange="refreshDashboard()"><option value="live">Live</option><option value="demo">Demo</option></select> |
+    Next Payday: <span id="header-next-payday">--</span> | Daily: <span id="header-daily">$--</span>
+    <button class="btn" onclick="saveNow()">Save</button>
   </div>
 </header>
 <main class="grid">
-  <section class="tile"><h2><i class="fa-solid fa-wallet"></i> Spendable Now</h2><div id="spendable-now" style="font-size:2rem;">$—</div></section>
-  <section class="tile"><h2><i class="fa-solid fa-calendar-day"></i> Daily Budget</h2><div class="gauge-container">
-      <svg class="gauge" viewBox="0 0 36 36">
-        <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7c5cff"/><stop offset="100%" stop-color="#00d7c0"/></linearGradient></defs>
-        <path class="bg" d="M18 2.0845 a15.9155 15.9155 0 0 1 0 31.831 a15.9155 15.9155 0 0 1 0 -31.831"/>
-        <path id="gauge-bar" class="bar" stroke-dasharray="0,100" d="M18 2.0845 a15.9155 15.9155 0 0 1 0 31.831 a15.9155 15.9155 0 0 1 0 -31.831"/>
-      </svg><div class="gauge-value" id="daily-budget">$— / day</div></div></section>
-  <section class="tile"><h2><i class="fa-solid fa-calendar-check"></i> Next Payday</h2><div id="next-payday">--</div></section>
-  <section class="tile"><h2><i class="fa-solid fa-sack-dollar"></i> Upcoming Income</h2><ul id="upcoming-income"></ul></section>
-  <section class="tile"><h2><i class="fa-solid fa-file-invoice-dollar"></i> Bills Due Before Payday</h2><div id="bills-due"></div></section>
-  <section class="tile"><h2><i class="fa-solid fa-university"></i> Balances by Bank</h2><ul id="bank-balances"></ul></section>
-  <section class="tile"><h2><i class="fa-solid fa-chart-pie"></i> Category Tracker</h2><div id="categories"></div></section>
-  <section class="tile"><h2><i class="fa-solid fa-receipt"></i> Transactions</h2><div id="transactions"></div></section>
-  <section class="tile"><h2><i class="fa-solid fa-lightbulb"></i> AI Insights</h2><p id="ai-insights">💡 Loading...</p></section>
-  <section class="tile"><h2><i class="fa-solid fa-rotate"></i> Actions</h2><button onclick="refreshDashboard()" class="btn-refresh">🔄 Refresh Dashboard</button></section>
+  <section class="tile"><h2>Spendable Now</h2><div id="spendable-now" style="font-size:1.6rem;">$—</div></section>
+  <section class="tile"><h2>Daily Budget</h2><div id="daily-budget">$—/day</div></section>
+  <section class="tile"><h2>Next Payday</h2><div id="next-payday">--</div></section>
+  <section class="tile"><h2>Upcoming Income</h2><ul id="upcoming-income"></ul></section>
+  <section class="tile"><h2>Bills Due</h2><ul id="bills-due"></ul></section>
+  <section class="tile"><h2>Balances by Bank</h2><ul id="bank-balances"></ul></section>
+  <section class="tile"><h2>AI Insights</h2><div id="ai-insights">💡 Loading...</div></section>
 </main>
-
-<div id="settings-panel"><div id="settings-sidebar">
-  <button onclick="showTab('pay')" class="active">📅 Pay Schedules</button>
-  <button onclick="showTab('bills')">🧾 Bills</button>
-  <button onclick="showTab('categories')">📊 Categories</button>
-  <button onclick="showTab('banks')">🏦 Banks</button>
-  <button onclick="showTab('backups')">💾 Backups</button>
-  <button onclick="toggleSettings()">❌ Close</button></div>
-  <div id="settings-content">
-    <div id="tab-pay" class="tab-content"></div>
-    <div id="tab-bills" class="tab-content" style="display:none"></div>
-    <div id="tab-categories" class="tab-content" style="display:none"></div>
-    <div id="tab-banks" class="tab-content" style="display:none"></div>
-    <div id="tab-backups" class="tab-content" style="display:none"></div>
-  </div></div>
 <div id="toasts"></div>
 <script>
+// === Helpers ===
 function formatCurrency(v){return "$"+Number(v).toFixed(2);}
 function adjustForWeekend(date){const d=new Date(date);const day=d.getDay();if(day===0){d.setDate(d.getDate()-2);}else if(day===6){d.setDate(d.getDate()-1);}return d;}
 function showToast(msg){const t=document.createElement("div");t.className="toast";t.innerText=msg;document.getElementById("toasts").appendChild(t);setTimeout(()=>t.remove(),4000);}
-// Data
-let PAY_SCHEDULES=[{who:"Steve (SoFi)",frequency:"biweekly",anchor:"2025-08-22",amount:400,target:"SoFi"},
-  {who:"Steve (BofA)",frequency:"biweekly",anchor:"2025-08-22",amount:627.42,target:"BofA"},
-  {who:"Tanci (USAA)",frequency:"semimonthly",days:[15,30],amount:1851.04,target:"USAA"}];
-let DEFAULT_BILLS=[{name:"Rent (1st Half)",amount:350,cadence:"monthly",day:15,category:"Housing"},
-  {name:"Rent (2nd Half)",amount:350,cadence:"monthly",day:30,category:"Housing"},
-  {name:"NV Energy",amount:120,cadence:"monthly",day:10,category:"Utilities"},
-  {name:"Water",amount:75,cadence:"monthly",day:12,category:"Utilities"},
-  {name:"Internet",amount:85,cadence:"monthly",day:20,category:"Utilities"},
-  {name:"Car Insurance",amount:140,cadence:"monthly",day:18,category:"Insurance"},
-  {name:"Health Insurance",amount:300,cadence:"monthly",day:1,category:"Insurance"},
-  {name:"HOA",amount:45,cadence:"monthly",day:5,category:"Housing"},
-  {name:"Trash",amount:30,cadence:"monthly",day:7,category:"Utilities"},
-  {name:"Property Taxes",amount:400,cadence:"quarterly",day:30,category:"Housing"}];
-let DEFAULT_CATEGORIES=["Housing","Utilities","Insurance","Groceries","Other"];
+
+// === Pay Schedules & Bills (placeholder until Plaid) ===
+let PAY_SCHEDULES=[
+  {who:"Steve (SoFi)",frequency:"biweekly",anchor:"2025-08-22",amount:400,target:"SoFi"},
+  {who:"Steve (BofA)",frequency:"biweekly",anchor:"2025-08-22",amount:1027.42,target:"BofA"},
+  {who:"Tanci (USAA)",frequency:"semimonthly",days:[15,30],amount:1851.04,target:"USAA"}
+];
+let DEFAULT_BILLS=[{name:"Rent (1st Half)",amount:350,cadence:"monthly",day:15},{name:"Rent (2nd Half)",amount:350,cadence:"monthly",day:30},{name:"NV Energy",amount:120,cadence:"monthly",day:10},{name:"Property Taxes",amount:400,cadence:"quarterly",day:30}];
 let BANKS=["BofA","SoFi","USAA","CapOne"];
-// Gauge
-function updateGauge(value,max=200){const percent=Math.min(100,Math.round((value/max)*100));const g=document.getElementById("gauge-bar");if(g)g.setAttribute("stroke-dasharray",percent+",100");}
-// Refresh
-function refreshDashboard(){
-  const today=new Date();const mode=document.getElementById("mode-toggle").value;let upcoming=[];
-  if(mode==="demo"){upcoming=[{who:"Demo Pay",amount:2000,date:new Date(today.getFullYear(),today.getMonth(),today.getDate()+5)}];}
-  else{
-    const steveAnchor=new Date("2025-08-22");let nextSteve=new Date(steveAnchor);
-    while(nextSteve<=today){nextSteve.setDate(nextSteve.getDate()+14);}nextSteve=adjustForWeekend(nextSteve);
-    const stevePay=1027.42,steveSoFi=400,steveBofA=stevePay-steveSoFi;
-    upcoming.push({who:"Steve (SoFi)",amount:steveSoFi,date:adjustForWeekend(new Date(nextSteve.getTime()-2*86400000))});
-    upcoming.push({who:"Steve (BofA)",amount:steveBofA,date:nextSteve});
-    let nextTanci;if(today.getDate()<15)nextTanci=new Date(today.getFullYear(),today.getMonth(),15);else nextTanci=new Date(today.getFullYear(),today.getMonth()+1,0);
-    nextTanci=adjustForWeekend(nextTanci);
-    upcoming.push({who:"Tanci (USAA)",amount:1851.04,date:nextTanci});
-  }
-  upcoming.sort((a,b)=>a.date-b.date);
-  const month=today.getMonth();
-  const validBills=DEFAULT_BILLS.filter(b=>{if(b.cadence==="quarterly")return[2,5,8,11].includes(month);return true;});
-  const totalBills=validBills.reduce((s,b)=>s+b.amount,0);
-  const totalIncome=upcoming.reduce((s,x)=>s+x.amount,0);
-  const available=totalIncome-totalBills;
-  const daysLeft=Math.max(1,Math.ceil((upcoming[0].date-today)/86400000));
-  const daily=Math.max(0,Math.round(available/daysLeft));
-  document.getElementById("spendable-now").innerText=formatCurrency(available);
-  document.getElementById("daily-budget").innerText=formatCurrency(daily)+"/day";updateGauge(daily,Math.max(200,daily*2));
-  document.getElementById("upcoming-income").innerHTML=upcoming.map(p=>`<li>${p.who}: ${formatCurrency(p.amount)} on ${p.date.toLocaleDateString()}</li>`).join("");
-  document.getElementById("bills-due").innerHTML=validBills.map(b=>{let due=new Date(today.getFullYear(),today.getMonth(),b.day);let color="green";if(due<today)color="red";else if((due-today)/86400000<=5)color="yellow";return `<li style="color:${color}">${b.name}: ${formatCurrency(b.amount)}</li>`;}).join("");
-  document.getElementById("bank-balances").innerHTML=BANKS.map(b=>`<li>${b}: $—</li>`).join("");
-  document.getElementById("categories").innerHTML=DEFAULT_CATEGORIES.map(c=>`<li>${c}</li>`).join("");
-  document.getElementById("transactions").innerHTML="<p>No transactions loaded</p>";
-  let insight=`💡 You can spend about ${formatCurrency(daily)} safely per day for the next ${daysLeft} days.`;
-  if(available<200)insight+=" 🚨 Critical!";else if(available<1000)insight+=" ⚠️ Keep an eye on spending.";else insight+=" ✅ You're in good shape.";
-  document.getElementById("ai-insights").innerText=insight;
-  const np=upcoming[0];const daysToPay=Math.max(0,Math.ceil((np.date-today)/86400000));
-  document.getElementById("next-payday").innerText=`${np.who}: ${np.date.toLocaleDateString()} (${daysToPay} days left)`;
-  document.getElementById("header-next-payday").innerText=np.date.toLocaleDateString();
-  document.getElementById("header-daily").innerText=formatCurrency(daily);
-  document.getElementById("motivation-banner").innerText=`Good ${today.getHours()<12?"morning":today.getHours()<18?"afternoon":"evening"}, Steve — ${daysToPay} days until payday. Make today count.`;
+
+// === Plaid Hooks (to be wired in Phase 2) ===
+async function fetchBalancesFromPlaid(){/* TODO: replace demo balances with Plaid API call */return [{name:"BofA",balance:1027.42},{name:"SoFi",balance:400},{name:"USAA",balance:1851.04}];}
+async function fetchTransactionsFromPlaid(){/* TODO: replace demo transactions with Plaid API call */return [];}
+
+// === Dashboard Refresh ===
+async function refreshDashboard(){
+  const today=new Date();const mode=document.getElementById("mode-toggle").value;
+  let balances=[];
+  if(mode==="demo"){balances=[{name:"Demo Checking",balance:2400},{name:"Demo Savings",balance:3200}];}
+  else{balances=await fetchBalancesFromPlaid();}
+  const total=balances.reduce((s,a)=>s+a.balance,0);
+  document.getElementById("bank-balances").innerHTML=balances.map(a=>`<li>${a.name}: ${formatCurrency(a.balance)}</li>`).join("");
+  document.getElementById("spendable-now").innerText=formatCurrency(total);
+  document.getElementById("daily-budget").innerText=formatCurrency(total/14)+"/day";
+  document.getElementById("ai-insights").innerText="💡 Demo insights: " + (total>1000?"✅ You're in good shape":"⚠️ Tight funds");
 }
-// Settings + Backup
-function toggleSettings(){const el=document.getElementById("settings-panel");el.style.display=(el.style.display==="none"||el.style.display==="")?"flex":"none";}
-function showTab(name){document.querySelectorAll("#settings-sidebar button").forEach(b=>b.classList.remove("active"));document.querySelectorAll("#settings-content .tab-content").forEach(d=>d.style.display="none");document.querySelector(`#settings-sidebar button[onclick*='${name}']`).classList.add("active");document.getElementById("tab-"+name).style.display="block";}
-function renderSettings(){document.getElementById("tab-pay").innerHTML=PAY_SCHEDULES.map((p,i)=>`<div class="field"><input value="${p.who}" onchange="updatePay(${i},'who',this.value)"><input type="number" value="${Number(p.amount).toFixed(2)}" onchange="updatePay(${i},'amount',this.value)"></div>`).join("");
-document.getElementById("tab-bills").innerHTML=DEFAULT_BILLS.map((b,i)=>`<div class="field"><input value="${b.name}" onchange="updateBill(${i},'name',this.value)"><input type="number" value="${Number(b.amount).toFixed(2)}" onchange="updateBill(${i},'amount',this.value)"></div>`).join("");
-document.getElementById("tab-categories").innerHTML=DEFAULT_CATEGORIES.map((c,i)=>`<div class="field"><input value="${c}" onchange="updateCategory(${i},this.value)"></div>`).join("");
-document.getElementById("tab-banks").innerHTML=BANKS.map((b,i)=>`<div class="field"><label><input type="checkbox" checked onchange="toggleBank(${i},this.checked)"> ${b}</label></div>`).join("");
-document.getElementById("tab-backups").innerHTML=`<button class="btn-refresh" onclick="saveNow()">Save Backup</button><button class="btn-refresh" onclick="restoreNow()">Restore Backup</button>`;}
-function updatePay(i,key,val){PAY_SCHEDULES[i][key]=isNaN(val)?val:Number(val);saveNow();showToast("Pay schedule updated");}
-function updateBill(i,key,val){DEFAULT_BILLS[i][key]=isNaN(val)?val:Number(val);saveNow();showToast("Bill updated");}
-function updateCategory(i,val){DEFAULT_CATEGORIES[i]=val;saveNow();showToast("Category updated");}
-function toggleBank(i,checked){if(!checked)BANKS.splice(i,1);saveNow();showToast("Bank list updated");}
-function saveNow(){localStorage.setItem("finance_data",JSON.stringify({PAY_SCHEDULES,DEFAULT_BILLS,DEFAULT_CATEGORIES,BANKS}));showToast("Backup Saved");}
-function restoreNow(){let data=localStorage.getItem("finance_data");if(data){const obj=JSON.parse(data);PAY_SCHEDULES=obj.PAY_SCHEDULES;DEFAULT_BILLS=obj.DEFAULT_BILLS;DEFAULT_CATEGORIES=obj.DEFAULT_CATEGORIES;BANKS=obj.BANKS;refreshDashboard();renderSettings();showToast("Backup Restored");}}
-document.addEventListener("DOMContentLoaded",()=>{refreshDashboard();renderSettings();});
+// === Backup ===
+function saveNow(){localStorage.setItem("finance_data",JSON.stringify({PAY_SCHEDULES,DEFAULT_BILLS,BANKS}));showToast("Backup Saved");}
+function restoreNow(){let data=localStorage.getItem("finance_data");if(data){const obj=JSON.parse(data);PAY_SCHEDULES=obj.PAY_SCHEDULES;DEFAULT_BILLS=obj.DEFAULT_BILLS;BANKS=obj.BANKS;refreshDashboard();showToast("Backup Restored");}}
+document.addEventListener("DOMContentLoaded",()=>{refreshDashboard();});
 </script>
 </body>
 </html>
