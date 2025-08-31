@@ -4,12 +4,7 @@ exports.handler = async () => {
     basePath: plaid.PlaidEnvironments[process.env.PLAID_ENV],
     baseOptions: { headers: { 'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID, 'PLAID-SECRET': process.env.PLAID_SECRET }}
   }));
-  const response = await client.linkTokenCreate({
-    user: { client_user_id: 'user123' },
-    client_name: 'Smart Money',
-    products: ['transactions'],
-    country_codes: ['US'],
-    language: 'en'
-  });
-  return { statusCode: 200, body: JSON.stringify({ link_token: response.data.link_token }) };
+  // NOTE: In real flow you store access_token in DB. Here just assume one token in env for demo.
+  const response = await client.accountsBalanceGet({ access_token: process.env.PLAID_ACCESS_TOKEN });
+  return { statusCode: 200, body: JSON.stringify({ accounts: response.data.accounts }) };
 };
