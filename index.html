@@ -1,161 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Family Finance - Phase 3 Plaid Ready</title>
-<style>
-  body { background:#0a0a0f; font-family: 'Inter', sans-serif; color:#e7ecf3; margin:0; padding:0; }
-  header { padding:1em; text-align:center; font-size:1.5em; font-weight:bold; color:#00d7c0; text-shadow:0 0 15px #7c5cff; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1em; margin:1em; }
-  .tile { background:#14161b; border-radius:20px; padding:1em; box-shadow:0 0 15px #7c5cff; transition:0.3s; }
-  .tile:hover { transform:translateY(-5px); box-shadow:0 0 25px #00d7c0; }
-  .btn { background:#7c5cff; color:white; border:none; padding:0.5em 1em; margin:0.2em; border-radius:20px; cursor:pointer; transition:0.3s; }
-  .btn:hover { background:#00d7c0; }
-  .bank-boxes { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:0.5em; }
-  .bank-box { background:#1a1d25; padding:0.5em; border-radius:12px; text-align:center; box-shadow:0 0 8px #7c5cff; cursor:pointer; }
-  .motivation { font-size:1.2em; text-align:center; margin-top:0.5em; color:#00d7c0; text-shadow:0 0 8px #7c5cff; animation:fadeIn 2s infinite alternate; }
-  @keyframes fadeIn { from{opacity:0.6;} to{opacity:1;} }
-  table { width:100%; border-collapse:collapse; margin-top:0.5em; }
-  td,th { border-bottom:1px solid #2a2d35; padding:0.4em; }
-  .transaction-list { text-align:left; font-size:0.9em; margin-top:0.5em; }
-</style>
-<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Dashboard - Plaid Ready</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0f1116;
+      color: #e7ecf3;
+    }
+    header {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #7c5cff;
+      text-shadow: 0 0 10px #7c5cff;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #14161b;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(124,92,255,0.4);
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #00d7c0;
+    }
+    .btn {
+      background: linear-gradient(90deg, #7c5cff, #00d7c0);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #7c5cff;
+    }
+  </style>
 </head>
 <body>
-<header>💰 Smart Family Finance - Phase 3 Plaid Ready</header>
+  <header>🚀 Smart Family Finance - Plaid Connected</header>
 
-<div class="grid">
-  <div class="tile"><h2>Spendable Now</h2><div id="spendable-now">$0.00</div></div>
-  <div class="tile"><h2>Daily Budget</h2><div id="daily-budget">$0.00/day</div></div>
-  <div class="tile"><h2>Next Payday</h2><div id="next-payday">--</div><div id="payday-countdown"></div></div>
-  <div class="tile"><h2>Banks</h2><div class="bank-boxes" id="bank-boxes"></div><div id="transactions" class="transaction-list hidden"></div></div>
-  <div class="tile"><h2>Recurring Bills</h2><ul id="bill-list"></ul></div>
-  <div class="tile"><h2>Spending by Category</h2><div>Total: <span id="category-total">$0.00</span></div><table id="category-table"></table></div>
-  <div class="tile"><h2>AI Insights</h2><div id="ai-insights">--</div><div class="motivation" id="motivation"></div></div>
-  <div class="tile"><h2>Settings</h2>
-    Mode:
-    <select id="mode-toggle" onchange="toggleMode()">
-      <option value="demo">Demo</option>
-      <option value="live">Live</option>
-    </select>
+  <div class="dashboard">
+    <div class="card">
+      <h2>Spendable Now</h2>
+      <p id="spendable">$0.00</p>
+    </div>
+
+    <div class="card">
+      <h2>Next Payday</h2>
+      <p id="payday">--</p>
+    </div>
+
+    <div class="card">
+      <h2>Recurring Bills</h2>
+      <ul id="bills">
+        <li>Rent: $900 (Due 09/01)</li>
+        <li>NV Energy: $150 (Due 09/05)</li>
+        <li>Internet: $80 (Due 09/07)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Connect Your Bank</h2>
+      <button id="plaid-connect-btn" class="btn">🔗 Connect with Plaid</button>
+      <p style="font-size:0.9rem; margin-top:8px;">Securely link your accounts to sync balances & transactions.</p>
+    </div>
   </div>
-</div>
 
-<script>
-// Demo data
-const DEMO_BALANCES=[
- {name:"BofA",balance:1027.42,transactions:["Deposit +$500","Grocery -$50","Rent -$900"]},
- {name:"SoFi",balance:400.00,transactions:["Transfer +$200","Gas -$60"]},
- {name:"USAA",balance:1851.04,transactions:["Paycheck +$1850","Utilities -$120"]},
- {name:"Capital One",balance:600.00,transactions:["Fun -$80","Disneyland -$220"]}
-];
-let DEMO_BILLS=[
- {name:"Rent (part 1)",amount:900,due:"2025-09-01"},
- {name:"NV Energy",amount:150,due:"2025-09-05"},
- {name:"Internet",amount:80,due:"2025-09-07"}
-];
-const DEMO_CATEGORIES=[
- {name:"Rent/Mortgage",amount:900},
- {name:"Utilities",amount:230},
- {name:"Food & Dining",amount:400}
-];
-
-// Motivation
-const MOTIVATION_MESSAGES=["💪 You're crushing it!","⚡ Hold strong!","🚀 Keep going!"];
-let motIndex=0;
-function rotateMotivation(){document.getElementById("motivation").innerText=MOTIVATION_MESSAGES[motIndex];motIndex=(motIndex+1)%MOTIVATION_MESSAGES.length;}
-setInterval(rotateMotivation,4000);
-
-// Toggle Demo/Live
-async function toggleMode(){
-  const mode=document.getElementById("mode-toggle").value;
-  if(mode==="demo"){
-    refreshDashboard({balances:DEMO_BALANCES,bills:DEMO_BILLS,categories:DEMO_CATEGORIES});
-    document.getElementById("ai-insights").innerText="💡 Running in Demo Mode";
-  } else {
-    try{
-      const res=await fetch('/.netlify/functions/create_link_token');
-      const data=await res.json();
-      if(data.link_token){
-        const handler=Plaid.create({
-          token:data.link_token,
-          onSuccess:(public_token,metadata)=>{
-            document.getElementById("ai-insights").innerText="✅ Plaid Connected!";
-            // TODO: send public_token to Netlify backend for exchange
-          },
-          onExit:(err,metadata)=>{
-            document.getElementById("ai-insights").innerText="⚠️ Plaid exited.";
-          }
-        });
-        handler.open();
-      } else {
-        document.getElementById("ai-insights").innerText="❌ Failed to get link_token";
-      }
-    }catch(err){document.getElementById("ai-insights").innerText="❌ Error: "+err.message;}
-  }
-}
-
-// Refresh Dashboard
-function refreshDashboard(data={balances:DEMO_BALANCES,bills:DEMO_BILLS,categories:DEMO_CATEGORIES}){
-  document.getElementById("bank-boxes").innerHTML=data.balances.map((a,i)=>`<div class="bank-box" onclick="showTransactions(${i})">${a.name}<br>$${a.balance.toFixed(2)}</div>`).join("");
-  document.getElementById("bill-list").innerHTML=data.bills.map(b=>`<li>${b.name}: $${b.amount} (due ${b.due})</li>`).join("");
-  document.getElementById("category-table").innerHTML=data.categories.map(c=>`<tr><td>${c.name}</td><td>$${c.amount}</td></tr>`).join("");
-  document.getElementById("spendable-now").innerText="$"+data.balances.reduce((s,a)=>s+a.balance,0).toFixed(2);
-  document.getElementById("category-total").innerText="$"+data.categories.reduce((s,c)=>s+c.amount,0).toFixed(2);
-}
-function showTransactions(i){
-  const bank=DEMO_BALANCES[i];
-  document.getElementById("transactions").innerHTML=`<strong>${bank.name} Transactions:</strong><ul>`+bank.transactions.map(t=>`<li>${t}</li>`).join("")+"</ul>";
-  document.getElementById("transactions").classList.remove("hidden");
-}
-
-// Init
-document.addEventListener("DOMContentLoaded",()=>{refreshDashboard();rotateMotivation();});
-</script>
-    <!-- your other content, tiles, etc. -->
-
-  <button id="plaid-connect-btn">Connect Bank</button>
-
-  <!-- Plaid script loader (only once in the file) -->
-  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
-
-  <!-- Your Plaid integration code -->
   <script>
-  async function openPlaidLink() {
+  async function initPlaid() {
     try {
+      // Get link token from Netlify function
       const response = await fetch('/.netlify/functions/create_link_token');
       const data = await response.json();
 
-      if (!data.link_token) {
-        throw new Error('No link_token returned: ' + JSON.stringify(data));
-      }
-
       const handler = Plaid.create({
         token: data.link_token,
-        onSuccess: function(public_token, metadata) {
-          console.log('Public Token: ', public_token);
-          alert("✅ Plaid connected!");
+        onSuccess: async (public_token) => {
+          console.log("✅ Public Token:", public_token);
+
+          // Exchange public_token for access_token
+          const exchangeRes = await fetch('/.netlify/functions/exchange_public_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ public_token }),
+          });
+
+          const exchangeData = await exchangeRes.json();
+          console.log("🔑 Access Token:", exchangeData.access_token);
+
+          alert("🎉 Plaid account connected successfully!");
         },
-        onExit: function(err, metadata) {
-          console.log('Plaid exited', err, metadata);
+        onExit: (err, metadata) => {
+          if (err) console.error("Plaid exited with error:", err);
+          else console.log("Plaid exited:", metadata);
         }
       });
 
-      handler.open();
+      document.getElementById('plaid-connect-btn').onclick = function () {
+        handler.open();
+      };
     } catch (err) {
-      console.error('Error creating link token:', err);
-      alert('❌ Error: ' + err.message);
+      console.error("Plaid init error:", err);
+      alert("❌ Failed to connect Plaid: " + err.message);
     }
   }
 
-  document.getElementById('plaid-connect-btn')
-    .addEventListener('click', openPlaidLink);
+  initPlaid();
   </script>
 </body>
 </html>
-
-  
-</body>
-</html>
-
