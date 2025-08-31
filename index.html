@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Money Dashboard - Plaid Ready</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   <style>
@@ -12,14 +12,28 @@
       font-family: 'Inter', sans-serif;
       background: #0f1116;
       color: #e7ecf3;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.light {
+      background: #f4f4f4;
+      color: #222;
     }
     header {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 1.8rem;
-      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #14161b;
       color: #7c5cff;
       text-shadow: 0 0 10px #7c5cff;
+    }
+    header button {
+      background: linear-gradient(90deg, #7c5cff, #00d7c0);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
     }
     .dashboard {
       display: grid;
@@ -33,6 +47,10 @@
       padding: 20px;
       box-shadow: 0 0 15px rgba(124,92,255,0.4);
     }
+    body.light .card {
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
     .card h2 {
       font-size: 1.2rem;
       margin-bottom: 10px;
@@ -41,88 +59,107 @@
     .btn {
       background: linear-gradient(90deg, #7c5cff, #00d7c0);
       color: white;
-      padding: 12px 20px;
+      padding: 10px 16px;
       border: none;
       border-radius: 10px;
-      font-size: 1rem;
       cursor: pointer;
-      transition: all 0.2s ease-in-out;
       margin-top: 10px;
     }
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #7c5cff;
+    #alert {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      display: none;
     }
+    #alert.success { background: #00d7c0; color: #000; }
+    #alert.error { background: #ff4d4d; color: #fff; }
+    .transactions, .balances { font-size: 0.9rem; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <header>🚀 Smart Family Finance - Plaid Connected</header>
+  <header>
+    <h1>🚀 Smart Money Dashboard</h1>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+
+  <div id="alert"></div>
 
   <div class="dashboard">
-    <div class="card">
-      <h2>Spendable Now</h2>
-      <p id="spendable">$0.00</p>
-    </div>
-
-    <div class="card">
-      <h2>Next Payday</h2>
-      <p id="payday">--</p>
-    </div>
-
-    <div class="card">
-      <h2>Recurring Bills</h2>
-      <ul id="bills">
-        <li>Rent: $900 (Due 09/01)</li>
-        <li>NV Energy: $150 (Due 09/05)</li>
-        <li>Internet: $80 (Due 09/07)</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>Connect Your Bank</h2>
-      <button id="plaid-connect-btn" class="btn">🔗 Connect with Plaid</button>
-      <p style="font-size:0.9rem; margin-top:8px;">Securely link your accounts to sync balances & transactions.</p>
-    </div>
+    <div class="card"><h2>Spendable Now</h2><p id="spendable">$0.00</p></div>
+    <div class="card"><h2>Daily Budget</h2><p id="dailyBudget">$0.00</p></div>
+    <div class="card"><h2>Next Payday</h2><p id="payday">--</p></div>
+    <div class="card"><h2>Recurring Bills</h2><ul id="bills"><li>Rent: $900 (09/01)</li></ul></div>
+    <div class="card"><h2>Spending by Category</h2><div id="categories">--</div></div>
+    <div class="card"><h2>AI Insights</h2><p>Insights coming soon...</p></div>
+    <div class="card"><h2>Settings</h2><p>Manage your preferences.</p></div>
+    <div class="card"><h2>Bank Accounts</h2><div id="balances">No accounts yet.</div></div>
+    <div class="card"><h2>Recent Transactions</h2><div id="transactions">No transactions yet.</div></div>
+    <div class="card"><h2>Budget Tracker</h2><progress id="budgetProgress" value="0" max="100"></progress></div>
+    <div class="card"><h2>Net Worth</h2><p id="netWorth">$0.00</p></div>
+    <div class="card"><h2>Export Data</h2><button onclick="exportCSV()" class="btn">CSV</button> <button onclick="exportExcel()" class="btn">Excel</button></div>
+    <div class="card"><h2>Connect Your Bank</h2><button id="plaid-connect-btn" class="btn">🔗 Connect with Plaid</button></div>
   </div>
 
   <script>
+  function toggleTheme() { document.body.classList.toggle('light'); }
+
+  function showAlert(type, msg) {
+    const alertBox = document.getElementById('alert');
+    alertBox.className = type;
+    alertBox.textContent = msg;
+    alertBox.style.display = 'block';
+    setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+  }
+
   async function initPlaid() {
     try {
-      // Get link token from Netlify function
       const response = await fetch('/.netlify/functions/create_link_token');
       const data = await response.json();
-
       const handler = Plaid.create({
         token: data.link_token,
         onSuccess: async (public_token) => {
-          console.log("✅ Public Token:", public_token);
-
-          // Exchange public_token for access_token
           const exchangeRes = await fetch('/.netlify/functions/exchange_public_token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ public_token }),
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ public_token })
           });
-
           const exchangeData = await exchangeRes.json();
-          console.log("🔑 Access Token:", exchangeData.access_token);
-
-          alert("🎉 Plaid account connected successfully!");
+          console.log('Access token:', exchangeData.access_token);
+          showAlert('success','Plaid connected! Fetching accounts...');
+          loadBalances();
+          loadTransactions();
         },
-        onExit: (err, metadata) => {
-          if (err) console.error("Plaid exited with error:", err);
-          else console.log("Plaid exited:", metadata);
-        }
+        onExit: (err, metadata) => { if (err) showAlert('error','Plaid exited: ' + err.message); }
       });
-
-      document.getElementById('plaid-connect-btn').onclick = function () {
-        handler.open();
-      };
+      document.getElementById('plaid-connect-btn').onclick = () => handler.open();
     } catch (err) {
-      console.error("Plaid init error:", err);
-      alert("❌ Failed to connect Plaid: " + err.message);
+      showAlert('error','Plaid init error: ' + err.message);
     }
   }
+
+  async function loadBalances() {
+    const res = await fetch('/.netlify/functions/get_balances');
+    const data = await res.json();
+    const container = document.getElementById('balances');
+    container.innerHTML = '';
+    data.accounts.forEach(acc => {
+      container.innerHTML += `<div>${acc.name}: $${acc.balances.current}</div>`;
+    });
+    const netWorth = data.accounts.reduce((sum,a)=> sum+a.balances.current,0);
+    document.getElementById('netWorth').textContent = '$' + netWorth.toFixed(2);
+  }
+
+  async function loadTransactions() {
+    const res = await fetch('/.netlify/functions/get_transactions');
+    const data = await res.json();
+    const container = document.getElementById('transactions');
+    container.innerHTML = '';
+    data.transactions.slice(0,5).forEach(tx => {
+      container.innerHTML += `<div>${tx.date} - ${tx.name}: $${tx.amount}</div>`;
+    });
+  }
+
+  function exportCSV() { showAlert('success','Export to CSV coming soon'); }
+  function exportExcel() { showAlert('success','Export to Excel coming soon'); }
 
   initPlaid();
   </script>
