@@ -60,6 +60,7 @@
             body: JSON.stringify({ public_token })
           });
           const exchangeData = await exchangeRes.json();
+          console.log("Exchange Data:", exchangeData);
           accessToken = exchangeData.access_token;
 
           // Fetch balances
@@ -95,3 +96,4 @@
   </script>
 </body>
 </html>
+
