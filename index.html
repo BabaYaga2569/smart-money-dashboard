@@ -3,97 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Money App$ - Phase 2</title>
+  <title>Smart Money Dashboard</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-    body { background:#0f1116; color:#e7ecf3; font-family:Arial, sans-serif; margin:0; padding:20px; }
-    .tile { background:#14161b; border-radius:12px; padding:20px; margin:10px; display:inline-block; vertical-align:top; width:calc(50% - 40px); }
-    .tile h2 { margin-top:0; color:#7c5cff; }
-    button { background:#00d7c0; color:#0f1116; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
-    #transactions-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); color:#fff; overflow:auto; }
-    #transactions-modal .content { background:#14161b; margin:5% auto; padding:20px; border-radius:12px; width:80%; }
-    #transactions-modal table { width:100%; border-collapse:collapse; }
-    #transactions-modal th, #transactions-modal td { border:1px solid #333; padding:8px; }
+    body { background: #0f1116; color: #e7ecf3; font-family: Arial, sans-serif; }
+    .tile { background: #14161b; border-radius: 12px; padding: 20px; margin: 10px; display: inline-block; min-width: 200px; }
+    .settings { margin-top: 20px; }
+    button { padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; background: #7c5cff; color: white; }
   </style>
 </head>
 <body>
-  <h1>Smart Money App$ - Phase 2 Dashboard</h1>
+  <h1>Smart Money Dashboard</h1>
+  <div class="tile" id="balances">Balances will load here...</div>
+  <div class="tile" id="transactions">Transactions will load here...</div>
 
-  <div class="tile">
-    <h2>Bank Accounts</h2>
-    <div id="bank-accounts">Connect Plaid to see balances.</div>
+  <div class="tile settings">
+    <h3>Settings</h3>
+    <label><input type="checkbox" id="debugToggle" /> Enable Debug Mode</label>
   </div>
 
-  <div class="tile">
-    <h2>Recent Transactions</h2>
-    <div id="recent-transactions">No transactions yet.</div>
-    <button onclick="openTransactionsModal()">View All</button>
-  </div>
-
-  <div id="transactions-modal">
-    <div class="content">
-      <h2>All Transactions</h2>
-      <table>
-        <thead>
-          <tr><th>Date</th><th>Name</th><th>Category</th><th>Channel</th><th>Amount</th></tr>
-        </thead>
-        <tbody id="all-transactions-body"></tbody>
-      </table>
-      <button onclick="closeTransactionsModal()">Close</button>
-    </div>
-  </div>
-
-  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   <script>
-    let accessToken = null;
-    function openTransactionsModal(){ document.getElementById('transactions-modal').style.display='block'; }
-    function closeTransactionsModal(){ document.getElementById('transactions-modal').style.display='none'; }
+    let debugMode = false;
 
-    async function initPlaid() {
-      const linkTokenRes = await fetch('/.netlify/functions/create_link_token');
-      const linkTokenData = await linkTokenRes.json();
-      const handler = Plaid.create({
-        token: linkTokenData.link_token,
-        onSuccess: async (public_token) => {
-          const exchangeRes = await fetch('/.netlify/functions/exchange_public_token', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ public_token })
-          });
-          const exchangeData = await exchangeRes.json();
-          console.log("Exchange Data:", exchangeData);
-          accessToken = exchangeData.access_token;
+    document.getElementById("debugToggle").addEventListener("change", (e) => {
+      debugMode = e.target.checked;
+      if (debugMode) {
+        alert("Debug Mode ON - check console for logs");
+      } else {
+        alert("Debug Mode OFF - console logs hidden");
+      }
+    });
 
-          // Fetch balances
-          const balanceRes = await fetch('/.netlify/functions/get_balances', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ access_token: accessToken })
-          });
-          const balances = await balanceRes.json();
-          document.getElementById('bank-accounts').innerHTML = balances.accounts.map(acc =>
-            `<div>${acc.name}: $${acc.balances.current}</div>`
-          ).join('');
-
-          // Fetch transactions
-          const txRes = await fetch('/.netlify/functions/get_transactions', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ access_token: accessToken })
-          });
-          const txData = await txRes.json();
-          document.getElementById('recent-transactions').innerHTML = txData.transactions.slice(0,10).map(tx =>
-            `<div>${tx.date} - ${tx.name}: $${tx.amount}</div>`
-          ).join('');
-
-          document.getElementById('all-transactions-body').innerHTML = txData.transactions.map(tx =>
-            `<tr><td>${tx.date}</td><td>${tx.name}</td><td>${tx.category?tx.category.join(", "):""}</td><td>${tx.payment_channel}</td><td>$${tx.amount}</td></tr>`
-          ).join('');
+    async function fetchBalances() {
+      try {
+        const res = await fetch("/.netlify/functions/get_balances", {
+          method: "POST",
+          body: JSON.stringify({ access_token: localStorage.getItem("plaid_access_token") })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById("balances").innerText = JSON.stringify(data.accounts, null, 2);
+          if (debugMode) console.log("Balances Data:", data);
+        } else {
+          document.getElementById("balances").innerText = "Error loading balances";
+          if (debugMode) console.error("Balance Error:", data);
         }
-      });
-      handler.open();
+      } catch (err) {
+        document.getElementById("balances").innerText = "Error loading balances";
+        if (debugMode) console.error("Balance Fetch Error:", err);
+      }
     }
-    window.onload = initPlaid;
+
+    async function fetchTransactions() {
+      try {
+        const res = await fetch("/.netlify/functions/get_transactions", {
+          method: "POST",
+          body: JSON.stringify({ access_token: localStorage.getItem("plaid_access_token") })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById("transactions").innerText = JSON.stringify(data.transactions, null, 2);
+          if (debugMode) console.log("Transactions Data:", data);
+        } else {
+          document.getElementById("transactions").innerText = "Error loading transactions";
+          if (debugMode) console.error("Transactions Error:", data);
+        }
+      } catch (err) {
+        document.getElementById("transactions").innerText = "Error loading transactions";
+        if (debugMode) console.error("Transactions Fetch Error:", err);
+      }
+    }
+
+    // Auto-fetch on load
+    fetchBalances();
+    fetchTransactions();
   </script>
 </body>
 </html>
-
