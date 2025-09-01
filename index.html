@@ -44,6 +44,7 @@
 
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   <script>
+    let accessToken = null;
     function openTransactionsModal(){ document.getElementById('transactions-modal').style.display='block'; }
     function closeTransactionsModal(){ document.getElementById('transactions-modal').style.display='none'; }
 
@@ -53,20 +54,31 @@
       const handler = Plaid.create({
         token: linkTokenData.link_token,
         onSuccess: async (public_token) => {
-          await fetch('/.netlify/functions/exchange_public_token', {
+          const exchangeRes = await fetch('/.netlify/functions/exchange_public_token', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ public_token })
           });
+          const exchangeData = await exchangeRes.json();
+          accessToken = exchangeData.access_token;
+
           // Fetch balances
-          const balanceRes = await fetch('/.netlify/functions/get_balances');
+          const balanceRes = await fetch('/.netlify/functions/get_balances', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ access_token: accessToken })
+          });
           const balances = await balanceRes.json();
           document.getElementById('bank-accounts').innerHTML = balances.accounts.map(acc =>
             `<div>${acc.name}: $${acc.balances.current}</div>`
           ).join('');
 
           // Fetch transactions
-          const txRes = await fetch('/.netlify/functions/get_transactions');
+          const txRes = await fetch('/.netlify/functions/get_transactions', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ access_token: accessToken })
+          });
           const txData = await txRes.json();
           document.getElementById('recent-transactions').innerHTML = txData.transactions.slice(0,10).map(tx =>
             `<div>${tx.date} - ${tx.name}: $${tx.amount}</div>`
@@ -79,8 +91,6 @@
       });
       handler.open();
     }
-
-    // Start Plaid link on page load for demo
     window.onload = initPlaid;
   </script>
 </body>
