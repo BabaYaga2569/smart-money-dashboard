@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money App$ - Phase 2</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <style>
+    body { background:#0f1116; color:#e7ecf3; font-family: Inter, sans-serif; margin:0; padding:0; }
+    header { padding:1rem; text-align:center; background:#14161b; color:#7c5cff; font-size:1.5rem; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:1rem; padding:1rem; }
+    .tile { background:#14161b; border-radius:1rem; padding:1rem; box-shadow:0 0 15px #00d7c0; }
+    .tile h2 { margin-top:0; color:#7c5cff; }
+    .btn { background:#7c5cff; color:white; border:none; padding:0.6rem 1rem; border-radius:0.5rem; cursor:pointer; }
+    .btn:hover { background:#5a3fd9; }
+    .transactions, .balances { max-height:200px; overflow-y:auto; background:#0f1116; padding:0.5rem; border-radius:0.5rem; }
+    .debug { font-size:0.8rem; background:#000; color:#0f0; padding:0.5rem; border-radius:0.5rem; display:none; }
+  </style>
+</head>
+<body>
+  <header>💰 Smart Money App$ - Phase 2 🚀</header>
+  <div class="grid">
+    <div class="tile">
+      <h2>Connect Your Bank</h2>
+      <button id="link-button" class="btn">Connect with Plaid</button>
+      <p id="link-status">Not connected</p>
+    </div>
+    <div class="tile">
+      <h2>Balances</h2>
+      <div class="balances" id="balances"></div>
+    </div>
+    <div class="tile">
+      <h2>Recent Transactions</h2>
+      <div class="transactions" id="transactions"></div>
+    </div>
+    <div class="tile">
+      <h2>Debug Mode</h2>
+      <button class="btn" onclick="toggleDebug()">Toggle Debug</button>
+      <div id="debug" class="debug"></div>
+    </div>
+  </div>
+
+  <script>
+    async function createLinkToken() {
+      const res = await fetch("/.netlify/functions/create_link_token");
+      const data = await res.json();
+      if (window.Plaid) {
+        const handler = Plaid.create({
+          token: data.link_token,
+          onSuccess: async (public_token) => {
+            document.getElementById("link-status").innerText = "Connected ✔";
+            const exchangeRes = await fetch("/.netlify/functions/exchange_public_token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ public_token })
+            });
+            const exchangeData = await exchangeRes.json();
+            localStorage.setItem("plaid_access_token", exchangeData.access_token);
+            loadBalances();
+            loadTransactions();
+          }
+        });
+        handler.open();
+      }
+    }
+
+    async function loadBalances() {
+      const access_token = localStorage.getItem("plaid_access_token");
+      if (!access_token) return;
+      const res = await fetch("/.netlify/functions/get_balances", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ access_token })
+      });
+      const data = await res.json();
+      document.getElementById("balances").innerText = JSON.stringify(data, null, 2);
+      logDebug("Balances loaded: " + JSON.stringify(data));
+    }
+
+    async function loadTransactions() {
+      const access_token = localStorage.getItem("plaid_access_token");
+      if (!access_token) return;
+      const res = await fetch("/.netlify/functions/get_transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ access_token })
+      });
+      const data = await res.json();
+      document.getElementById("transactions").innerText = JSON.stringify(data, null, 2);
+      logDebug("Transactions loaded: " + JSON.stringify(data));
+    }
+
+    function toggleDebug() {
+      const dbg = document.getElementById("debug");
+      dbg.style.display = dbg.style.display === "block" ? "none" : "block";
+    }
+
+    function logDebug(msg) {
+      const dbg = document.getElementById("debug");
+      dbg.innerText += msg + "\n";
+    }
+
+    document.getElementById("link-button").addEventListener("click", createLinkToken);
+    window.onload = () => { loadBalances(); loadTransactions(); };
+  </script>
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+</body>
+</html>
