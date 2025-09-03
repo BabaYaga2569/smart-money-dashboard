@@ -139,6 +139,7 @@
       height: 12px;
       border-radius: 6px;
       flex-grow: 1;
+      transition: width 1.2s ease-in-out;
     }
     .label {
       width: 100px;
@@ -149,13 +150,6 @@
       width: 60px;
       text-align: right;
       color: #e6e6e6;
-    }
-
-    /* Grid for top charts row */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
     }
   </style>
 </head>
@@ -200,27 +194,27 @@
         <div class="categories-list">
           <div class="category-row">
             <div class="label">Rent</div>
-            <div class="bar" style="background:#9d00ff; width:80%"></div>
+            <div class="bar" style="background:#9d00ff; width:0%" data-width="80%"></div>
             <div class="value">$1200</div>
           </div>
           <div class="category-row">
             <div class="label">Food & Drink</div>
-            <div class="bar" style="background:#39ff14; width:40%"></div>
+            <div class="bar" style="background:#39ff14; width:0%" data-width="40%"></div>
             <div class="value">$375</div>
           </div>
           <div class="category-row">
             <div class="label">Transport</div>
-            <div class="bar" style="background:#00ffff; width:35%"></div>
+            <div class="bar" style="background:#00ffff; width:0%" data-width="35%"></div>
             <div class="value">$353</div>
           </div>
           <div class="category-row">
             <div class="label">Shopping</div>
-            <div class="bar" style="background:#ffcc00; width:25%"></div>
+            <div class="bar" style="background:#ffcc00; width:0%" data-width="25%"></div>
             <div class="value">$277</div>
           </div>
           <div class="category-row">
             <div class="label">Other</div>
-            <div class="bar" style="background:#ff4d4d; width:15%"></div>
+            <div class="bar" style="background:#ff4d4d; width:0%" data-width="15%"></div>
             <div class="value">$149</div>
           </div>
         </div>
@@ -254,7 +248,17 @@
   </div>
 
   <script>
-    // Simplified charts without text rendering
+    // Animate Top Categories bars
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".bar").forEach(bar => {
+        const width = bar.getAttribute("data-width");
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 300);
+      });
+    });
+
+    // Spendable vs Budget chart with smooth animation + tooltips
     const ctx1 = document.getElementById('spendableChart').getContext('2d');
     new Chart(ctx1, {
       type: 'line',
@@ -275,11 +279,16 @@
         }]
       },
       options: { responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }}, 
+        plugins: { 
+          legend: { labels: { color: '#e6e6e6' }},
+          tooltip: { enabled: true, backgroundColor: '#111', titleColor: '#fff', bodyColor: '#39ff14' }
+        },
+        animation: { duration: 1200, easing: 'easeOutQuart' },
         scales: { x: { display: false }, y: { display: false }}
       }
     });
 
+    // Daily Budget Trend chart with smooth animation + tooltips
     const ctx2 = document.getElementById('dailyChart').getContext('2d');
     new Chart(ctx2, {
       type: 'bar',
@@ -292,7 +301,11 @@
         }]
       },
       options: { responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }},
+        plugins: { 
+          legend: { labels: { color: '#e6e6e6' }},
+          tooltip: { enabled: true, backgroundColor: '#111', titleColor: '#fff', bodyColor: '#39ff14' }
+        },
+        animation: { duration: 1200, easing: 'easeOutQuart' },
         scales: { x: { display: false }, y: { display: false }}
       }
     });
