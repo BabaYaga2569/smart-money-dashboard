@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Dashboard</title>
+  <title>Smart Money Cockpit</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
@@ -93,6 +93,11 @@
     .transaction span {
       color: #f0f0f0;
     }
+    .due-today {
+      color: #ff4d4d;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ff4d4d;
+    }
     footer {
       margin-top: 40px;
       text-align: center;
@@ -133,6 +138,12 @@
       <h3>Recent Transactions</h3>
       <div class="transactions" id="transactions-list"></div>
     </div>
+    <div class="tile" id="recurring-bills">
+      <i class="fas fa-file-invoice-dollar icon"></i>
+      <h3>Recurring Bills</h3>
+      <div class="balance" id="bills-total">$1,410 Due This Cycle</div>
+      <div class="transactions" id="bills-list"></div>
+    </div>
   </div>
   <footer>
     <a href="#">⚙️ Setup Wizard</a>
@@ -141,9 +152,10 @@
   </footer>
   <script>
     const mockBalances = [
-      { name: "Checking", balance: 3200 },
-      { name: "Savings", balance: 12000 },
-      { name: "Credit Card", balance: -850 }
+      { name: "Bank of America - Checking", balance: 3200 },
+      { name: "SoFi - Savings", balance: 12000 },
+      { name: "USAA - Credit Card", balance: -850 },
+      { name: "Capital One - Checking", balance: 600 }
     ];
     const mockTransactions = [
       { name: "Starbucks", amount: "-$6.50" },
@@ -152,11 +164,24 @@
       { name: "Amazon", amount: "-$45.00" },
       { name: "Paycheck", amount: "+$2,500.00" }
     ];
+    const mockBills = [
+      { name: "Netflix", amount: "$15.99", due: "2025-09-05" },
+      { name: "Rent", amount: "$1,200.00", due: "2025-09-01" },
+      { name: "Power", amount: "$150.00", due: "2025-09-03" },
+      { name: "Internet", amount: "$45.00", due: "2025-09-10" }
+    ];
     document.getElementById("accounts-list").innerHTML = mockBalances
       .map(a => `<div>${a.name}: $${a.balance}</div>`)
       .join("");
     document.getElementById("transactions-list").innerHTML = mockTransactions
       .map(t => `<div class='transaction'><span>${t.name}</span><span>${t.amount}</span></div>`)
+      .join("");
+    document.getElementById("bills-list").innerHTML = mockBills
+      .map(b => {
+        const today = new Date().toISOString().split('T')[0];
+        const dueClass = (b.due === today) ? "due-today" : "";
+        return `<div class='transaction ${dueClass}'><span>${b.name}</span><span>${b.amount}</span></div>`;
+      })
       .join("");
   </script>
 </body>

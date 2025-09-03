@@ -1,15 +1,14 @@
-Smart Money Cockpit - Phase 3 Mockup
+Smart Money Cockpit - Phase 3.1 Mockup
 -----------------------------------
 
-This is the Phase 3 visual demo of your Smart Money Dashboard.
-
-Files included:
-- index.html (new neon cockpit design with mock data)
-- readme.txt (this file)
+This build adds:
+- Bank account names (BofA, SoFi, USAA, Capital One) with mock balances
+- Recurring Bills tile with total due + upcoming list
+- Due-today bills highlighted in red glow
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index.html in a browser to see the new look.
-3. This version uses mock data (not Plaid). Once design is locked, we can reconnect Plaid fetch calls.
+2. Open index_phase3_1.html in a browser to see the upgraded cockpit.
+3. Still using mock data (not Plaid) for testing visuals.
 
-Enjoy the glow!
+Next step: reconnect Plaid and real recurring bills data once design is approved.
