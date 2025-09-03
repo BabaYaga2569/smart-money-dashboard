@@ -7,177 +7,187 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
-      background: radial-gradient(circle at top, #111 0%, #000 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #f0f0f0;
       margin: 0;
-      overflow-x: hidden;
-    }
-    header {
-      text-align: center;
-      padding: 25px;
-      font-size: 32px;
-      font-weight: bold;
-      color: #39ff14;
-      text-shadow: 0 0 15px #39ff14, 0 0 25px #9d00ff;
-      letter-spacing: 2px;
-      animation: glowPulse 3s infinite;
-    }
-    @keyframes glowPulse {
-      0%, 100% { text-shadow: 0 0 10px #39ff14, 0 0 20px #9d00ff; }
-      50% { text-shadow: 0 0 25px #39ff14, 0 0 40px #9d00ff; }
-    }
-    .dashboard {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0b0e14;
+      color: #e6e6e6;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
     }
-    .tile {
-      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-      border-radius: 20px;
-      padding: 25px;
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #11151d;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.7);
+    }
+    .sidebar h2 {
       text-align: center;
-      box-shadow: 0 0 15px #9d00ff55, 0 0 25px #39ff1455;
-      flex: 1 1 280px;
-      max-width: 320px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeInUp 1s forwards;
-    }
-    .tile:hover {
-      transform: scale(1.07);
-      box-shadow: 0 0 25px #9d00ff, 0 0 40px #39ff14;
-    }
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .tile h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #9d00ff;
-    }
-    .icon {
-      font-size: 30px;
-      margin-bottom: 10px;
       color: #39ff14;
+      margin-bottom: 30px;
       text-shadow: 0 0 10px #39ff14;
     }
-    .balance {
-      font-size: 32px;
-      font-weight: bold;
-      color: #39ff14;
-      text-shadow: 0 0 10px #39ff14, 0 0 15px #9d00ff;
+    .nav-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #ccc;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
-    .transactions {
-      text-align: left;
-      font-size: 14px;
-      margin-top: 10px;
+    .nav-item:hover {
+      background: #1a1f2a;
+      color: #39ff14;
+    }
+    .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Top charts row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .chart {
+      background: #161b25;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(157,0,255,0.3);
+    }
+    .chart h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #9d00ff;
+    }
+    .chart-placeholder {
+      height: 150px;
+      background: linear-gradient(135deg, #222, #111);
+      border-radius: 10px;
+    }
+
+    /* Mid tiles row */
+    .tiles-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .tile {
+      background: #161b25;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(57,255,20,0.2);
+    }
+    .tile h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #39ff14;
     }
     .transaction {
       display: flex;
       justify-content: space-between;
       padding: 6px 0;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #2a2f3a;
+      font-size: 14px;
     }
-    .transaction span {
-      color: #f0f0f0;
+
+    /* Bottom row */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .highlight {
+      font-size: 24px;
+      font-weight: bold;
+      color: #39ff14;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #39ff14, 0 0 15px #9d00ff;
     }
     .due-today {
       color: #ff4d4d;
       font-weight: bold;
       text-shadow: 0 0 10px #ff4d4d;
     }
-    footer {
-      margin-top: 40px;
-      text-align: center;
-    }
-    footer a {
-      color: #9d00ff;
-      text-decoration: none;
-      margin: 0 15px;
-      font-size: 16px;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-    footer a:hover {
-      color: #39ff14;
-      text-shadow: 0 0 10px #39ff14;
-    }
   </style>
 </head>
 <body>
-  <header>🔥 Smart Money Cockpit 🔥</header>
-  <div class="dashboard">
-    <div class="tile">
-      <i class="fas fa-bolt icon"></i>
-      <h3>Spendable Now</h3>
-      <div class="balance" id="spendable">$2,450.00</div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <div class="nav-item"><i class="fas fa-home"></i> Dashboard</div>
+    <div class="nav-item"><i class="fas fa-list"></i> Transactions</div>
+    <div class="nav-item"><i class="fas fa-random"></i> Cash Flow</div>
+    <div class="nav-item"><i class="fas fa-university"></i> Accounts</div>
+    <div class="nav-item"><i class="fas fa-chart-line"></i> Investments</div>
+    <div class="nav-item"><i class="fas fa-tags"></i> Categories</div>
+    <div class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</div>
+    <div class="nav-item"><i class="fas fa-cog"></i> Settings</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- Top charts -->
+    <div class="charts-row">
+      <div class="chart">
+        <h3>Spendable vs Budget</h3>
+        <div class="chart-placeholder"></div>
+      </div>
+      <div class="chart">
+        <h3>Daily Budget Trend</h3>
+        <div class="chart-placeholder"></div>
+      </div>
     </div>
-    <div class="tile">
-      <i class="fas fa-calendar-day icon"></i>
-      <h3>Daily Budget</h3>
-      <div class="balance" id="daily-budget">$120.00</div>
+
+    <!-- Middle row -->
+    <div class="tiles-row">
+      <div class="tile">
+        <h3>Transactions To Review</h3>
+        <div class="transaction"><span>Starbucks</span><span>-$6.50</span></div>
+        <div class="transaction"><span>Netflix</span><span>-$15.99</span></div>
+        <div class="transaction"><span>Rent</span><span>-$1,200.00</span></div>
+        <div class="transaction"><span>Amazon</span><span>-$45.00</span></div>
+        <div class="transaction"><span>Paycheck</span><span>+$2,500.00</span></div>
+      </div>
+      <div class="tile">
+        <h3>Top Categories</h3>
+        <div class="transaction"><span>🏠 Rent</span><span>$1,200</span></div>
+        <div class="transaction"><span>🍔 Food & Drink</span><span>$375</span></div>
+        <div class="transaction"><span>🚗 Transport</span><span>$353</span></div>
+        <div class="transaction"><span>🛒 Shopping</span><span>$277</span></div>
+        <div class="transaction"><span>📌 Other</span><span>$149</span></div>
+      </div>
     </div>
-    <div class="tile" id="bank-accounts">
-      <i class="fas fa-university icon"></i>
-      <h3>Bank Accounts</h3>
-      <div class="transactions" id="accounts-list"></div>
-    </div>
-    <div class="tile" id="recent-transactions">
-      <i class="fas fa-receipt icon"></i>
-      <h3>Recent Transactions</h3>
-      <div class="transactions" id="transactions-list"></div>
-    </div>
-    <div class="tile" id="recurring-bills">
-      <i class="fas fa-file-invoice-dollar icon"></i>
-      <h3>Recurring Bills</h3>
-      <div class="balance" id="bills-total">$1,410 Due This Cycle</div>
-      <div class="transactions" id="bills-list"></div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <div class="tile">
+        <h3>Monthly Income + Payday Countdown</h3>
+        <div class="highlight">$5,600.00</div>
+        <div>Next payday in <span class="due-today">11 days</span></div>
+      </div>
+      <div class="tile">
+        <h3>Recurring Bills (Next 2 Weeks)</h3>
+        <div class="highlight">$1,410 Due</div>
+        <div class="transaction"><span>Netflix</span><span>$15.99</span></div>
+        <div class="transaction"><span>Rent</span><span>$1,200.00</span></div>
+        <div class="transaction due-today"><span>Power</span><span>$150.00</span></div>
+        <div class="transaction"><span>Internet</span><span>$45.00</span></div>
+      </div>
     </div>
   </div>
-  <footer>
-    <a href="#">⚙️ Setup Wizard</a>
-    <a href="#">📊 Categories</a>
-    <a href="#">💳 Transactions</a>
-  </footer>
-  <script>
-    const mockBalances = [
-      { name: "Bank of America - Checking", balance: 3200 },
-      { name: "SoFi - Savings", balance: 12000 },
-      { name: "USAA - Credit Card", balance: -850 },
-      { name: "Capital One - Checking", balance: 600 }
-    ];
-    const mockTransactions = [
-      { name: "Starbucks", amount: "-$6.50" },
-      { name: "Netflix", amount: "-$15.99" },
-      { name: "Rent", amount: "-$1,200.00" },
-      { name: "Amazon", amount: "-$45.00" },
-      { name: "Paycheck", amount: "+$2,500.00" }
-    ];
-    const mockBills = [
-      { name: "Netflix", amount: "$15.99", due: "2025-09-05" },
-      { name: "Rent", amount: "$1,200.00", due: "2025-09-01" },
-      { name: "Power", amount: "$150.00", due: "2025-09-03" },
-      { name: "Internet", amount: "$45.00", due: "2025-09-10" }
-    ];
-    document.getElementById("accounts-list").innerHTML = mockBalances
-      .map(a => `<div>${a.name}: $${a.balance}</div>`)
-      .join("");
-    document.getElementById("transactions-list").innerHTML = mockTransactions
-      .map(t => `<div class='transaction'><span>${t.name}</span><span>${t.amount}</span></div>`)
-      .join("");
-    document.getElementById("bills-list").innerHTML = mockBills
-      .map(b => {
-        const today = new Date().toISOString().split('T')[0];
-        const dueClass = (b.due === today) ? "due-today" : "";
-        return `<div class='transaction ${dueClass}'><span>${b.name}</span><span>${b.amount}</span></div>`;
-      })
-      .join("");
-  </script>
 </body>
 </html>
