@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money Cockpit</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       margin: 0;
@@ -73,10 +74,9 @@
       margin-bottom: 15px;
       color: #9d00ff;
     }
-    .chart-placeholder {
-      height: 150px;
-      background: linear-gradient(135deg, #222, #111);
-      border-radius: 10px;
+    canvas {
+      width: 100% !important;
+      height: 200px !important;
     }
 
     /* Mid tiles row */
@@ -95,13 +95,6 @@
       margin-top: 0;
       margin-bottom: 15px;
       color: #39ff14;
-    }
-    .transaction {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #2a2f3a;
-      font-size: 14px;
     }
 
     /* Bottom row */
@@ -144,11 +137,11 @@
     <div class="charts-row">
       <div class="chart">
         <h3>Spendable vs Budget</h3>
-        <div class="chart-placeholder"></div>
+        <canvas id="spendableChart"></canvas>
       </div>
       <div class="chart">
         <h3>Daily Budget Trend</h3>
-        <div class="chart-placeholder"></div>
+        <canvas id="dailyChart"></canvas>
       </div>
     </div>
 
@@ -156,19 +149,11 @@
     <div class="tiles-row">
       <div class="tile">
         <h3>Transactions To Review</h3>
-        <div class="transaction"><span>Starbucks</span><span>-$6.50</span></div>
-        <div class="transaction"><span>Netflix</span><span>-$15.99</span></div>
-        <div class="transaction"><span>Rent</span><span>-$1,200.00</span></div>
-        <div class="transaction"><span>Amazon</span><span>-$45.00</span></div>
-        <div class="transaction"><span>Paycheck</span><span>+$2,500.00</span></div>
+        <canvas id="categoriesChart"></canvas>
       </div>
       <div class="tile">
-        <h3>Top Categories</h3>
-        <div class="transaction"><span>🏠 Rent</span><span>$1,200</span></div>
-        <div class="transaction"><span>🍔 Food & Drink</span><span>$375</span></div>
-        <div class="transaction"><span>🚗 Transport</span><span>$353</span></div>
-        <div class="transaction"><span>🛒 Shopping</span><span>$277</span></div>
-        <div class="transaction"><span>📌 Other</span><span>$149</span></div>
+        <h3>Top Categories (Mock)</h3>
+        <div>Now chart-based!</div>
       </div>
     </div>
 
@@ -182,12 +167,75 @@
       <div class="tile">
         <h3>Recurring Bills (Next 2 Weeks)</h3>
         <div class="highlight">$1,410 Due</div>
-        <div class="transaction"><span>Netflix</span><span>$15.99</span></div>
-        <div class="transaction"><span>Rent</span><span>$1,200.00</span></div>
-        <div class="transaction due-today"><span>Power</span><span>$150.00</span></div>
-        <div class="transaction"><span>Internet</span><span>$45.00</span></div>
+        <div>Netflix – $15.99</div>
+        <div>Rent – $1,200.00</div>
+        <div class="due-today">Power – $150.00</div>
+        <div>Internet – $45.00</div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Spendable vs Budget chart
+    const ctx1 = document.getElementById('spendableChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Spendable',
+          data: [400, 380, 360, 340, 320, 300, 280],
+          borderColor: '#39ff14',
+          backgroundColor: 'rgba(57,255,20,0.1)',
+          tension: 0.4
+        },{
+          label: 'Budget',
+          data: [420, 400, 390, 370, 350, 340, 330],
+          borderColor: '#9d00ff',
+          backgroundColor: 'rgba(157,0,255,0.1)',
+          tension: 0.4
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { labels: { color: '#e6e6e6' }}}}
+    });
+
+    // Daily Budget Trend
+    const ctx2 = document.getElementById('dailyChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Daily Spend',
+          data: [80, 110, 90, 100, 70, 120, 95],
+          backgroundColor: '#39ff14'
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { labels: { color: '#e6e6e6' }}}}
+    });
+
+    // Categories horizontal bar chart
+    const ctx3 = document.getElementById('categoriesChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: ['Rent', 'Food & Drink', 'Transport', 'Shopping', 'Other'],
+        datasets: [{
+          label: 'Amount',
+          data: [1200, 375, 353, 277, 149],
+          backgroundColor: ['#9d00ff','#39ff14','#00ffff','#ffcc00','#ff4d4d']
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false }},
+        scales: {
+          x: { ticks: { color: '#e6e6e6' }},
+          y: { ticks: { color: '#e6e6e6' }}
+        }
+      }
+    });
+  </script>
 </body>
 </html>
