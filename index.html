@@ -118,9 +118,32 @@
       text-shadow: 0 0 10px #ff4d4d;
     }
 
-    /* Crisp data text */
-    .transaction, .tile div, .chart div {
-      text-shadow: none;
+    /* Crisp HTML list for Top Categories */
+    .categories-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .bar {
+      height: 12px;
+      border-radius: 6px;
+      flex-grow: 1;
+    }
+    .label {
+      width: 100px;
+      text-align: right;
+      color: #e6e6e6;
+    }
+    .value {
+      width: 60px;
+      text-align: right;
       color: #e6e6e6;
     }
   </style>
@@ -157,7 +180,33 @@
     <div class="tiles-row">
       <div class="tile">
         <h3>Top Categories</h3>
-        <canvas id="categoriesChart"></canvas>
+        <div class="categories-list">
+          <div class="category-row">
+            <div class="label">Rent</div>
+            <div class="bar" style="background:#9d00ff; width:80%"></div>
+            <div class="value">$1200</div>
+          </div>
+          <div class="category-row">
+            <div class="label">Food & Drink</div>
+            <div class="bar" style="background:#39ff14; width:40%"></div>
+            <div class="value">$375</div>
+          </div>
+          <div class="category-row">
+            <div class="label">Transport</div>
+            <div class="bar" style="background:#00ffff; width:35%"></div>
+            <div class="value">$353</div>
+          </div>
+          <div class="category-row">
+            <div class="label">Shopping</div>
+            <div class="bar" style="background:#ffcc00; width:25%"></div>
+            <div class="value">$277</div>
+          </div>
+          <div class="category-row">
+            <div class="label">Other</div>
+            <div class="bar" style="background:#ff4d4d; width:15%"></div>
+            <div class="value">$149</div>
+          </div>
+        </div>
       </div>
       <div class="tile">
         <h3>Transactions To Review</h3>
@@ -188,7 +237,7 @@
   </div>
 
   <script>
-    // Global Chart.js options for crisp fonts
+    // Global Chart.js options
     Chart.defaults.font.family = 'Segoe UI, Tahoma, sans-serif';
     Chart.defaults.font.size = 13;
     Chart.defaults.color = '#e6e6e6';
@@ -230,29 +279,6 @@
         }]
       },
       options: { responsive: true, plugins: { legend: { labels: { color: '#e6e6e6' }}}}
-    });
-
-    // Categories horizontal bar chart
-    const ctx3 = document.getElementById('categoriesChart').getContext('2d');
-    new Chart(ctx3, {
-      type: 'bar',
-      data: {
-        labels: ['Rent', 'Food & Drink', 'Transport', 'Shopping', 'Other'],
-        datasets: [{
-          label: 'Amount',
-          data: [1200, 375, 353, 277, 149],
-          backgroundColor: ['#9d00ff','#39ff14','#00ffff','#ffcc00','#ff4d4d']
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        plugins: { legend: { display: false }},
-        scales: {
-          x: { ticks: { color: '#e6e6e6' }},
-          y: { ticks: { color: '#e6e6e6' }}
-        }
-      }
     });
   </script>
 </body>

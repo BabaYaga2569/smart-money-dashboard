@@ -1,12 +1,12 @@
-Smart Money Cockpit - Phase 4.2 Mockup
+Smart Money Cockpit - Phase 4.3 Mockup
 -----------------------------------
 
-This build refines the typography for a professional look:
+This build makes all category labels crisp like the transactions list:
 
-- Numbers, chart labels, and transaction lists are crisp (no blur, no glow)
-- Headers and highlights keep subtle neon glow for style
-- Charts now render sharper with devicePixelRatio and clean fonts
+- Replaced Chart.js text in Top Categories with pure HTML (Rent, Food, Shopping, etc.)
+- Bars are styled divs so labels & values are sharp and clean
+- Charts remain for Spendable vs Budget and Daily Budget Trend
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index_phase4_2.html in a browser to see the sharper lettering.
+2. Open index_phase4_3.html in a browser to see the sharper category labels.
