@@ -1,12 +1,12 @@
-Smart Money Cockpit - Phase 4.6 Mockup
+Smart Money Cockpit - Phase 4.7 Mockup
 -----------------------------------
 
-This build takes it higher with polish and interactivity:
+This build adds clarity to the charts:
 
-- Smooth animations for charts (lines glide, bars grow into place)
-- Tooltips on hover show exact values with styled neon popups
-- Top Categories bars animate into width for extra flair
+- Crisp HTML Y-axis markers for Spendable vs Budget and Daily Trend
+- Legends under charts show what each color means
+- Charts remain smooth and animated with tooltips
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index_phase4_6.html in a browser to see smooth animations + tooltips.
+2. Open index_phase4_7.html in a browser to see charts with full context.
