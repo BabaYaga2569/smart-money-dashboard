@@ -2,34 +2,110 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SmartMoney Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Dashboard</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      font-family: Arial, sans-serif;
+      color: #f0f0f0;
+      margin: 0; padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14, 0 0 20px #9d00ff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .tile {
+      background: #1a1a1a;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 10px #9d00ff, 0 0 20px #39ff14;
+      transition: transform 0.2s ease;
+    }
+    .tile:hover {
+      transform: scale(1.05);
+    }
+    .balance { font-size: 28px; color: #39ff14; }
+    .transactions { text-align: left; font-size: 14px; margin-top: 10px; }
+    .transaction { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #333; }
+    .transaction span { color: #f0f0f0; }
+    .debug { display: none; white-space: pre-wrap; background: #111; padding: 10px; margin: 20px; border-radius: 10px; }
+    button { background: #9d00ff; color: white; border: none; padding: 10px 20px; margin-top: 10px; cursor: pointer; border-radius: 10px; }
+  </style>
 </head>
 <body>
-  <h1>SmartMoney Dashboard</h1>
-  <div id="balances"></div>
-  <div id="recent-transactions"></div>
-  <a href="transactions.html">View All Transactions</a>
+  <header>🔥 Smart Money Dashboard 🔥</header>
+  <div class="grid">
+    <div class="tile">
+      <h3>Spendable Now</h3>
+      <div class="balance" id="spendable">$2,450.00</div>
+    </div>
+    <div class="tile">
+      <h3>Daily Budget</h3>
+      <div class="balance" id="daily-budget">$120.00</div>
+    </div>
+    <div class="tile" id="bank-accounts">
+      <h3>Bank Accounts</h3>
+      <div class="transactions" id="accounts-list">
+        <div>Checking: $3,200</div>
+        <div>Savings: $12,000</div>
+        <div>Credit Card: -$850</div>
+      </div>
+    </div>
+    <div class="tile" id="recent-transactions">
+      <h3>Recent Transactions</h3>
+      <div class="transactions" id="transactions-list">
+        <div class="transaction"><span>Starbucks</span><span>-$6.50</span></div>
+        <div class="transaction"><span>Netflix</span><span>-$15.99</span></div>
+        <div class="transaction"><span>Rent</span><span>-$1,200.00</span></div>
+        <div class="transaction"><span>Amazon</span><span>-$45.00</span></div>
+        <div class="transaction"><span>Paycheck</span><span>+$2,500.00</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="toggleDebug()">Toggle Debug</button>
+  </div>
+  <div class="debug" id="debug-box">Debug info will appear here...</div>
+
   <script>
-    async function loadBalances() {
+    async function fetchBalances() {
       try {
         const res = await fetch('/.netlify/functions/get_balances');
         const data = await res.json();
-        document.getElementById('balances').innerText = JSON.stringify(data.accounts, null, 2);
-      } catch (e) {
-        document.getElementById('balances').innerText = "Error loading balances";
+        document.getElementById('accounts-list').innerHTML = data.accounts.map(a => 
+          `<div>${a.name}: $${a.balance.available}</div>`).join('');
+      } catch (err) {
+        console.log("Error fetching balances", err);
       }
     }
-    async function loadTransactions() {
+    async function fetchTransactions() {
       try {
-        const res = await fetch('/.netlify/functions/get_transactions?limit=5');
+        const res = await fetch('/.netlify/functions/get_transactions');
         const data = await res.json();
-        document.getElementById('recent-transactions').innerText = JSON.stringify(data.transactions, null, 2);
-      } catch (e) {
-        document.getElementById('recent-transactions').innerText = "Error loading transactions";
+        document.getElementById('transactions-list').innerHTML = data.transactions.slice(0,5).map(t => 
+          `<div class='transaction'><span>${t.name}</span><span>${t.amount}</span></div>`).join('');
+      } catch (err) {
+        console.log("Error fetching transactions", err);
       }
     }
-    loadBalances();
-    loadTransactions();
+    function toggleDebug() {
+      const box = document.getElementById('debug-box');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+    // Initialize
+    fetchBalances();
+    fetchTransactions();
   </script>
 </body>
 </html>
