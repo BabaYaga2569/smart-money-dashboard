@@ -4,108 +4,160 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #0d0d0d;
-      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #111 0%, #000 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #f0f0f0;
-      margin: 0; padding: 0;
+      margin: 0;
+      overflow-x: hidden;
     }
     header {
       text-align: center;
-      padding: 20px;
-      font-size: 24px;
+      padding: 25px;
+      font-size: 32px;
+      font-weight: bold;
       color: #39ff14;
-      text-shadow: 0 0 10px #39ff14, 0 0 20px #9d00ff;
+      text-shadow: 0 0 15px #39ff14, 0 0 25px #9d00ff;
+      letter-spacing: 2px;
+      animation: glowPulse 3s infinite;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 10px #39ff14, 0 0 20px #9d00ff; }
+      50% { text-shadow: 0 0 25px #39ff14, 0 0 40px #9d00ff; }
+    }
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 20px;
       padding: 20px;
     }
     .tile {
-      background: #1a1a1a;
-      border-radius: 15px;
-      padding: 20px;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-radius: 20px;
+      padding: 25px;
       text-align: center;
-      box-shadow: 0 0 10px #9d00ff, 0 0 20px #39ff14;
-      transition: transform 0.2s ease;
+      box-shadow: 0 0 15px #9d00ff55, 0 0 25px #39ff1455;
+      flex: 1 1 280px;
+      max-width: 320px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s forwards;
     }
     .tile:hover {
-      transform: scale(1.05);
+      transform: scale(1.07);
+      box-shadow: 0 0 25px #9d00ff, 0 0 40px #39ff14;
     }
-    .balance { font-size: 28px; color: #39ff14; }
-    .transactions { text-align: left; font-size: 14px; margin-top: 10px; }
-    .transaction { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #333; }
-    .transaction span { color: #f0f0f0; }
-    .debug { display: none; white-space: pre-wrap; background: #111; padding: 10px; margin: 20px; border-radius: 10px; }
-    button { background: #9d00ff; color: white; border: none; padding: 10px 20px; margin-top: 10px; cursor: pointer; border-radius: 10px; }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .tile h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #9d00ff;
+    }
+    .icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14, 0 0 15px #9d00ff;
+      animation: heartbeat 1.5s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .transactions {
+      text-align: left;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .transaction {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #333;
+    }
+    .transaction span {
+      color: #f0f0f0;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+    }
+    footer a {
+      color: #9d00ff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 16px;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+    footer a:hover {
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
   </style>
 </head>
 <body>
-  <header>🔥 Smart Money Dashboard 🔥</header>
-  <div class="grid">
+  <header>🔥 Smart Money Cockpit 🔥</header>
+  <div class="dashboard">
     <div class="tile">
+      <i class="fas fa-bolt icon"></i>
       <h3>Spendable Now</h3>
       <div class="balance" id="spendable">$2,450.00</div>
     </div>
     <div class="tile">
+      <i class="fas fa-calendar-day icon"></i>
       <h3>Daily Budget</h3>
       <div class="balance" id="daily-budget">$120.00</div>
     </div>
     <div class="tile" id="bank-accounts">
+      <i class="fas fa-university icon"></i>
       <h3>Bank Accounts</h3>
-      <div class="transactions" id="accounts-list">
-        <div>Checking: $3,200</div>
-        <div>Savings: $12,000</div>
-        <div>Credit Card: -$850</div>
-      </div>
+      <div class="transactions" id="accounts-list"></div>
     </div>
     <div class="tile" id="recent-transactions">
+      <i class="fas fa-receipt icon"></i>
       <h3>Recent Transactions</h3>
-      <div class="transactions" id="transactions-list">
-        <div class="transaction"><span>Starbucks</span><span>-$6.50</span></div>
-        <div class="transaction"><span>Netflix</span><span>-$15.99</span></div>
-        <div class="transaction"><span>Rent</span><span>-$1,200.00</span></div>
-        <div class="transaction"><span>Amazon</span><span>-$45.00</span></div>
-        <div class="transaction"><span>Paycheck</span><span>+$2,500.00</span></div>
-      </div>
+      <div class="transactions" id="transactions-list"></div>
     </div>
   </div>
-  <div style="text-align:center;">
-    <button onclick="toggleDebug()">Toggle Debug</button>
-  </div>
-  <div class="debug" id="debug-box">Debug info will appear here...</div>
-
+  <footer>
+    <a href="#">⚙️ Setup Wizard</a>
+    <a href="#">📊 Categories</a>
+    <a href="#">💳 Transactions</a>
+  </footer>
   <script>
-    async function fetchBalances() {
-      try {
-        const res = await fetch('/.netlify/functions/get_balances');
-        const data = await res.json();
-        document.getElementById('accounts-list').innerHTML = data.accounts.map(a => 
-          `<div>${a.name}: $${a.balance.available}</div>`).join('');
-      } catch (err) {
-        console.log("Error fetching balances", err);
-      }
-    }
-    async function fetchTransactions() {
-      try {
-        const res = await fetch('/.netlify/functions/get_transactions');
-        const data = await res.json();
-        document.getElementById('transactions-list').innerHTML = data.transactions.slice(0,5).map(t => 
-          `<div class='transaction'><span>${t.name}</span><span>${t.amount}</span></div>`).join('');
-      } catch (err) {
-        console.log("Error fetching transactions", err);
-      }
-    }
-    function toggleDebug() {
-      const box = document.getElementById('debug-box');
-      box.style.display = box.style.display === 'none' ? 'block' : 'none';
-    }
-    // Initialize
-    fetchBalances();
-    fetchTransactions();
+    const mockBalances = [
+      { name: "Checking", balance: 3200 },
+      { name: "Savings", balance: 12000 },
+      { name: "Credit Card", balance: -850 }
+    ];
+    const mockTransactions = [
+      { name: "Starbucks", amount: "-$6.50" },
+      { name: "Netflix", amount: "-$15.99" },
+      { name: "Rent", amount: "-$1,200.00" },
+      { name: "Amazon", amount: "-$45.00" },
+      { name: "Paycheck", amount: "+$2,500.00" }
+    ];
+    document.getElementById("accounts-list").innerHTML = mockBalances
+      .map(a => `<div>${a.name}: $${a.balance}</div>`)
+      .join("");
+    document.getElementById("transactions-list").innerHTML = mockTransactions
+      .map(t => `<div class='transaction'><span>${t.name}</span><span>${t.amount}</span></div>`)
+      .join("");
   </script>
 </body>
 </html>
