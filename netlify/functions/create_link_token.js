@@ -1,15 +1,25 @@
 const plaid = require('plaid');
-exports.handler = async () => {
+exports.handler = async function(event, context) {
   const client = new plaid.PlaidApi(new plaid.Configuration({
     basePath: plaid.PlaidEnvironments[process.env.PLAID_ENV],
-    baseOptions: { headers: { 'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID, 'PLAID-SECRET': process.env.PLAID_SECRET }}
+    baseOptions: {
+      headers: {
+        'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+        'PLAID-SECRET': process.env.PLAID_SECRET,
+      },
+    },
   }));
-  const response = await client.linkTokenCreate({
-    user: { client_user_id: 'user123' },
-    client_name: 'Smart Money',
-    products: ['transactions'],
-    country_codes: ['US'],
-    language: 'en'
-  });
-  return { statusCode: 200, body: JSON.stringify({ link_token: response.data.link_token }) };
+
+  try {
+    const response = await client.linkTokenCreate({
+      user: { client_user_id: 'user-id' },
+      client_name: 'SmartMoneyApp',
+      products: ['transactions'],
+      country_codes: ['US'],
+      language: 'en',
+    });
+    return { statusCode: 200, body: JSON.stringify(response.data) };
+  } catch (error) {
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+  }
 };

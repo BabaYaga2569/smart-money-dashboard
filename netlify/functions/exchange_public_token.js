@@ -1,10 +1,20 @@
 const plaid = require('plaid');
-exports.handler = async (event) => {
-  const body = JSON.parse(event.body);
+exports.handler = async function(event, context) {
   const client = new plaid.PlaidApi(new plaid.Configuration({
     basePath: plaid.PlaidEnvironments[process.env.PLAID_ENV],
-    baseOptions: { headers: { 'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID, 'PLAID-SECRET': process.env.PLAID_SECRET }}
+    baseOptions: {
+      headers: {
+        'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+        'PLAID-SECRET': process.env.PLAID_SECRET,
+      },
+    },
   }));
-  const response = await client.itemPublicTokenExchange({ public_token: body.public_token });
-  return { statusCode: 200, body: JSON.stringify({ access_token: response.data.access_token }) };
+
+  try {
+    const { public_token } = JSON.parse(event.body);
+    const response = await client.itemPublicTokenExchange({ public_token });
+    return { statusCode: 200, body: JSON.stringify(response.data) };
+  } catch (error) {
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+  }
 };
