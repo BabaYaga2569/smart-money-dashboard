@@ -1,12 +1,13 @@
-Smart Money Cockpit - Phase 4.3 Mockup
+Smart Money Cockpit - Phase 4.4 Mockup
 -----------------------------------
 
-This build makes all category labels crisp like the transactions list:
+This build makes every label crisp like the transaction list:
 
-- Replaced Chart.js text in Top Categories with pure HTML (Rent, Food, Shopping, etc.)
-- Bars are styled divs so labels & values are sharp and clean
-- Charts remain for Spendable vs Budget and Daily Budget Trend
+- Removed blurry canvas labels from Spendable vs Budget and Daily Trend
+- Added sharp HTML labels under each chart for days of week
+- Top Categories already uses HTML rows for crisp labels and values
+- All cockpit text is now consistent and professional
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index_phase4_3.html in a browser to see the sharper category labels.
+2. Open index_phase4_4.html in a browser to see fully crisp labels everywhere.

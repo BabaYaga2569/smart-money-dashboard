@@ -57,12 +57,7 @@
       gap: 20px;
     }
 
-    /* Top charts row */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    /* Chart wrapper with HTML labels */
     .chart {
       background: #161b25;
       border-radius: 15px;
@@ -75,9 +70,15 @@
       color: #9d00ff;
       text-shadow: 0 0 5px #9d00ff;
     }
-    canvas {
-      width: 100% !important;
-      height: 200px !important;
+    .chart-canvas {
+      height: 150px;
+    }
+    .labels-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 13px;
+      color: #e6e6e6;
     }
 
     /* Mid tiles row */
@@ -168,11 +169,17 @@
     <div class="charts-row">
       <div class="chart">
         <h3>Spendable vs Budget</h3>
-        <canvas id="spendableChart"></canvas>
+        <canvas id="spendableChart" class="chart-canvas"></canvas>
+        <div class="labels-row">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
       </div>
       <div class="chart">
         <h3>Daily Budget Trend</h3>
-        <canvas id="dailyChart"></canvas>
+        <canvas id="dailyChart" class="chart-canvas"></canvas>
+        <div class="labels-row">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
       </div>
     </div>
 
@@ -237,18 +244,12 @@
   </div>
 
   <script>
-    // Global Chart.js options
-    Chart.defaults.font.family = 'Segoe UI, Tahoma, sans-serif';
-    Chart.defaults.font.size = 13;
-    Chart.defaults.color = '#e6e6e6';
-    Chart.defaults.devicePixelRatio = 2;
-
-    // Spendable vs Budget chart
+    // Simplified charts without text rendering
     const ctx1 = document.getElementById('spendableChart').getContext('2d');
     new Chart(ctx1, {
       type: 'line',
       data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
         datasets: [{
           label: 'Spendable',
           data: [400, 380, 360, 340, 320, 300, 280],
@@ -263,22 +264,21 @@
           tension: 0.4
         }]
       },
-      options: { responsive: true, plugins: { legend: { labels: { color: '#e6e6e6' }}}}
+      options: { responsive: true, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}}
     });
 
-    // Daily Budget Trend
     const ctx2 = document.getElementById('dailyChart').getContext('2d');
     new Chart(ctx2, {
       type: 'bar',
       data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
         datasets: [{
           label: 'Daily Spend',
           data: [80, 110, 90, 100, 70, 120, 95],
           backgroundColor: '#39ff14'
         }]
       },
-      options: { responsive: true, plugins: { legend: { labels: { color: '#e6e6e6' }}}}
+      options: { responsive: true, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}}
     });
   </script>
 </body>
