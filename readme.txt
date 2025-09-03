@@ -1,13 +1,12 @@
-Smart Money Cockpit - Phase 4.4 Mockup
+Smart Money Cockpit - Phase 4.5 Mockup
 -----------------------------------
 
-This build makes every label crisp like the transaction list:
+This build fixes oversized charts and makes the layout uniform:
 
-- Removed blurry canvas labels from Spendable vs Budget and Daily Trend
-- Added sharp HTML labels under each chart for days of week
-- Top Categories already uses HTML rows for crisp labels and values
-- All cockpit text is now consistent and professional
+- Chart canvases are now locked to ~180–200px height
+- Spendable vs Budget and Daily Budget Trend fit neatly into tiles
+- Uniform sizing matches the other tiles for consistency
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index_phase4_4.html in a browser to see fully crisp labels everywhere.
+2. Open index_phase4_5.html in a browser to see the fixed uniform charts.

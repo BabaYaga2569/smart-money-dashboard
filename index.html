@@ -71,7 +71,10 @@
       text-shadow: 0 0 5px #9d00ff;
     }
     .chart-canvas {
-      height: 150px;
+      height: 180px !important;
+      max-height: 200px;
+      width: 100% !important;
+      display: block;
     }
     .labels-row {
       display: flex;
@@ -146,6 +149,13 @@
       width: 60px;
       text-align: right;
       color: #e6e6e6;
+    }
+
+    /* Grid for top charts row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
   </style>
 </head>
@@ -264,7 +274,10 @@
           tension: 0.4
         }]
       },
-      options: { responsive: true, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}}
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }}, 
+        scales: { x: { display: false }, y: { display: false }}
+      }
     });
 
     const ctx2 = document.getElementById('dailyChart').getContext('2d');
@@ -278,7 +291,10 @@
           backgroundColor: '#39ff14'
         }]
       },
-      options: { responsive: true, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}}
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }},
+        scales: { x: { display: false }, y: { display: false }}
+      }
     });
   </script>
 </body>
