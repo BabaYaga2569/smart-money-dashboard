@@ -73,6 +73,7 @@
       margin-top: 0;
       margin-bottom: 15px;
       color: #9d00ff;
+      text-shadow: 0 0 5px #9d00ff;
     }
     canvas {
       width: 100% !important;
@@ -95,6 +96,7 @@
       margin-top: 0;
       margin-bottom: 15px;
       color: #39ff14;
+      text-shadow: 0 0 5px #39ff14;
     }
 
     /* Bottom row */
@@ -114,6 +116,12 @@
       color: #ff4d4d;
       font-weight: bold;
       text-shadow: 0 0 10px #ff4d4d;
+    }
+
+    /* Crisp data text */
+    .transaction, .tile div, .chart div {
+      text-shadow: none;
+      color: #e6e6e6;
     }
   </style>
 </head>
@@ -148,12 +156,16 @@
     <!-- Middle row -->
     <div class="tiles-row">
       <div class="tile">
-        <h3>Transactions To Review</h3>
+        <h3>Top Categories</h3>
         <canvas id="categoriesChart"></canvas>
       </div>
       <div class="tile">
-        <h3>Top Categories (Mock)</h3>
-        <div>Now chart-based!</div>
+        <h3>Transactions To Review</h3>
+        <div>Starbucks – -$6.50</div>
+        <div>Netflix – -$15.99</div>
+        <div>Rent – -$1,200.00</div>
+        <div>Amazon – -$45.00</div>
+        <div>Paycheck – +$2,500.00</div>
       </div>
     </div>
 
@@ -176,6 +188,12 @@
   </div>
 
   <script>
+    // Global Chart.js options for crisp fonts
+    Chart.defaults.font.family = 'Segoe UI, Tahoma, sans-serif';
+    Chart.defaults.font.size = 13;
+    Chart.defaults.color = '#e6e6e6';
+    Chart.defaults.devicePixelRatio = 2;
+
     // Spendable vs Budget chart
     const ctx1 = document.getElementById('spendableChart').getContext('2d');
     new Chart(ctx1, {

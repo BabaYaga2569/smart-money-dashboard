@@ -1,15 +1,12 @@
-Smart Money Cockpit - Phase 4.1 Mockup
+Smart Money Cockpit - Phase 4.2 Mockup
 -----------------------------------
 
-This build activates live charts using Chart.js:
+This build refines the typography for a professional look:
 
-- Spendable vs Budget: line chart with neon glow colors
-- Daily Budget Trend: animated bar chart
-- Top Categories: horizontal bar chart replacing text list
+- Numbers, chart labels, and transaction lists are crisp (no blur, no glow)
+- Headers and highlights keep subtle neon glow for style
+- Charts now render sharper with devicePixelRatio and clean fonts
 
 How to use:
 1. Unzip into your project root (same place as your old index.html).
-2. Open index_phase4_1.html in a browser to see the new interactive charts.
-3. Charts use mock data for now; can be wired to Plaid later.
-
-Next step: style polish and wiring to real data feeds.
+2. Open index_phase4_2.html in a browser to see the sharper lettering.
