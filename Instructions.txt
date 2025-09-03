@@ -1,0 +1,15 @@
+SmartMoney Phase 2 Fix Deployment:
+
+1. Unzip this package into your repo root.
+2. Make sure you keep the structure:
+   - index.html
+   - transactions.html
+   - netlify/functions/get_balances.js
+   - netlify/functions/get_transactions.js
+3. Commit and push to GitHub.
+4. Netlify will auto-deploy.
+5. Ensure your environment variables are set in Netlify:
+   PLAID_CLIENT_ID
+   PLAID_SECRET
+   PLAID_ENV
+   PLAID_ACCESS_TOKEN

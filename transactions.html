@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Transactions</title>
+</head>
+<body>
+  <h1>All Transactions</h1>
+  <div id="transactions"></div>
+  <script>
+    let page = 1;
+    async function loadTransactions() {
+      try {
+        const res = await fetch('/.netlify/functions/get_transactions?page=' + page);
+        const data = await res.json();
+        document.getElementById('transactions').innerText = JSON.stringify(data.transactions, null, 2);
+      } catch (e) {
+        document.getElementById('transactions').innerText = "Error loading transactions";
+      }
+    }
+    loadTransactions();
+  </script>
+</body>
+</html>

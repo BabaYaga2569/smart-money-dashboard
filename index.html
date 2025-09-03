@@ -1,82 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Money Dashboard</title>
-  <link rel="icon" href="favicon.ico" />
-  <style>
-    body { background: #0f1116; color: #e7ecf3; font-family: Arial, sans-serif; }
-    .tile { background: #14161b; border-radius: 12px; padding: 20px; margin: 10px; display: inline-block; min-width: 200px; }
-    .settings { margin-top: 20px; }
-    button { padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; background: #7c5cff; color: white; }
-  </style>
+  <meta charset="UTF-8">
+  <title>SmartMoney Dashboard</title>
 </head>
 <body>
-  <h1>Smart Money Dashboard</h1>
-  <div class="tile" id="balances">Balances will load here...</div>
-  <div class="tile" id="transactions">Transactions will load here...</div>
-
-  <div class="tile settings">
-    <h3>Settings</h3>
-    <label><input type="checkbox" id="debugToggle" /> Enable Debug Mode</label>
-  </div>
-
+  <h1>SmartMoney Dashboard</h1>
+  <div id="balances"></div>
+  <div id="recent-transactions"></div>
+  <a href="transactions.html">View All Transactions</a>
   <script>
-    let debugMode = false;
-
-    document.getElementById("debugToggle").addEventListener("change", (e) => {
-      debugMode = e.target.checked;
-      if (debugMode) {
-        alert("Debug Mode ON - check console for logs");
-      } else {
-        alert("Debug Mode OFF - console logs hidden");
-      }
-    });
-
-    async function fetchBalances() {
+    async function loadBalances() {
       try {
-        const res = await fetch("/.netlify/functions/get_balances", {
-          method: "POST",
-          body: JSON.stringify({ access_token: localStorage.getItem("plaid_access_token") })
-        });
+        const res = await fetch('/.netlify/functions/get_balances');
         const data = await res.json();
-        if (res.ok) {
-          document.getElementById("balances").innerText = JSON.stringify(data.accounts, null, 2);
-          if (debugMode) console.log("Balances Data:", data);
-        } else {
-          document.getElementById("balances").innerText = "Error loading balances";
-          if (debugMode) console.error("Balance Error:", data);
-        }
-      } catch (err) {
-        document.getElementById("balances").innerText = "Error loading balances";
-        if (debugMode) console.error("Balance Fetch Error:", err);
+        document.getElementById('balances').innerText = JSON.stringify(data.accounts, null, 2);
+      } catch (e) {
+        document.getElementById('balances').innerText = "Error loading balances";
       }
     }
-
-    async function fetchTransactions() {
+    async function loadTransactions() {
       try {
-        const res = await fetch("/.netlify/functions/get_transactions", {
-          method: "POST",
-          body: JSON.stringify({ access_token: localStorage.getItem("plaid_access_token") })
-        });
+        const res = await fetch('/.netlify/functions/get_transactions?limit=5');
         const data = await res.json();
-        if (res.ok) {
-          document.getElementById("transactions").innerText = JSON.stringify(data.transactions, null, 2);
-          if (debugMode) console.log("Transactions Data:", data);
-        } else {
-          document.getElementById("transactions").innerText = "Error loading transactions";
-          if (debugMode) console.error("Transactions Error:", data);
-        }
-      } catch (err) {
-        document.getElementById("transactions").innerText = "Error loading transactions";
-        if (debugMode) console.error("Transactions Fetch Error:", err);
+        document.getElementById('recent-transactions').innerText = JSON.stringify(data.transactions, null, 2);
+      } catch (e) {
+        document.getElementById('recent-transactions').innerText = "Error loading transactions";
       }
     }
-
-    // Auto-fetch on load
-    fetchBalances();
-    fetchTransactions();
+    loadBalances();
+    loadTransactions();
   </script>
 </body>
 </html>
