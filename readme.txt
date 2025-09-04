@@ -1,19 +1,13 @@
-Smart Money Cockpit - Phase 5 Final Full
+Smart Money Cockpit - Phase 5 Layout Fix
 -----------------------------------
-This build merges Plaid wiring, Plaid Link helper, and chart size fix.
+This release restores the polished 3-row cockpit grid layout with Plaid wiring and chart fixes.
 
-Includes:
-- index.html (cockpit wired live to Plaid, charts fixed)
-- link.html (Plaid Link helper page)
-- netlify/functions/ (Plaid functions: get_link_token, set_access_token, get_balances, get_transactions, get_settings)
-
-Chart Fix:
-- .chart-canvas height locked to 220px
-- .chart min-height set to 280px
-- maintainAspectRatio:false in Chart.js configs
+Layout:
+- Row 1: Spendable vs Budget | Daily Budget Trend
+- Row 2: Top Categories | Transactions To Review
+- Row 3: Monthly Income | Recurring Bills
 
 Deployment:
 1. Unzip into repo, commit, push.
 2. Ensure Netlify env vars set: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV, PLAID_ACCESS_TOKEN.
-3. Visit /link.html to generate public_token if needed and exchange for access_token using set_access_token function.
-4. Cockpit will display live balances, transactions, and charts from Plaid.
+3. Redeploy. Cockpit will show live balances + transactions in proper grid layout.
