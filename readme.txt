@@ -1,17 +1,10 @@
-Smart Money Cockpit - Phase 5 Full Final
+Smart Money Cockpit - Phase 5 Paycycle Fix
 -----------------------------------
-This release completes the cockpit with all features polished.
+This version uses the exact 2025 payday schedule.
 
-Features:
-- Sidebar with all nav items + icons
-- 3-row cockpit grid layout
-- Live Plaid balances + transactions
-- Chart sizing locked
-- Categories mapped to realistic demo names (Starbucks, Netflix, Amazon, etc.)
-- Transactions cleaned with readable labels
-- Payday countdown with labels (SoFi Early, BofA, Wife Payday)
-
-Deployment:
-1. Unzip into repo, commit, push.
-2. Ensure Netlify env vars set: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV, PLAID_ACCESS_TOKEN.
-3. Redeploy. Cockpit will display live Plaid data with polished UI.
+Logic:
+- Paydays: hardcoded Fridays from provided 2025 chart
+- SoFi Early Deposit: Wednesday before each payday
+- BofA Deposit: on payday Friday
+- Countdown shows next event with correct label (SoFi or BofA)
+- Monthly Income tile calculates based on $1,883.81 net per payday and number of paydays this month
