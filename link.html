@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plaid Link Helper</title>
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+</head>
+<body style="background:#0b0e14; color:#e6e6e6; font-family:sans-serif; text-align:center; padding:40px;">
+  <h2>🔗 Plaid Link Helper</h2>
+  <p>Click below to launch Plaid Link, connect a sandbox bank, and grab your <b>public_token</b>.</p>
+  <button id="linkButton" style="padding:10px 20px; font-size:16px; cursor:pointer;">Launch Plaid Link</button>
+  <pre id="output" style="margin-top:20px; text-align:left; background:#161b25; padding:15px; border-radius:8px;"></pre>
+
+  <script>
+    async function getLinkToken() {
+      const res = await fetch('/.netlify/functions/get_link_token');
+      const data = await res.json();
+      return data.link_token;
+    }
+
+    document.getElementById('linkButton').onclick = async () => {
+      const token = await getLinkToken();
+
+      const handler = Plaid.create({
+        token,
+        onSuccess: async (public_token, metadata) => {
+          document.getElementById('output').textContent =
+            "Public Token: " + public_token + "\n" +
+            "Institution: " + JSON.stringify(metadata.institution, null, 2);
+        },
+        onExit: (err, metadata) => {
+          if (err) {
+            alert("Error: " + err.display_message);
+          }
+        },
+      });
+
+      handler.open();
+    };
+  </script>
+</body>
+</html>

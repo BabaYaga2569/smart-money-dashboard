@@ -26,4 +26,11 @@ Security:
 - Nothing sensitive is exposed in the front end.
 
 
-Includes index.html wired to functions for live cockpit.
+Plaid Link Flow (link.html):
+1. Visit /link.html on your deployed site.
+2. Click "Launch Plaid Link" and log into a sandbox bank (user_good / pass_good).
+3. Copy the public_token shown on screen.
+4. POST it to /.netlify/functions/set_access_token with JSON body:
+   { "public_token": "your-public-token-here" }
+5. The response will include an access_token. Add it to Netlify env as PLAID_ACCESS_TOKEN.
+6. Redeploy and your cockpit will show live Plaid sandbox data.
