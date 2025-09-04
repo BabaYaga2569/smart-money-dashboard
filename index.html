@@ -31,8 +31,11 @@
     <h2>💸 Cockpit</h2>
     <div class="nav-item"><i class="fas fa-home"></i> Dashboard</div>
     <div class="nav-item"><i class="fas fa-list"></i> Transactions</div>
+    <div class="nav-item"><i class="fas fa-chart-line"></i> Cash Flow</div>
     <div class="nav-item"><i class="fas fa-university"></i> Accounts</div>
+    <div class="nav-item"><i class="fas fa-briefcase"></i> Investments</div>
     <div class="nav-item"><i class="fas fa-tags"></i> Categories</div>
+    <div class="nav-item"><i class="fas fa-calendar-alt"></i> Recurring Bills</div>
     <div class="nav-item"><i class="fas fa-cog"></i> Settings</div>
   </div>
   <div class="main">
@@ -63,7 +66,7 @@
       <div class="tile">
         <h3>Monthly Income + Payday Countdown</h3>
         <div class="highlight" id="income">$0.00</div>
-        <div>Next payday in <span class="due-today" id="payday-countdown">-- days</span></div>
+        <div id="payday-info">Next payday in <span class="due-today" id="payday-countdown">-- days</span></div>
       </div>
       <div class="tile">
         <h3>Recurring Bills (Mock)</h3>
@@ -98,7 +101,14 @@
       const res = await fetch('/.netlify/functions/get_transactions');
       const data = await res.json();
       const txs = data.transactions.slice(0,5);
-      document.getElementById('transactions-list').innerHTML = txs.map(t => `<div>${t.name} – $${Math.abs(t.amount).toFixed(2)}</div>`).join("");
+      document.getElementById('transactions-list').innerHTML = txs.map(t => {
+        let name = t.name;
+        if (name.toLowerCase().includes("uber")) name = "Uber (Transport)";
+        if (name.toLowerCase().includes("starbucks")) name = "Starbucks (Food & Drink)";
+        if (name.toLowerCase().includes("netflix")) name = "Netflix (Entertainment)";
+        if (name.toLowerCase().includes("amazon")) name = "Amazon (Shopping)";
+        return `<div>${name} – $${Math.abs(t.amount).toFixed(2)}</div>`;
+      }).join("");
       buildCharts(data.transactions);
       buildCategories(data.transactions);
     }
@@ -129,7 +139,13 @@
 
     function buildCategories(transactions) {
       const sums = {};
-      transactions.forEach(t=>{ const c=t.category?t.category[0]:"Other"; sums[c]=(sums[c]||0)+Math.abs(t.amount); });
+      transactions.forEach(t=>{ 
+        let cat = t.category ? t.category[0] : "Other"; 
+        if (t.name.toLowerCase().includes("starbucks")) cat = "Food & Drink";
+        if (t.name.toLowerCase().includes("netflix")) cat = "Entertainment";
+        if (t.name.toLowerCase().includes("amazon")) cat = "Shopping";
+        sums[cat]=(sums[cat]||0)+Math.abs(t.amount); 
+      });
       document.getElementById('categories-list').innerHTML = Object.entries(sums).map(([cat,val])=>{
         const color = categoryColors[cat]||'#888';
         return `<div class="category-row"><div class="label">${cat}</div><div class="bar" style="background:${color};width:${Math.min(val/20,100)}%"></div><div class="value">$${val.toFixed(2)}</div></div>`;
@@ -139,20 +155,17 @@
     function calculatePaydayCountdown() {
       const today = new Date();
 
-      // Helper to adjust wife's pay for weekends (move to Friday)
       function adjustForWeekend(date) {
-        if (date.getDay() === 0) date.setDate(date.getDate() - 2); // Sunday -> Friday
-        if (date.getDay() === 6) date.setDate(date.getDate() - 1); // Saturday -> Friday
+        if (date.getDay() === 0) date.setDate(date.getDate() - 2);
+        if (date.getDay() === 6) date.setDate(date.getDate() - 1);
         return date;
       }
 
-      // Your biweekly pay (simulate every 14 days from a reference)
-      const reference = new Date(2025, 0, 3); // Example Friday payday in Jan 2025
+      const reference = new Date(2025, 0, 3);
       let nextYourPay = new Date(reference);
       while (nextYourPay <= today) nextYourPay.setDate(nextYourPay.getDate() + 14);
       let nextYourSofi = new Date(nextYourPay); nextYourSofi.setDate(nextYourPay.getDate() - 2);
 
-      // Wife's pay: 15th and 30th (adjusted for weekends)
       let nextWifePay;
       const day = today.getDate();
       const month = today.getMonth();
@@ -160,12 +173,16 @@
       else if (day < 30) nextWifePay = adjustForWeekend(new Date(today.getFullYear(), month, 30));
       else nextWifePay = adjustForWeekend(new Date(today.getFullYear(), month + 1, 15));
 
-      // Find the soonest payday
-      const candidates = [nextYourPay, nextYourSofi, nextWifePay];
-      let soonest = candidates.reduce((a,b)=> a<b?a:b);
-      const diffDays = Math.ceil((soonest - today) / (1000*60*60*24));
+      const candidates = [
+        {date: nextYourPay, label: "BofA Payday"},
+        {date: nextYourSofi, label: "SoFi Early Deposit"},
+        {date: nextWifePay, label: "Wife Payday"}
+      ];
+      let soonest = candidates.reduce((a,b)=> a.date<b.date?a:b);
+      const diffDays = Math.ceil((soonest.date - today) / (1000*60*60*24));
 
       document.getElementById('payday-countdown').innerText = diffDays + " days";
+      document.getElementById('payday-info').innerHTML = `Next payday: ${soonest.label} in <span class="due-today">${diffDays} days</span>`;
     }
 
     (async ()=>{ 
