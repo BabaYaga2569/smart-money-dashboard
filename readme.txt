@@ -1,18 +1,19 @@
-Phase 6.1 - Savings Goals Mockup
----------------------------------
-This mockup adds Savings Goals with localStorage support.
+Phase 6 - Full Cockpit with Savings Goals
+-----------------------------------------
+This build integrates the Savings Goals system into the full cockpit.
 
-Files:
-- index.html: Dashboard tile showing top 3 goals.
-- goals.html: Full editor page to add/edit/delete goals, contributions, and progress bars.
+Features:
+- Dashboard tile shows Top 3 active savings goals (localStorage demo).
+- Savings Goals page (goals.html) for adding/editing/deleting goals and contributions.
+- Sidebar "Savings Goals" link opens goals page.
+- Plaid data, payday countdown, charts, recurring bills all remain functional.
 
-How it works:
-- Goals are saved in browser localStorage (demo only).
-- Each goal has name, target amount, optional deadline, and saved amount.
-- Add contributions with '+ Add $100' button.
-- Delete goals with 'Delete' button.
-- Dashboard shows top 3 active goals.
+How it works (demo mode):
+- Goals stored in browser localStorage only.
+- Add a goal (name, target, deadline), then track progress.
+- Contribute $100 increments via button, or delete a goal.
+- Dashboard displays top 3 goals by progress percentage.
 
-Future:
-- Wire into backend (Netlify/Firebase) for persistence across devices.
-- Tie AI Insights into goals for recommendations.
+Next steps:
+- Persist goals to backend (Netlify/Firebase) so they survive across devices.
+- Connect AI Insights to goals for recommendations.
