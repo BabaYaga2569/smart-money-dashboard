@@ -1,18 +1,18 @@
-Smart Money Cockpit - Phase 5 Full Cockpit with Paycycle
-----------------------------------------------------
-This build restores the full cockpit layout, adds permanent paycycle logic, and introduces Phase 6 placeholders.
+Phase 6.1 - Savings Goals Mockup
+---------------------------------
+This mockup adds Savings Goals with localStorage support.
 
-Features:
-- Sidebar with all nav items + icons (Dashboard → Settings)
-- 3-row cockpit grid + Row 4 for Savings Goals + AI Insights
-- Live Plaid balances + transactions
-- Chart sizing locked
-- Payday countdown: rolling biweekly forever (SoFi Early Wed, BofA Fri)
-- Monthly income based on raise ($1,883.81 net)
-- Savings Goals demo bars
-- AI Insights demo tile with example insights
+Files:
+- index.html: Dashboard tile showing top 3 goals.
+- goals.html: Full editor page to add/edit/delete goals, contributions, and progress bars.
 
-Deployment:
-1. Unzip into repo, commit, push.
-2. Ensure Netlify env vars set: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV, PLAID_ACCESS_TOKEN.
-3. Redeploy. Cockpit will display live Plaid data, accurate payday countdown, and Phase 6 placeholders.
+How it works:
+- Goals are saved in browser localStorage (demo only).
+- Each goal has name, target amount, optional deadline, and saved amount.
+- Add contributions with '+ Add $100' button.
+- Delete goals with 'Delete' button.
+- Dashboard shows top 3 active goals.
+
+Future:
+- Wire into backend (Netlify/Firebase) for persistence across devices.
+- Tie AI Insights into goals for recommendations.

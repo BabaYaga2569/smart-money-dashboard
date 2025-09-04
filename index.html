@@ -2,222 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit</title>
+  <title>Smart Money Cockpit - Phase 6 Mockup</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; display:flex; }
-    .sidebar { width:240px; background:#11151d; padding:20px 0; display:flex; flex-direction:column; height:100vh; box-shadow:2px 0 10px rgba(0,0,0,0.7); }
+    .sidebar { width:240px; background:#11151d; padding:20px 0; display:flex; flex-direction:column; height:100vh; }
     .sidebar h2 { text-align:center; color:#39ff14; margin-bottom:30px; text-shadow:0 0 10px #39ff14; }
-    .nav-item { padding:12px 20px; display:flex; align-items:center; gap:12px; color:#ccc; cursor:pointer; transition:all 0.3s ease; }
+    .nav-item { padding:12px 20px; display:flex; align-items:center; gap:12px; color:#ccc; cursor:pointer; transition:all 0.3s ease; text-decoration:none; }
     .nav-item:hover { background:#1a1f2a; color:#39ff14; }
-    .main { flex:1; padding:20px; display:flex; flex-direction:column; gap:20px; }
-    .charts-row, .tiles-row, .bottom-row, .extras-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-    .chart, .tile { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(57,255,20,0.2); }
-    .chart h3, .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
-    .chart h3 { color:#9d00ff; text-shadow:0 0 5px #9d00ff; }
-    .chart-canvas { height:220px !important; width:100% !important; display:block; }
-    .highlight { font-size:24px; font-weight:bold; color:#39ff14; text-shadow:0 0 10px #39ff14, 0 0 15px #9d00ff; }
-    .due-today { color:#ff4d4d; font-weight:bold; text-shadow:0 0 10px #ff4d4d; }
-    .categories-list { display:flex; flex-direction:column; gap:6px; }
-    .category-row { display:flex; align-items:center; gap:10px; font-size:14px; }
-    .bar { height:12px; border-radius:6px; flex-grow:1; transition:width 1.2s ease-in-out; }
-    .label { width:100px; text-align:right; }
-    .value { width:60px; text-align:right; }
+    .main { flex:1; padding:20px; }
+    .tile { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(57,255,20,0.2); margin-bottom:20px; }
+    .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
     .goal-bar { height:16px; border-radius:8px; background:#333; margin:5px 0; overflow:hidden; }
-    .goal-fill { height:100%; transition:width 1.2s ease-in-out; }
+    .goal-fill { height:100%; background:#39ff14; transition:width 1.2s ease-in-out; }
   </style>
 </head>
 <body>
   <div class="sidebar">
     <h2>💸 Cockpit</h2>
-    <div class="nav-item"><i class="fas fa-home"></i> Dashboard</div>
-    <div class="nav-item"><i class="fas fa-list"></i> Transactions</div>
-    <div class="nav-item"><i class="fas fa-chart-line"></i> Cash Flow</div>
-    <div class="nav-item"><i class="fas fa-university"></i> Accounts</div>
-    <div class="nav-item"><i class="fas fa-briefcase"></i> Investments</div>
-    <div class="nav-item"><i class="fas fa-tags"></i> Categories</div>
-    <div class="nav-item"><i class="fas fa-calendar-alt"></i> Recurring Bills</div>
-    <div class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</div>
-    <div class="nav-item"><i class="fas fa-lightbulb"></i> AI Insights</div>
-    <div class="nav-item"><i class="fas fa-cog"></i> Settings</div>
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="transactions.html" class="nav-item"><i class="fas fa-list"></i> Transactions</a>
+    <a href="cashflow.html" class="nav-item"><i class="fas fa-chart-line"></i> Cash Flow</a>
+    <a href="accounts.html" class="nav-item"><i class="fas fa-university"></i> Accounts</a>
+    <a href="investments.html" class="nav-item"><i class="fas fa-briefcase"></i> Investments</a>
+    <a href="categories.html" class="nav-item"><i class="fas fa-tags"></i> Categories</a>
+    <a href="bills.html" class="nav-item"><i class="fas fa-calendar-alt"></i> Recurring Bills</a>
+    <a href="goals.html" class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
+    <a href="insights.html" class="nav-item"><i class="fas fa-lightbulb"></i> AI Insights</a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
   </div>
   <div class="main">
-    <!-- Row 1: Charts -->
-    <div class="charts-row">
-      <div class="chart">
-        <h3>Spendable vs Budget</h3>
-        <canvas id="spendableChart" class="chart-canvas"></canvas>
-      </div>
-      <div class="chart">
-        <h3>Daily Budget Trend</h3>
-        <canvas id="dailyChart" class="chart-canvas"></canvas>
-      </div>
-    </div>
-    <!-- Row 2: Categories + Transactions -->
-    <div class="tiles-row">
-      <div class="tile">
-        <h3>Top Categories</h3>
-        <div class="categories-list" id="categories-list"></div>
-      </div>
-      <div class="tile">
-        <h3>Transactions To Review</h3>
-        <div id="transactions-list"></div>
-      </div>
-    </div>
-    <!-- Row 3: Income + Recurring Bills -->
-    <div class="bottom-row">
-      <div class="tile">
-        <h3>Monthly Income + Payday Countdown</h3>
-        <div class="highlight" id="income">$0.00</div>
-        <div id="payday-info">Next payday in <span class="due-today" id="payday-countdown">-- days</span></div>
-      </div>
-      <div class="tile">
-        <h3>Recurring Bills (Mock)</h3>
-        <div class="highlight">$1,410 Due</div>
-        <div>Netflix – $15.99</div>
-        <div>Rent – $1,200.00</div>
-        <div class="due-today">Power – $150.00</div>
-        <div>Internet – $45.00</div>
-      </div>
-    </div>
-    <!-- Row 4: Savings Goals + AI Insights -->
-    <div class="extras-row">
-      <div class="tile">
-        <h3>Savings Goals</h3>
-        <div>Trip to Hawaii 🌴</div><div class="goal-bar"><div class="goal-fill" style="background:#39ff14;width:40%"></div></div>
-        <div>Holiday Gifts 🎁</div><div class="goal-bar"><div class="goal-fill" style="background:#9d00ff;width:60%"></div></div>
-        <div>Emergency Fund 💰</div><div class="goal-bar"><div class="goal-fill" style="background:#ffcc00;width:25%"></div></div>
-      </div>
-      <div class="tile">
-        <h3>AI Insights</h3>
-        <p>💡 Food spending is up 20% vs last month.</p>
-        <p>💡 Cutting $50/wk eating out = +$2,600/year saved.</p>
-        <p>💡 You’re on track to hit Hawaii savings by August.</p>
-      </div>
+    <div class="tile">
+      <h3>Top Savings Goals</h3>
+      <div id="top-goals"></div>
     </div>
   </div>
   <script>
-    let dailyBudget = 100;
-    let categoryColors = {};
-
-    async function fetchSettings() {
-      const res = await fetch('/.netlify/functions/get_settings');
-      const data = await res.json();
-      dailyBudget = data.dailyBudget;
-      categoryColors = data.categories;
+    function loadTopGoals() {
+      let goals = JSON.parse(localStorage.getItem("savingsGoals")||"[]");
+      goals = goals.sort((a,b)=> (b.saved/b.target) - (a.saved/a.target));
+      let top = goals.slice(0,3);
+      document.getElementById("top-goals").innerHTML = top.map(g => `
+        <div>${g.name} (${g.saved} / ${g.target})</div>
+        <div class="goal-bar"><div class="goal-fill" style="width:${Math.min(100,(g.saved/g.target*100)).toFixed(1)}%"></div></div>
+      `).join("");
     }
-
-    async function fetchBalances() {
-      const res = await fetch('/.netlify/functions/get_balances');
-      const data = await res.json();
-      let total = 0;
-      data.accounts.forEach(acc => { total += acc.balances.available || 0; });
-      document.getElementById('income').innerText = `$${total.toLocaleString()}`;
-    }
-
-    async function fetchTransactions() {
-      const res = await fetch('/.netlify/functions/get_transactions');
-      const data = await res.json();
-      const txs = data.transactions.slice(0,5);
-      document.getElementById('transactions-list').innerHTML = txs.map(t => `<div>${t.name} – $${Math.abs(t.amount).toFixed(2)}</div>`).join("");
-      buildCharts(data.transactions);
-      buildCategories(data.transactions);
-    }
-
-    function buildCharts(transactions) {
-      const dailySpend = {}; for (let i=0;i<7;i++){ dailySpend[i]=0; }
-      const now = new Date();
-      transactions.forEach(t => {
-        const d = new Date(t.date);
-        const diff = Math.floor((now - d)/(1000*60*60*24));
-        if (diff < 7) dailySpend[6-diff] += Math.abs(t.amount);
-      });
-      const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-      new Chart(document.getElementById('spendableChart').getContext('2d'), {
-        type:'line',
-        data:{ labels:days, datasets:[
-          {label:'Spendable', data:Object.values(dailySpend).map(v=>dailyBudget-v), borderColor:'#39ff14', tension:0.4},
-          {label:'Budget', data:Array(7).fill(dailyBudget), borderColor:'#9d00ff', tension:0.4}
-        ]},
-        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
-      });
-      new Chart(document.getElementById('dailyChart').getContext('2d'), {
-        type:'bar',
-        data:{ labels:days, datasets:[{label:'Daily Spend', data:Object.values(dailySpend), backgroundColor:'#39ff14'}]},
-        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
-      });
-    }
-
-    function buildCategories(transactions) {
-      const sums = {};
-      transactions.forEach(t=>{ const c=t.category?t.category[0]:"Other"; sums[c]=(sums[c]||0)+Math.abs(t.amount); });
-      document.getElementById('categories-list').innerHTML = Object.entries(sums).map(([cat,val])=>{
-        const color = categoryColors[cat]||'#888';
-        return `<div class="category-row"><div class="label">${cat}</div><div class="bar" style="background:${color};width:${Math.min(val/20,100)}%"></div><div class="value">$${val.toFixed(2)}</div></div>`;
-      }).join("");
-    }
-
-    function calculatePaydayCountdown() {
-      const today = new Date();
-      today.setHours(0,0,0,0);
-
-      // Generate rolling biweekly paydays from Jan 10, 2025 onward
-      let reference = new Date("2025-01-10");
-      const paydays = [];
-      while (reference.getFullYear() <= today.getFullYear()+1) {
-        paydays.push(new Date(reference));
-        reference.setDate(reference.getDate() + 14);
-      }
-
-      let nextPayday = null;
-      for (let pd of paydays) {
-        if (pd >= today) { nextPayday = pd; break; }
-      }
-      if (!nextPayday) return;
-
-      let sofi = new Date(nextPayday); sofi.setDate(nextPayday.getDate() - 2);
-
-      let label, soonest;
-      if (today.getTime() === sofi.getTime()) {
-        label = "SoFi Early Deposit (Today)"; soonest = sofi;
-      } else if (today.getTime() === nextPayday.getTime()) {
-        label = "BofA Payday (Today)"; soonest = nextPayday;
-      } else if (today < sofi) {
-        label = "SoFi Early Deposit"; soonest = sofi;
-      } else {
-        label = "BofA Payday"; soonest = nextPayday;
-      }
-
-      const diffDays = Math.ceil((soonest - today) / (1000*60*60*24));
-      document.getElementById('payday-countdown').innerText = diffDays + " days";
-      document.getElementById('payday-info').innerHTML = `Next payday: ${label} in <span class="due-today">${diffDays} days</span>`;
-    }
-
-    function calculateMonthlyIncome() {
-      const today = new Date();
-      const month = today.getMonth();
-      const year = today.getFullYear();
-      // Count paydays in this month
-      let reference = new Date("2025-01-10");
-      const paydays = [];
-      while (reference.getFullYear() <= year) {
-        paydays.push(new Date(reference));
-        reference.setDate(reference.getDate() + 14);
-      }
-      const thisMonth = paydays.filter(pd => pd.getMonth()===month && pd.getFullYear()===year);
-      const netPerPay = 1883.81;
-      const monthlyIncome = thisMonth.length * netPerPay;
-      document.getElementById('income').innerText = `$${monthlyIncome.toLocaleString()}`;
-    }
-
-    (async ()=>{ 
-      await fetchSettings(); 
-      await fetchBalances(); 
-      await fetchTransactions(); 
-      calculatePaydayCountdown();
-      calculateMonthlyIncome();
-    })();
+    loadTopGoals();
   </script>
 </body>
 </html>
