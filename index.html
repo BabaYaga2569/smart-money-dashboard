@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Smart Money Cockpit</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; display:flex; }
-    .sidebar { width:240px; background:#11151d; padding:20px; height:100vh; }
+    .sidebar { width:240px; background:#11151d; padding:20px 0; display:flex; flex-direction:column; height:100vh; box-shadow:2px 0 10px rgba(0,0,0,0.7); }
+    .sidebar h2 { text-align:center; color:#39ff14; margin-bottom:30px; text-shadow:0 0 10px #39ff14; }
+    .nav-item { padding:12px 20px; display:flex; align-items:center; gap:12px; color:#ccc; cursor:pointer; transition:all 0.3s ease; }
+    .nav-item:hover { background:#1a1f2a; color:#39ff14; }
     .main { flex:1; padding:20px; display:flex; flex-direction:column; gap:20px; }
     .charts-row, .tiles-row, .bottom-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
     .chart, .tile { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(57,255,20,0.2); }
@@ -25,11 +29,11 @@
 <body>
   <div class="sidebar">
     <h2>💸 Cockpit</h2>
-    <div>Dashboard</div>
-    <div>Transactions</div>
-    <div>Accounts</div>
-    <div>Categories</div>
-    <div>Settings</div>
+    <div class="nav-item"><i class="fas fa-home"></i> Dashboard</div>
+    <div class="nav-item"><i class="fas fa-list"></i> Transactions</div>
+    <div class="nav-item"><i class="fas fa-university"></i> Accounts</div>
+    <div class="nav-item"><i class="fas fa-tags"></i> Categories</div>
+    <div class="nav-item"><i class="fas fa-cog"></i> Settings</div>
   </div>
   <div class="main">
     <!-- Row 1: Charts -->
@@ -59,7 +63,7 @@
       <div class="tile">
         <h3>Monthly Income + Payday Countdown</h3>
         <div class="highlight" id="income">$0.00</div>
-        <div>Next payday in <span class="due-today">-- days</span></div>
+        <div>Next payday in <span class="due-today" id="payday-countdown">-- days</span></div>
       </div>
       <div class="tile">
         <h3>Recurring Bills (Mock)</h3>
@@ -132,7 +136,44 @@
       }).join("");
     }
 
-    (async ()=>{ await fetchSettings(); await fetchBalances(); await fetchTransactions(); })();
+    function calculatePaydayCountdown() {
+      const today = new Date();
+
+      // Helper to adjust wife's pay for weekends (move to Friday)
+      function adjustForWeekend(date) {
+        if (date.getDay() === 0) date.setDate(date.getDate() - 2); // Sunday -> Friday
+        if (date.getDay() === 6) date.setDate(date.getDate() - 1); // Saturday -> Friday
+        return date;
+      }
+
+      // Your biweekly pay (simulate every 14 days from a reference)
+      const reference = new Date(2025, 0, 3); // Example Friday payday in Jan 2025
+      let nextYourPay = new Date(reference);
+      while (nextYourPay <= today) nextYourPay.setDate(nextYourPay.getDate() + 14);
+      let nextYourSofi = new Date(nextYourPay); nextYourSofi.setDate(nextYourPay.getDate() - 2);
+
+      // Wife's pay: 15th and 30th (adjusted for weekends)
+      let nextWifePay;
+      const day = today.getDate();
+      const month = today.getMonth();
+      if (day < 15) nextWifePay = adjustForWeekend(new Date(today.getFullYear(), month, 15));
+      else if (day < 30) nextWifePay = adjustForWeekend(new Date(today.getFullYear(), month, 30));
+      else nextWifePay = adjustForWeekend(new Date(today.getFullYear(), month + 1, 15));
+
+      // Find the soonest payday
+      const candidates = [nextYourPay, nextYourSofi, nextWifePay];
+      let soonest = candidates.reduce((a,b)=> a<b?a:b);
+      const diffDays = Math.ceil((soonest - today) / (1000*60*60*24));
+
+      document.getElementById('payday-countdown').innerText = diffDays + " days";
+    }
+
+    (async ()=>{ 
+      await fetchSettings(); 
+      await fetchBalances(); 
+      await fetchTransactions(); 
+      calculatePaydayCountdown();
+    })();
   </script>
 </body>
 </html>

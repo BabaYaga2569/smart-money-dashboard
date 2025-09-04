@@ -1,13 +1,14 @@
-Smart Money Cockpit - Phase 5 Layout Fix
+Smart Money Cockpit - Phase 5 Paycycle
 -----------------------------------
-This release restores the polished 3-row cockpit grid layout with Plaid wiring and chart fixes.
+This release adds real payday countdown logic.
 
-Layout:
-- Row 1: Spendable vs Budget | Daily Budget Trend
-- Row 2: Top Categories | Transactions To Review
-- Row 3: Monthly Income | Recurring Bills
+Paydays:
+- Your pay: $400 SoFi (2 days early), $1027.42 BofA (biweekly on payday)
+- Wife's pay: 15th + 30th, moved to Friday if they fall on weekend
+
+Cockpit shows countdown to next upcoming deposit.
 
 Deployment:
 1. Unzip into repo, commit, push.
 2. Ensure Netlify env vars set: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV, PLAID_ACCESS_TOKEN.
-3. Redeploy. Cockpit will show live balances + transactions in proper grid layout.
+3. Redeploy. Cockpit will display live Plaid data and accurate payday countdown.
