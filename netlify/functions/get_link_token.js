@@ -14,8 +14,12 @@ const client = new PlaidApi(config);
 
 exports.handler = async () => {
   try {
-    const response = await client.accountsBalanceGet({
-      access_token: process.env.PLAID_ACCESS_TOKEN,
+    const response = await client.linkTokenCreate({
+      user: { client_user_id: 'user-id' },
+      client_name: 'Smart Money Cockpit',
+      products: ['transactions'],
+      country_codes: ['US'],
+      language: 'en',
     });
     return { statusCode: 200, body: JSON.stringify(response.data) };
   } catch (err) {

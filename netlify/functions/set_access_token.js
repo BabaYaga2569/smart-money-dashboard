@@ -12,11 +12,10 @@ const config = new Configuration({
 
 const client = new PlaidApi(config);
 
-exports.handler = async () => {
+exports.handler = async (event) => {
   try {
-    const response = await client.accountsBalanceGet({
-      access_token: process.env.PLAID_ACCESS_TOKEN,
-    });
+    const body = JSON.parse(event.body);
+    const response = await client.itemPublicTokenExchange({ public_token: body.public_token });
     return { statusCode: 200, body: JSON.stringify(response.data) };
   } catch (err) {
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
