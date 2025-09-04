@@ -5,31 +5,130 @@
   <title>Smart Money Cockpit</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; }
-    .chart-canvas { height: 220px !important; width: 100% !important; display: block; }
-    .chart { min-height: 280px; background:#161b25; margin:20px; padding:20px; border-radius:15px; }
+    body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; display:flex; }
+    .sidebar { width:240px; background:#11151d; padding:20px; height:100vh; }
+    .main { flex:1; padding:20px; display:flex; flex-direction:column; gap:20px; }
+    .chart { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(157,0,255,0.3); min-height:280px; }
+    .chart h3 { margin:0 0 15px 0; color:#9d00ff; text-shadow:0 0 5px #9d00ff; }
+    .chart-canvas { height:220px !important; width:100% !important; display:block; }
+    .tiles-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .tile { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(57,255,20,0.2); }
+    .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
+    .highlight { font-size:24px; font-weight:bold; color:#39ff14; text-shadow:0 0 10px #39ff14, 0 0 15px #9d00ff; }
+    .due-today { color:#ff4d4d; font-weight:bold; text-shadow:0 0 10px #ff4d4d; }
+    .categories-list { display:flex; flex-direction:column; gap:6px; }
+    .category-row { display:flex; align-items:center; gap:10px; font-size:14px; }
+    .bar { height:12px; border-radius:6px; flex-grow:1; transition:width 1.2s ease-in-out; }
+    .label { width:100px; text-align:right; }
+    .value { width:60px; text-align:right; }
   </style>
 </head>
 <body>
-  <div class="chart">
-    <h3>Spendable vs Budget</h3>
-    <canvas id="spendableChart" class="chart-canvas"></canvas>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <div>Dashboard</div>
+    <div>Transactions</div>
+    <div>Accounts</div>
+    <div>Categories</div>
+    <div>Settings</div>
   </div>
-  <div class="chart">
-    <h3>Daily Budget Trend</h3>
-    <canvas id="dailyChart" class="chart-canvas"></canvas>
+  <div class="main">
+    <div class="chart">
+      <h3>Spendable vs Budget</h3>
+      <canvas id="spendableChart" class="chart-canvas"></canvas>
+    </div>
+    <div class="chart">
+      <h3>Daily Budget Trend</h3>
+      <canvas id="dailyChart" class="chart-canvas"></canvas>
+    </div>
+    <div class="tiles-row">
+      <div class="tile">
+        <h3>Top Categories</h3>
+        <div class="categories-list" id="categories-list"></div>
+      </div>
+      <div class="tile">
+        <h3>Transactions To Review</h3>
+        <div id="transactions-list"></div>
+      </div>
+    </div>
+    <div class="tiles-row">
+      <div class="tile">
+        <h3>Monthly Income + Payday Countdown</h3>
+        <div class="highlight" id="income">$0.00</div>
+        <div>Next payday in <span class="due-today">-- days</span></div>
+      </div>
+      <div class="tile">
+        <h3>Recurring Bills (Mock)</h3>
+        <div class="highlight">$1,410 Due</div>
+        <div>Netflix – $15.99</div>
+        <div>Rent – $1,200.00</div>
+        <div class="due-today">Power – $150.00</div>
+        <div>Internet – $45.00</div>
+      </div>
+    </div>
   </div>
   <script>
-    new Chart(document.getElementById('spendableChart').getContext('2d'), {
-      type:'line',
-      data:{labels:['Mon','Tue','Wed'],datasets:[{label:'Spendable',data:[100,80,90],borderColor:'#39ff14'}]},
-      options:{responsive:true,maintainAspectRatio:false}
-    });
-    new Chart(document.getElementById('dailyChart').getContext('2d'), {
-      type:'bar',
-      data:{labels:['Mon','Tue','Wed'],datasets:[{label:'Daily Spend',data:[30,60,40],backgroundColor:'#9d00ff'}]},
-      options:{responsive:true,maintainAspectRatio:false}
-    });
+    let dailyBudget = 100;
+    let categoryColors = {};
+
+    async function fetchSettings() {
+      const res = await fetch('/.netlify/functions/get_settings');
+      const data = await res.json();
+      dailyBudget = data.dailyBudget;
+      categoryColors = data.categories;
+    }
+
+    async function fetchBalances() {
+      const res = await fetch('/.netlify/functions/get_balances');
+      const data = await res.json();
+      let total = 0;
+      data.accounts.forEach(acc => { total += acc.balances.available || 0; });
+      document.getElementById('income').innerText = `$${total.toLocaleString()}`;
+    }
+
+    async function fetchTransactions() {
+      const res = await fetch('/.netlify/functions/get_transactions');
+      const data = await res.json();
+      const txs = data.transactions.slice(0,5);
+      document.getElementById('transactions-list').innerHTML = txs.map(t => `<div>${t.name} – $${Math.abs(t.amount).toFixed(2)}</div>`).join("");
+      buildCharts(data.transactions);
+      buildCategories(data.transactions);
+    }
+
+    function buildCharts(transactions) {
+      const dailySpend = {}; for (let i=0;i<7;i++){ dailySpend[i]=0; }
+      const now = new Date();
+      transactions.forEach(t => {
+        const d = new Date(t.date);
+        const diff = Math.floor((now - d)/(1000*60*60*24));
+        if (diff < 7) dailySpend[6-diff] += Math.abs(t.amount);
+      });
+      const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      new Chart(document.getElementById('spendableChart').getContext('2d'), {
+        type:'line',
+        data:{ labels:days, datasets:[
+          {label:'Spendable', data:Object.values(dailySpend).map(v=>dailyBudget-v), borderColor:'#39ff14', tension:0.4},
+          {label:'Budget', data:Array(7).fill(dailyBudget), borderColor:'#9d00ff', tension:0.4}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+      });
+      new Chart(document.getElementById('dailyChart').getContext('2d'), {
+        type:'bar',
+        data:{ labels:days, datasets:[{label:'Daily Spend', data:Object.values(dailySpend), backgroundColor:'#39ff14'}]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+      });
+    }
+
+    function buildCategories(transactions) {
+      const sums = {};
+      transactions.forEach(t=>{ const c=t.category?t.category[0]:"Other"; sums[c]=(sums[c]||0)+Math.abs(t.amount); });
+      document.getElementById('categories-list').innerHTML = Object.entries(sums).map(([cat,val])=>{
+        const color = categoryColors[cat]||'#888';
+        return `<div class="category-row"><div class="label">${cat}</div><div class="bar" style="background:${color};width:${Math.min(val/20,100)}%"></div><div class="value">$${val.toFixed(2)}</div></div>`;
+      }).join("");
+    }
+
+    (async ()=>{ await fetchSettings(); await fetchBalances(); await fetchTransactions(); })();
   </script>
 </body>
 </html>
