@@ -46,9 +46,25 @@
       `).join("");
     }
 
+    function loadRecentTransactions() {
+      // Mock transactions for now
+      const transactions = [
+        { date: '2025-09-01', account: 'Checking', name: 'Starbucks', amount: -6.50 },
+        { date: '2025-09-01', account: 'Checking', name: 'Netflix', amount: -15.99 },
+        { date: '2025-09-02', account: 'Savings', name: 'Paycheck', amount: 2500.00 },
+        { date: '2025-09-03', account: 'Checking', name: 'Amazon', amount: -45.00 },
+        { date: '2025-09-03', account: 'Credit Card', name: 'Gas Station', amount: -52.34 }
+      ];
+      const top = transactions.slice(0,5);
+      document.getElementById("recent-transactions").innerHTML = top.map(t => `
+        <div>${t.date} - ${t.name} <span style="float:right;color:${t.amount < 0 ? 'red':'lime'}">${fmt.format(t.amount)}</span></div>
+      `).join("");
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       loadTopGoals();
       loadTopBills();
+      loadRecentTransactions();
     });
   </script>
   <style>
@@ -62,6 +78,7 @@
     .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
     .goal-bar { height:16px; border-radius:8px; background:#333; margin:5px 0; overflow:hidden; }
     .goal-fill { height:100%; background:#39ff14; transition:width 1.2s ease-in-out; }
+    .btn-view { display:inline-block; margin-top:10px; padding:5px 10px; background:#39ff14; color:#000; border-radius:6px; text-decoration:none; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -70,6 +87,7 @@
     <a href="index.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
     <a href="goals.html" class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
     <a href="bills.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</a>
+    <a href="transactions.html" class="nav-item"><i class="fas fa-receipt"></i> Transactions</a>
   </div>
   <div class="main">
     <div class="tile">
@@ -80,6 +98,11 @@
       <h3>Upcoming Bills</h3>
       <div id="bills-total"></div>
       <div id="top-bills"></div>
+    </div>
+    <div class="tile">
+      <h3>Recent Transactions</h3>
+      <div id="recent-transactions"></div>
+      <a href="transactions.html" class="btn-view">View All</a>
     </div>
   </div>
 </body>
