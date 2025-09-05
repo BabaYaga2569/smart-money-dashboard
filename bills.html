@@ -1,1 +1,120 @@
-<!-- full bills.html with Firebase CRUD -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recurring Bills (Firebase)</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+    async function loadBills() {
+      const querySnapshot = await getDocs(collection(db, "bills"));
+      let bills = [];
+      querySnapshot.forEach((d) => { bills.push({ id: d.id, ...d.data() }); });
+
+      if(bills.length === 0) {
+        document.getElementById("billsList").innerHTML = "<p>No bills yet. Add one below 👇</p>";
+        return;
+      }
+
+      document.getElementById("billsList").innerHTML = bills.map((b) => `
+        <div class="bill">
+          <b>${b.name}</b> — ${fmt.format(b.amount)} (Due ${b.dueDate}, ${b.frequency})
+          <button onclick="markPaid('${b.id}','${b.dueDate}','${b.frequency}')">Mark Paid</button>
+          <button onclick="deleteBill('${b.id}')">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    async function saveBill(name, amount, dueDate, frequency) {
+      await addDoc(collection(db, "bills"), { name, amount: parseFloat(amount), dueDate, frequency });
+      loadBills();
+    }
+
+    async function markPaid(id, dueDate, frequency) {
+      const ref = doc(db, "bills", id);
+      let nextDue = new Date(dueDate);
+      if(frequency === "Monthly") nextDue.setMonth(nextDue.getMonth()+1);
+      if(frequency === "Weekly") nextDue.setDate(nextDue.getDate()+7);
+      if(frequency === "Yearly") nextDue.setFullYear(nextDue.getFullYear()+1);
+      const newDate = nextDue.toISOString().split('T')[0];
+      await updateDoc(ref, { dueDate: newDate });
+      loadBills();
+    }
+
+    async function deleteBill(id) {
+      await deleteDoc(doc(db, "bills", id));
+      loadBills();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("billForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = billName.value;
+        const amount = billAmount.value;
+        const dueDate = billDueDate.value;
+        const frequency = billFrequency.value;
+        saveBill(name, amount, dueDate, frequency);
+        e.target.reset();
+      };
+      loadBills();
+    });
+
+    window.markPaid = markPaid;
+    window.deleteBill = deleteBill;
+  </script>
+  <style>
+    body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; display:flex; }
+    .sidebar { width:240px; background:#11151d; padding:20px 0; display:flex; flex-direction:column; height:100vh; }
+    .sidebar h2 { text-align:center; color:#39ff14; margin-bottom:30px; text-shadow:0 0 10px #39ff14; }
+    .nav-item { padding:12px 20px; display:flex; align-items:center; gap:12px; color:#ccc; cursor:pointer; transition:all 0.3s ease; text-decoration:none; }
+    .nav-item:hover, .nav-item.active { background:#1a1f2a; color:#39ff14; }
+    .main { flex:1; padding:20px; }
+    .bill { background:#161b25; padding:15px; border-radius:10px; margin:10px 0; }
+    label { display:block; margin-top:10px; }
+    input, select { padding:5px; margin-top:5px; width:100%; }
+    button { margin-top:10px; padding:8px 15px; cursor:pointer; background:#39ff14; border:none; border-radius:6px; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="goals.html" class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
+    <a href="bills.html" class="nav-item active"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</a>
+    <a href="transactions.html" class="nav-item"><i class="fas fa-receipt"></i> Transactions</a>
+  </div>
+  <div class="main">
+    <h2>📑 Recurring Bills</h2>
+    <form id="billForm">
+      <label>Name <input type="text" id="billName" required></label>
+      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
+      <label>Due Date <input type="date" id="billDueDate" required></label>
+      <label>Frequency 
+        <select id="billFrequency">
+          <option>Monthly</option>
+          <option>Weekly</option>
+          <option>Yearly</option>
+        </select>
+      </label>
+      <button type="submit">Add Bill</button>
+    </form>
+    <div id="billsList"></div>
+  </div>
+</body>
+</html>
