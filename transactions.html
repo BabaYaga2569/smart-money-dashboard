@@ -1,1 +1,28 @@
-<!-- full transactions.html with sidebar here -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transactions</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; display:flex; }
+    .sidebar { width:240px; background:#11151d; padding:20px 0; display:flex; flex-direction:column; height:100vh; }
+    .nav-item { padding:12px 20px; color:#ccc; text-decoration:none; }
+    .nav-item.active { background:#1a1f2a; color:#39ff14; }
+    .main { flex:1; padding:20px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="goals.html" class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
+    <a href="bills.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</a>
+    <a href="transactions.html" class="nav-item active"><i class="fas fa-receipt"></i> Transactions</a>
+  </div>
+  <div class="main">
+    <h2>🧾 Transactions</h2>
+    <p>Transactions logic here...</p>
+  </div>
+</body>
+</html>
