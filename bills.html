@@ -26,11 +26,10 @@
       const querySnapshot = await getDocs(collection(db, "bills"));
       let bills = [];
       querySnapshot.forEach((d) => { bills.push({ id: d.id, ...d.data() }); });
-      bills = bills.sort((a,b)=> new Date(a.dueDate) - new Date(b.dueDate));
       document.getElementById("billsList").innerHTML = bills.map((b) => `
         <div class="bill">
           <b>${b.name}</b> — ${fmt.format(b.amount)} (Due ${b.dueDate}, ${b.frequency})
-          <button onclick="markPaid('${b.id}','${b.dueDate}','${b.frequency}')">Mark Paid</button>
+          <button onclick="markPaid('${b.id}')">Mark Paid</button>
           <button onclick="deleteBill('${b.id}')">Delete</button>
         </div>
       `).join("");
@@ -41,14 +40,9 @@
       loadBills();
     }
 
-    async function markPaid(id, dueDate, frequency) {
+    async function markPaid(id) {
       const ref = doc(db, "bills", id);
-      let nextDue = new Date(dueDate);
-      if(frequency === "Monthly") nextDue.setMonth(nextDue.getMonth()+1);
-      if(frequency === "Weekly") nextDue.setDate(nextDue.getDate()+7);
-      if(frequency === "Yearly") nextDue.setFullYear(nextDue.getFullYear()+1);
-      const newDate = nextDue.toISOString().split('T')[0];
-      await updateDoc(ref, { dueDate: newDate });
+      await updateDoc(ref, { paid: true });
       loadBills();
     }
 
@@ -62,7 +56,7 @@
         e.preventDefault();
         const name = billName.value;
         const amount = billAmount.value;
-        const dueDate = billDueDate.value;
+        const dueDate = billDue.value;
         const frequency = billFrequency.value;
         saveBill(name, amount, dueDate, frequency);
         e.target.reset();
@@ -82,9 +76,8 @@
     .main { flex:1; padding:20px; display:flex; flex-direction:column; gap:20px; }
     .tile { background:#161b25; border-radius:15px; padding:20px; box-shadow:0 0 15px rgba(57,255,20,0.2); margin-bottom:20px; }
     .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
-    .bill { background:#161b25; padding:15px; border-radius:10px; margin:10px 0; }
-    label { display:block; margin-top:10px; }
-    input, select { padding:5px; margin-top:5px; width:100%; }
+    .goal-bar { height:16px; border-radius:8px; background:#333; margin:5px 0; overflow:hidden; }
+    .goal-fill { height:100%; background:#39ff14; transition:width 1.2s ease-in-out; }
     button { margin-top:10px; padding:8px 15px; cursor:pointer; background:#39ff14; border:none; border-radius:6px; font-weight:bold; }
   </style>
 </head>
@@ -101,14 +94,8 @@
     <form id="billForm">
       <label>Name <input type="text" id="billName" required></label>
       <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
-      <label>Due Date <input type="date" id="billDueDate" required></label>
-      <label>Frequency 
-        <select id="billFrequency">
-          <option>Monthly</option>
-          <option>Weekly</option>
-          <option>Yearly</option>
-        </select>
-      </label>
+      <label>Due Date <input type="date" id="billDue" required></label>
+      <label>Frequency <select id="billFrequency"><option>Monthly</option><option>Weekly</option><option>Yearly</option></select></label>
       <button type="submit">Add Bill</button>
     </form>
     <div id="billsList"></div>
