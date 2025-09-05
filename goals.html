@@ -20,32 +20,36 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
     const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
     async function loadGoals() {
       const querySnapshot = await getDocs(collection(db, "goals"));
       let goals = [];
       querySnapshot.forEach((d) => { goals.push({ id: d.id, ...d.data() }); });
-
       document.getElementById("goalsList").innerHTML = goals.map((g) => `
         <div class="goal">
           <b>${g.name}</b> - ${fmt.format(g.saved)} / ${fmt.format(g.target)}
           <div class="goal-bar"><div class="goal-fill" style="width:${Math.min(100,(g.saved/g.target*100)).toFixed(1)}%"></div></div>
-          <button onclick="addContribution('${g.id}',${g.saved})">+ Add $100</button>
+          <button onclick="addContribution('${g.id}',100)">+ Add $100</button>
           <button onclick="deleteGoal('${g.id}')">Delete</button>
         </div>
       `).join("");
     }
 
     async function saveGoal(name, target, deadline) {
-      await addDoc(collection(db, "goals"), { name, target: parseFloat(target), deadline, saved: 0 });
+      await addDoc(collection(db, "goals"), { name, target: parseFloat(target), saved: 0, deadline });
       loadGoals();
     }
 
-    async function addContribution(id, currentSaved) {
+    async function addContribution(id, amount) {
       const ref = doc(db, "goals", id);
-      await updateDoc(ref, { saved: currentSaved + 100 });
+      const snapshot = await getDocs(collection(db, "goals"));
+      snapshot.forEach(async (d) => {
+        if(d.id === id) {
+          const newSaved = (d.data().saved || 0) + amount;
+          await updateDoc(ref, { saved: newSaved });
+        }
+      });
       loadGoals();
     }
 
@@ -66,7 +70,6 @@
       loadGoals();
     });
 
-    // Expose functions globally
     window.addContribution = addContribution;
     window.deleteGoal = deleteGoal;
   </script>
@@ -81,8 +84,6 @@
     .tile h3 { margin:0 0 15px 0; color:#39ff14; text-shadow:0 0 5px #39ff14; }
     .goal-bar { height:16px; border-radius:8px; background:#333; margin:5px 0; overflow:hidden; }
     .goal-fill { height:100%; background:#39ff14; transition:width 1.2s ease-in-out; }
-    label { display:block; margin-top:10px; }
-    input { padding:5px; margin-top:5px; width:100%; }
     button { margin-top:10px; padding:8px 15px; cursor:pointer; background:#39ff14; border:none; border-radius:6px; font-weight:bold; }
   </style>
 </head>
@@ -91,13 +92,15 @@
     <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
     <a href="goals.html" class="nav-item active"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
+    <a href="bills.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</a>
+    <a href="transactions.html" class="nav-item"><i class="fas fa-receipt"></i> Transactions</a>
   </div>
   <div class="main">
-    <h2>🎯 Savings Goals</h2>
+    <h2>🐷 Savings Goals</h2>
     <form id="goalForm">
       <label>Name <input type="text" id="goalName" required></label>
-      <label>Target Amount <input type="number" id="goalTarget" required></label>
-      <label>Deadline <input type="date" id="goalDeadline"></label>
+      <label>Target Amount <input type="number" id="goalTarget" step="0.01" required></label>
+      <label>Deadline <input type="date" id="goalDeadline" required></label>
       <button type="submit">Add Goal</button>
     </form>
     <div id="goalsList"></div>
