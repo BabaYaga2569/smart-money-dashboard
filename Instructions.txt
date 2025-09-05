@@ -1,7 +1,7 @@
-📦 Smart Money Cockpit Full Snapshot
+📦 Smart Money Cockpit Synced Snapshot
 
 1. Unzip all files into your repo root.
 2. Commit + push to GitHub.
 3. Netlify redeploys automatically.
-4. Run seed.js ONCE (open bills.html or goals.html in browser console, paste `import('./seed.js')`) to populate mock bills, goals, transactions into Firestore.
-5. Dashboard now shows Spendable Now + Days Left from PayCycle engine.
+4. Use the 🔄 Reset Cockpit Data button on the Dashboard.
+5. Bills, Goals, Transactions pages will now auto-refresh when reset is clicked.

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
   <script src="payCycle.js" defer></script>
+  <script type="module" src="seed.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -28,6 +29,15 @@
         <small id="wifeCheckLabel"></small>
       </div>
     </div>
+    <button id="resetBtn">🔄 Reset Cockpit Data</button>
   </div>
+  <script type="module">
+    import { seed } from './seed.js';
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      await seed();
+      document.dispatchEvent(new Event("cockpitReset"));
+      alert("✅ Cockpit reset with demo data!");
+    });
+  </script>
 </body>
 </html>
