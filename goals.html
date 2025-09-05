@@ -2,8 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Savings Goals</title>
+  <title>Savings Goals (Firebase)</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.firebasestorage.app",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Load all goals
+    async function loadGoals() {
+      const querySnapshot = await getDocs(collection(db, "goals"));
+      let goals = [];
+      querySnapshot.forEach((d) => { goals.push({ id: d.id, ...d.data() }); });
+      document.getElementById("goalsList").innerHTML = goals.map((g) => `
+        <div class="goal">
+          <b>${g.name}</b> - ${g.saved} / ${g.target}
+          <div class="goal-bar"><div class="goal-fill" style="width:${Math.min(100,(g.saved/g.target*100)).toFixed(1)}%"></div></div>
+          <button onclick="addContribution('${g.id}',${g.saved})">+ Add $100</button>
+          <button onclick="deleteGoal('${g.id}')">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    // Add new goal
+    async function saveGoal(name, target, deadline) {
+      await addDoc(collection(db, "goals"), { 
+        name, 
+        target: parseFloat(target), 
+        deadline, 
+        saved: 0 
+      });
+      loadGoals();
+    }
+
+    // Update saved amount
+    async function addContribution(id, currentSaved) {
+      const ref = doc(db, "goals", id);
+      await updateDoc(ref, { saved: currentSaved + 100 });
+      loadGoals();
+    }
+
+    // Delete goal
+    async function deleteGoal(id) {
+      await deleteDoc(doc(db, "goals", id));
+      loadGoals();
+    }
+
+    // Hook up form + load data
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("goalForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = goalName.value;
+        const target = goalTarget.value;
+        const deadline = goalDeadline.value;
+        saveGoal(name, target, deadline);
+        e.target.reset();
+      };
+      loadGoals();
+    });
+  </script>
+
   <style>
     body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; padding:20px; }
     h2 { color:#39ff14; text-shadow:0 0 10px #39ff14; }
@@ -16,7 +90,7 @@
   </style>
 </head>
 <body>
-  <h2>🎯 Savings Goals</h2>
+  <h2>🎯 Savings Goals (Firebase)</h2>
   <form id="goalForm">
     <label>Name <input type="text" id="goalName" required></label>
     <label>Target Amount <input type="number" id="goalTarget" required></label>
@@ -24,34 +98,5 @@
     <button type="submit">Add Goal</button>
   </form>
   <div id="goalsList"></div>
-  <script>
-    function loadGoals() {
-      let goals = JSON.parse(localStorage.getItem("savingsGoals")||"[]");
-      document.getElementById("goalsList").innerHTML = goals.map((g,i) => `
-        <div class="goal">
-          <b>${g.name}</b> - ${g.saved} / ${g.target}
-          <div class="goal-bar"><div class="goal-fill" style="width:${Math.min(100,(g.saved/g.target*100)).toFixed(1)}%"></div></div>
-          <button onclick="addContribution(${i})">+ Add $100</button>
-          <button onclick="deleteGoal(${i})">Delete</button>
-        </div>
-      `).join("");
-    }
-    function saveGoals(goals) { localStorage.setItem("savingsGoals",JSON.stringify(goals)); loadGoals(); }
-    document.getElementById("goalForm").onsubmit = e => {
-      e.preventDefault();
-      let goals = JSON.parse(localStorage.getItem("savingsGoals")||"[]");
-      goals.push({name:goalName.value,target:parseFloat(goalTarget.value),deadline:goalDeadline.value,saved:0});
-      saveGoals(goals); e.target.reset();
-    };
-    function addContribution(i) {
-      let goals = JSON.parse(localStorage.getItem("savingsGoals")||"[]");
-      goals[i].saved += 100; saveGoals(goals);
-    }
-    function deleteGoal(i) {
-      let goals = JSON.parse(localStorage.getItem("savingsGoals")||"[]");
-      goals.splice(i,1); saveGoals(goals);
-    }
-    loadGoals();
-  </script>
 </body>
 </html>

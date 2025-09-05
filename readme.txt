@@ -1,19 +1,15 @@
-Phase 6 - Full Cockpit with Savings Goals
------------------------------------------
-This build integrates the Savings Goals system into the full cockpit.
+Phase 6.2 - Full Cockpit with Firebase Goals
+--------------------------------------------
+This build integrates Firebase Firestore for persistent savings goals.
 
-Features:
-- Dashboard tile shows Top 3 active savings goals (localStorage demo).
-- Savings Goals page (goals.html) for adding/editing/deleting goals and contributions.
-- Sidebar "Savings Goals" link opens goals page.
-- Plaid data, payday countdown, charts, recurring bills all remain functional.
+Files:
+- index.html: Dashboard tile showing Top 3 goals (from Firestore)
+- goals.html: Full editor page to add/edit/delete goals (writes to Firestore)
 
-How it works (demo mode):
-- Goals stored in browser localStorage only.
-- Add a goal (name, target, deadline), then track progress.
-- Contribute $100 increments via button, or delete a goal.
-- Dashboard displays top 3 goals by progress percentage.
+Setup:
+1. Create Firebase project + Firestore DB (done).
+2. Copy your firebaseConfig snippet from Firebase console.
+3. Replace the placeholder config in both index.html and goals.html.
+4. Commit/push to GitHub. Netlify redeploys automatically.
 
-Next steps:
-- Persist goals to backend (Netlify/Firebase) so they survive across devices.
-- Connect AI Insights to goals for recommendations.
+Now your goals will be saved in Firestore, persistent across logouts and devices.
