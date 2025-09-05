@@ -9,7 +9,6 @@
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
       from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-    // ✅ Your Firebase config (fixed storageBucket)
     const firebaseConfig = {
       apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
       authDomain: "smartmoneycockpit-18359.firebaseapp.com",
@@ -19,7 +18,6 @@
       appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
     };
 
-    // Initialize Firebase + Firestore
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -27,6 +25,7 @@
       const querySnapshot = await getDocs(collection(db, "goals"));
       let goals = [];
       querySnapshot.forEach((d) => { goals.push({ id: d.id, ...d.data() }); });
+
       document.getElementById("goalsList").innerHTML = goals.map((g) => `
         <div class="goal">
           <b>${g.name}</b> - ${g.saved} / ${g.target}
@@ -64,6 +63,10 @@
       };
       loadGoals();
     });
+
+    // ✅ Expose functions globally for inline button handlers
+    window.addContribution = addContribution;
+    window.deleteGoal = deleteGoal;
   </script>
   <style>
     body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; padding:20px; }
