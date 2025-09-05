@@ -1,42 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
   <script src="payCycle.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <ul>
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-    </ul>
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item active">Dashboard</a>
+    <a href="goals.html" class="nav-item">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
   </div>
-
-  <div class="dashboard">
-    <div class="tile" id="spendableTile">
-      <h2>Spendable Now</h2>
-      <p id="spendableNow">$0.00</p>
-    </div>
-    <div class="tile" id="daysTile">
-      <h2>Days Left</h2>
-      <p id="daysLeft">0 days</p>
-    </div>
-    <div class="tile">
-      <h2>Savings Goals</h2>
-      <p><a href="goals.html">View Goals</a></p>
-    </div>
-    <div class="tile">
-      <h2>Upcoming Bills</h2>
-      <p><a href="bills.html">View Bills</a></p>
-    </div>
-    <div class="tile">
-      <h2>Recent Transactions</h2>
-      <p><a href="transactions.html">View Transactions</a></p>
+  <div class="main">
+    <h1>Dashboard</h1>
+    <div class="dashboard">
+      <div class="tile">
+        <h2>Spendable Now</h2>
+        <p id="spendableNow">$0.00</p>
+        <small id="nextPaydayLabel"></small>
+      </div>
+      <div class="tile">
+        <h2>Days Left</h2>
+        <p id="daysLeft">0 days</p>
+        <small id="wifeCheckLabel"></small>
+      </div>
     </div>
   </div>
 </body>

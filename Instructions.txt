@@ -1,6 +1,7 @@
-📦 Smart Money Cockpit Deployment
+📦 Smart Money Cockpit Full Snapshot
 
-1. Unzip contents into your project root (GitHub repo).
-2. Commit & push to GitHub.
-3. Netlify will redeploy automatically.
-4. Open index.html → Dashboard will now show "Spendable Now" + "Days Left".
+1. Unzip all files into your repo root.
+2. Commit + push to GitHub.
+3. Netlify redeploys automatically.
+4. Run seed.js ONCE (open bills.html or goals.html in browser console, paste `import('./seed.js')`) to populate mock bills, goals, transactions into Firestore.
+5. Dashboard now shows Spendable Now + Days Left from PayCycle engine.
