@@ -1,7 +1,1 @@
-📦 Smart Money Cockpit Synced Snapshot
-
-1. Unzip all files into your repo root.
-2. Commit + push to GitHub.
-3. Netlify redeploys automatically.
-4. Use the 🔄 Reset Cockpit Data button on the Dashboard.
-5. Bills, Goals, Transactions pages will now auto-refresh when reset is clicked.
+Stage 1: Manual transactions basic structure. Next: add reconciliation + enhancements.

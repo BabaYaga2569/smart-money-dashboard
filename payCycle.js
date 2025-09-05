@@ -1,9 +1,1 @@
-const myPay={total:1883.81,sofi:400,bofa:1483.81,frequency:14};
-const wifePay={fifteenth:1851.04,thirtieth:2139.18};
-function addDays(d,days){let c=new Date(+d);c.setDate(d.getDate()+days);return c;}
-function isWeekend(d){return d.getDay()===0||d.getDay()===6;}
-function getNextMyPayday(today=new Date()){const anchor=new Date("2025-01-10");let next=new Date(anchor);while(next<=today){next=addDays(next,myPay.frequency);}return next;}
-function getNextWifePayday(today=new Date()){let y=today.getFullYear(),m=today.getMonth();let f=new Date(y,m,15);if(isWeekend(f))f.setDate(f.getDate()-(f.getDay()===0?2:1));let t=new Date(y,m,30);if(isWeekend(t))t.setDate(t.getDate()-(t.getDay()===0?2:1));if(today<f)return{date:f,amount:wifePay.fifteenth};if(today<t)return{date:t,amount:wifePay.thirtieth};let nm=new Date(y,m+1,15);if(isWeekend(nm))nm.setDate(nm.getDate()-(nm.getDay()===0?2:1));return{date:nm,amount:wifePay.fifteenth};}
-function calculatePayCycle(today=new Date()){const myNext=getNextMyPayday(today);const wifeNext=getNextWifePayday(today);const daysLeft=Math.ceil((myNext-today)/(1000*60*60*24));let cycleIncome=myPay.total;if(wifeNext.date<=myNext){cycleIncome+=wifeNext.amount;}return{spendableNow:cycleIncome.toFixed(2),daysLeft,nextMyPayday:myNext.toDateString(),nextWifePayday:wifeNext.date.toDateString(),wifeAmount:wifeNext.amount};}
-function updateDashboard(){const r=calculatePayCycle();if(document.getElementById("spendableNow"))document.getElementById("spendableNow").innerText=`$${r.spendableNow}`;if(document.getElementById("daysLeft"))document.getElementById("daysLeft").innerText=`${r.daysLeft} days left`;if(document.getElementById("nextPaydayLabel"))document.getElementById("nextPaydayLabel").innerText=`Next payday: ${r.nextMyPayday}`;if(document.getElementById("wifeCheckLabel"))document.getElementById("wifeCheckLabel").innerText=`Next wife check: ${r.nextWifePayday} ($${r.wifeAmount})`;}
-document.addEventListener("DOMContentLoaded",updateDashboard);
+// PayCycle engine placeholder
