@@ -1,1 +1,31 @@
-<html><body><h1>Dashboard with Spendable + Days Left</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Money Cockpit - Stage 1.1</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="payCycle.js" defer></script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item active">Dashboard</a>
+    <a href="goals.html" class="nav-item">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+  </div>
+  <div class="main">
+    <h1>📊 Dashboard</h1>
+    <div class="dashboard">
+      <div class="tile">
+        <h2>Spendable Now</h2>
+        <p id="spendableNow">$0.00</p>
+      </div>
+      <div class="tile">
+        <h2>Days Left in Cycle</h2>
+        <p id="daysLeft">0 days</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

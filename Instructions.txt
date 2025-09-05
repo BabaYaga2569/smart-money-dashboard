@@ -1,1 +1,10 @@
-Stage 1: Manual transactions basic structure. Next: add reconciliation + enhancements.
+📦 Smart Money Cockpit - Stage 1.1
+
+- Restored full cockpit layout (sidebar + tiles + neon theme).
+- Dashboard shows Spendable Now + Days Left from PayCycle.js.
+- Transactions page: manual entry form connected to Firestore (collection: manual_transactions).
+- Goals + Bills pages are styled placeholders for now.
+
+Next Stage:
+- Add reconciliation with Plaid transactions.
+- Enhance Bills & Goals with requested features.
