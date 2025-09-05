@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <title>Savings Goals (Firebase)</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
       from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
@@ -16,16 +14,15 @@
       apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
       authDomain: "smartmoneycockpit-18359.firebaseapp.com",
       projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.firebasestorage.app",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
       messagingSenderId: "80382766144",
       appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
     };
 
-    // ✅ Initialize Firebase
+    // Initialize Firebase + Firestore
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Load all goals
     async function loadGoals() {
       const querySnapshot = await getDocs(collection(db, "goals"));
       let goals = [];
@@ -40,31 +37,22 @@
       `).join("");
     }
 
-    // Add new goal
     async function saveGoal(name, target, deadline) {
-      await addDoc(collection(db, "goals"), { 
-        name, 
-        target: parseFloat(target), 
-        deadline, 
-        saved: 0 
-      });
+      await addDoc(collection(db, "goals"), { name, target: parseFloat(target), deadline, saved: 0 });
       loadGoals();
     }
 
-    // Update saved amount
     async function addContribution(id, currentSaved) {
       const ref = doc(db, "goals", id);
       await updateDoc(ref, { saved: currentSaved + 100 });
       loadGoals();
     }
 
-    // Delete goal
     async function deleteGoal(id) {
       await deleteDoc(doc(db, "goals", id));
       loadGoals();
     }
 
-    // Hook up form + load data
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("goalForm").onsubmit = (e) => {
         e.preventDefault();
@@ -77,7 +65,6 @@
       loadGoals();
     });
   </script>
-
   <style>
     body { background:#0b0e14; color:#e6e6e6; font-family:sans-serif; margin:0; padding:20px; }
     h2 { color:#39ff14; text-shadow:0 0 10px #39ff14; }

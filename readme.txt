@@ -1,15 +1,20 @@
-Phase 6.2 - Full Cockpit with Firebase Goals
---------------------------------------------
-This build integrates Firebase Firestore for persistent savings goals.
+Phase 6.2 - Firebase Cockpit with CDN Setup
+-------------------------------------------
+This version uses Firebase CDN imports so it runs directly in the browser (no npm needed).
 
 Files:
-- index.html: Dashboard tile showing Top 3 goals (from Firestore)
-- goals.html: Full editor page to add/edit/delete goals (writes to Firestore)
+- index.html: Dashboard with Top 3 savings goals pulled from Firestore
+- goals.html: Full editor page (add, contribute, delete) hooked to Firestore
 
 Setup:
-1. Create Firebase project + Firestore DB (done).
-2. Copy your firebaseConfig snippet from Firebase console.
-3. Replace the placeholder config in both index.html and goals.html.
-4. Commit/push to GitHub. Netlify redeploys automatically.
+1. Unzip into your GitHub repo.
+2. Commit and push, Netlify redeploys automatically.
+3. Open /goals.html and add a test goal.
+4. Refresh dashboard (index.html) and confirm your goal shows in Top 3.
 
-Now your goals will be saved in Firestore, persistent across logouts and devices.
+Config:
+- Firebase CDN imports included at the top of each script.
+- Config keys already embedded from your Firebase project.
+- storageBucket fixed to use .appspot.com (correct format).
+
+Now your cockpit runs live with Firebase persistence.
