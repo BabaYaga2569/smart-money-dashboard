@@ -1,15 +1,18 @@
-Phase 7 - Firebase Cockpit with Recurring Bills
+Phase 8 - Firebase Cockpit with Transactions
 ------------------------------------------------
-This build adds Recurring Bills with full Firestore persistence.
+This build includes:
+- Bills fix (step="0.01" for cents input)
+- New Transactions module with mock data
 
 Files:
-- index.html: Dashboard updated with Upcoming Bills tile showing top 3 bills and total due this month.
-- bills.html: Full CRUD for recurring bills (add, mark paid, delete) with frequency handling.
-- goals.html: Remains unchanged from Phase 6.
+- bills.html: Updated to allow decimal amounts
+- transactions.html: New page showing mock transactions (Plaid ready)
+- index.html: Add Transactions tile (last 5 + View All)
 
 Setup:
-1. Unzip into your GitHub repo (overwrite files).
-2. Commit + push, Netlify redeploys automatically.
-3. Test:
-   - /bills.html -> add a few bills with amounts, due dates, frequencies.
-   - Dashboard /index.html -> shows Top 3 upcoming bills and total due this month.
+1. Unzip into repo and overwrite files.
+2. Commit + push -> Netlify redeploy.
+3. Test /transactions.html (mock data).
+
+Next:
+Hook transactions.html to your Plaid API endpoint via Netlify function.

@@ -94,12 +94,13 @@
     <a href="index.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
     <a href="goals.html" class="nav-item"><i class="fas fa-piggy-bank"></i> Savings Goals</a>
     <a href="bills.html" class="nav-item active"><i class="fas fa-file-invoice-dollar"></i> Recurring Bills</a>
+    <a href="transactions.html" class="nav-item"><i class="fas fa-receipt"></i> Transactions</a>
   </div>
   <div class="main">
     <h2>📑 Recurring Bills</h2>
     <form id="billForm">
       <label>Name <input type="text" id="billName" required></label>
-      <label>Amount <input type="number" id="billAmount" required></label>
+      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
       <label>Due Date <input type="date" id="billDueDate" required></label>
       <label>Frequency 
         <select id="billFrequency">
