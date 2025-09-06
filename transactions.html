@@ -2,115 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Transactions</title>
+  <title>Smart Money Cockpit - Transactions</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Jaguars Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } 
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-    // 🔑 Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
-      projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.appspot.com",
-      messagingSenderId: "80382766144",
-      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // 🔹 Load accounts dynamically
-    async function loadAccounts() {
-      const snap = await getDocs(collection(db, "accounts"));
-      let html = "";
-      snap.forEach(d => {
-        const a = d.data();
-        html += `<option value="${a.name}">${a.name}</option>`;
-      });
-      document.getElementById("txAccount").innerHTML = html;
-    }
-
-    // 🔹 Load transactions (with currency formatting)
-    async function loadTransactions() {
-      const snap = await getDocs(collection(db, "manual_transactions"));
-      let html = "";
-      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      snap.forEach(d => {
-        const t = d.data();
-        html += `
-          <tr>
-            <td>${t.date}</td>
-            <td>${t.account}</td>
-            <td>${t.category}</td>
-            <td>${fmt.format(t.amount)}</td>
-            <td>${t.notes || ""}</td>
-          </tr>`;
-      });
-      document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions yet</td></tr>";
-    }
-
-    // 🔹 Add a new transaction
-    async function addTransaction(e) {
-      e.preventDefault();
-      const data = {
-        date: document.getElementById("txDate").value,
-        account: document.getElementById("txAccount").value,
-        category: document.getElementById("txCategory").value,
-        amount: parseFloat(document.getElementById("txAmount").value),
-        notes: document.getElementById("txNotes").value
-      };
-      await addDoc(collection(db, "manual_transactions"), data);
-      loadTransactions();
-      e.target.reset();
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("manualForm").addEventListener("submit", addTransaction);
-      loadAccounts();
-      loadTransactions();
-    });
-  </script>
 </head>
 <body>
   <div class="sidebar">
-  <h2>💸 Cockpit</h2>
-  <a href="index.html" class="nav-item active">Dashboard</a>
-  <a href="goals.html" class="nav-item">Goals</a>
-  <a href="bills.html" class="nav-item">Bills</a>
-  <a href="transactions.html" class="nav-item">Transactions</a>
-  <a href="settings.html" class="nav-item">Settings</a>
-</div>
-
-    <h<h2>
-  <img src="jags-icon.png" alt="Jaguars Logo"
-       style="height:30px; vertical-align:middle; margin-right:8px;">
-  Transactions
-</h2>
-
+    <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
     <a href="transactions.html" class="nav-item active">Transactions</a>
+    <a href="settings.html" class="nav-item">Settings</a>
   </div>
+
   <div class="main">
-    <h2>
-  <img src="jags-icon.png" alt="Jaguars Logo"
-       style="height:30px; vertical-align:middle; margin-right:8px;">
-  Transactions
-</h2>
+    <h1>
+      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+      Transactions
+    </h1>
 
     <form id="manualForm">
       <label>Date <input type="date" id="txDate" required></label>
-      <label>Account 
+      <label>Account
         <select id="txAccount"></select>
       </label>
-      <label>Category 
+      <label>Category
         <select id="txCategory">
           <option>Car Payment</option>
           <option>Utilities</option>
@@ -120,22 +38,17 @@
           <option>Subscriptions</option>
           <option>Dining/Entertainment</option>
           <option>Shopping</option>
-          <option>Health/Medical</option>
+          <option>Medical</option>
           <option>Home/Garden</option>
           <option>Income/Paycheck</option>
           <option>Transfer Between Banks</option>
-          <option>Cash Withdrawal</option>
-          <option>Investment/Savings</option>
-          <option>Bills/Other</option>
-          <option>Fees</option>
-          <option>Refund/Credit</option>
-          <option>Other</option>
         </select>
       </label>
-      <label>Amount <input type="number" step="0.01" id="txAmount" required></label>
+      <label>Amount <input type="number" id="txAmount" step="0.01" required></label>
       <label>Notes <input type="text" id="txNotes"></label>
       <button type="submit">+ Add Manual Transaction</button>
     </form>
+
     <table>
       <thead>
         <tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr>
@@ -145,3 +58,4 @@
   </div>
 </body>
 </html>
+<!-- TRANSACTIONS (transactions.html) END -->

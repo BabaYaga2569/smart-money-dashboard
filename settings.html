@@ -1,13 +1,14 @@
+<!-- SETTINGS (settings.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings</title>
+  <title>Smart Money Cockpit - Settings</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="sidebar">
-    <h2>🛠️ Cockpit</h2>
+    <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
@@ -16,60 +17,27 @@
   </div>
 
   <div class="main">
-    <h2>⚙️ Settings</h2>
+    <h1>
+      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+      Settings
+    </h1>
 
-    <label>Dashboard Title:
-      <input type="text" id="dashboardTitle" value="Smart Money Cockpit">
-    </label>
-    <br><br>
+    <form id="settingsForm">
+      <label>Theme Color: <input type="color" id="themeColor"></label><br><br>
+      <label>Accent Color: <input type="color" id="accentColor"></label><br><br>
+      <label>Background Color: <input type="color" id="bgColor"></label><br><br>
+      <label>Text Color: <input type="color" id="textColor"></label><br><br>
+      <button type="submit">Save Settings</button>
+    </form>
 
-    <label>Theme Color:
-      <input type="color" id="themeColor" value="#39ff14">
-    </label>
-    <br><br>
-
-    <label>Accent Color:
-      <input type="color" id="accentColor" value="#D7A22A">
-    </label>
-    <br><br>
-
-    <label>Background Color:
-      <input type="color" id="bgColor" value="#0b0e14">
-    </label>
-    <br><br>
-
-    <label>Text Color:
-      <input type="color" id="textColor" value="#e6e6e6">
-    </label>
-    <br><br>
-
-    <label><input type="checkbox" id="demoMode"> Demo Mode</label>
-    <br><br>
-
-    <button onclick="saveSettings()">Save Settings</button>
-
-    <h3>🎨 Team Presets</h3>
-    <label for="teamSelect">Choose a team:</label>
+    <h3>🏈 NFL + Georgia Bulldogs Presets</h3>
     <select id="teamSelect" onchange="applyTeamPreset()">
       <option value="">-- Select Team --</option>
-      <optgroup label="🏈 NFL Teams">
-        <option value="rams">Los Angeles Rams</option>
-        <option value="steelers">Pittsburgh Steelers</option>
-        <option value="jags">Jacksonville Jaguars</option>
-        <option value="cowboys">Dallas Cowboys</option>
-        <option value="packers">Green Bay Packers</option>
-        <option value="patriots">New England Patriots</option>
-        <option value="chiefs">Kansas City Chiefs</option>
-        <!-- (you still have all 32, I trimmed here for readability) -->
-      </optgroup>
-      <optgroup label="🎓 NCAA Teams">
-        <option value="uga">Georgia Bulldogs</option>
-        <option value="bama">Alabama Crimson Tide</option>
-        <option value="lsu">LSU Tigers</option>
-        <option value="ohio">Ohio State Buckeyes</option>
-        <option value="mich">Michigan Wolverines</option>
-        <option value="usc">USC Trojans</option>
-      </optgroup>
+      <option value="rams">LA Rams</option>
+      <option value="steelers">Pittsburgh Steelers</option>
+      <option value="jags">Jacksonville Jaguars</option>
+      <option value="bulldogs">Georgia Bulldogs</option>
+      <!-- (expand to full NFL later if needed) -->
     </select>
   </div>
 
@@ -77,32 +45,14 @@
     function applyTeamPreset() {
       const team = document.getElementById("teamSelect").value;
       const presets = {
-        // --- NFL Examples ---
         rams: {theme:"#003594", accent:"#FFD100", bg:"#002244", text:"#FFFFFF"},
         steelers: {theme:"#101820", accent:"#FFB612", bg:"#101820", text:"#FFFFFF"},
         jags: {theme:"#006778", accent:"#D7A22A", bg:"#101820", text:"#FFFFFF"},
-        cowboys: {theme:"#041E42", accent:"#869397", bg:"#003594", text:"#FFFFFF"},
-        packers: {theme:"#203731", accent:"#FFB612", bg:"#203731", text:"#FFFFFF"},
-        patriots: {theme:"#002244", accent:"#C60C30", bg:"#002244", text:"#FFFFFF"},
-        chiefs: {theme:"#E31837", accent:"#FFB612", bg:"#E31837", text:"#FFFFFF"},
-
-        // --- NCAA Examples ---
-        uga: {theme:"#BA0C2F", accent:"#000000", bg:"#000000", text:"#FFFFFF"}, // Georgia Bulldogs
-        bama: {theme:"#9E1B32", accent:"#FFFFFF", bg:"#000000", text:"#FFFFFF"}, // Alabama Crimson Tide
-        lsu: {theme:"#461D7C", accent:"#FDD023", bg:"#000000", text:"#FFFFFF"},  // LSU Tigers
-        ohio: {theme:"#BB0000", accent:"#666666", bg:"#000000", text:"#FFFFFF"}, // Ohio State
-        mich: {theme:"#00274C", accent:"#FFCB05", bg:"#00274C", text:"#FFFFFF"}, // Michigan
-        usc: {theme:"#990000", accent:"#FFC72C", bg:"#000000", text:"#FFFFFF"}   // USC Trojans
+        bulldogs: {theme:"#BA0C2F", accent:"#000000", bg:"#000000", text:"#FFFFFF"}
       };
 
-      if (team && presets[team]) {
+      if (presets[team]) {
         const p = presets[team];
-        document.getElementById("themeColor").value = p.theme;
-        document.getElementById("accentColor").value = p.accent;
-        document.getElementById("bgColor").value = p.bg;
-        document.getElementById("textColor").value = p.text;
-
-        // Instantly apply
         document.documentElement.style.setProperty("--themeColor", p.theme);
         document.documentElement.style.setProperty("--accentColor", p.accent);
         document.documentElement.style.setProperty("--bgColor", p.bg);
@@ -110,9 +60,27 @@
       }
     }
 
-    function saveSettings() {
-      alert("Settings saved! (Hook into Firestore later)");
-    }
+    document.getElementById("settingsForm").onsubmit = (e) => {
+      e.preventDefault();
+      localStorage.setItem("themeColor", document.getElementById("themeColor").value);
+      localStorage.setItem("accentColor", document.getElementById("accentColor").value);
+      localStorage.setItem("bgColor", document.getElementById("bgColor").value);
+      localStorage.setItem("textColor", document.getElementById("textColor").value);
+      alert("✅ Settings saved!");
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("themeColor").value = localStorage.getItem("themeColor") || "#39ff14";
+      document.getElementById("accentColor").value = localStorage.getItem("accentColor") || "#D7A22A";
+      document.getElementById("bgColor").value = localStorage.getItem("bgColor") || "#0b0e14";
+      document.getElementById("textColor").value = localStorage.getItem("textColor") || "#e6e6e6";
+
+      document.documentElement.style.setProperty("--themeColor", document.getElementById("themeColor").value);
+      document.documentElement.style.setProperty("--accentColor", document.getElementById("accentColor").value);
+      document.documentElement.style.setProperty("--bgColor", document.getElementById("bgColor").value);
+      document.documentElement.style.setProperty("--textColor", document.getElementById("textColor").value);
+    });
   </script>
 </body>
 </html>
+<!-- SETTINGS (settings.html) END -->

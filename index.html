@@ -5,195 +5,58 @@
   <title>Smart Money Cockpit - Dashboard</title>
   <link rel="stylesheet" href="style.css">
   <script src="payCycle.js" defer></script>
-
-  <!-- Jaguars Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 </head>
-
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="sidebar">
-  <h2>💸 Cockpit</h2>
-  <a href="index.html" class="nav-item active">Dashboard</a>
-  <a href="goals.html" class="nav-item">Goals</a>
-  <a href="bills.html" class="nav-item">Bills</a>
-  <a href="transactions.html" class="nav-item">Transactions</a>
-  <a href="settings.html" class="nav-item">Settings</a>
-</div>
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item active">Dashboard</a>
+    <a href="goals.html" class="nav-item">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+    <a href="settings.html" class="nav-item">Settings</a>
+  </div>
 
-
-  <!-- Main -->
   <div class="main">
     <h1>
-  <img src="jags-icon.png" alt="Jaguars Logo" 
-       style="height:40px; vertical-align:middle; margin-right:10px;">
-  Dashboard
-</h1>
+      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+      Dashboard
+    </h1>
 
     <div class="dashboard">
-
-      <!-- Spendable Now -->
       <div class="tile">
         <h2>Spendable Now</h2>
         <p id="spendableNow">$0.00</p>
-        <small id="spendableSub">as of today</small>
       </div>
 
-      <!-- Days Left -->
       <div class="tile">
         <h2>Days Left in Pay Cycle</h2>
-        <p id="daysLeft">0 days</p>
-        <small id="nextPaydayLabel"></small>
+        <p id="daysLeft">0</p>
+        <small id="nextPaydayLabel">Next payday: TBD</small>
       </div>
 
-      <!-- Upcoming Bills -->
       <div class="tile">
         <h2>Upcoming Bills</h2>
-        <ul id="upcomingBills">
-          <li>Loading...</li>
-        </ul>
+        <ul id="upcomingBills"><li>Loading...</li></ul>
       </div>
 
-      <!-- Upcoming Paychecks -->
       <div class="tile">
         <h2>Upcoming Paychecks</h2>
-        <ul id="upcomingPaychecks">
-          <li>Loading...</li>
-        </ul>
+        <ul id="upcomingPaychecks"><li>Loading...</li></ul>
       </div>
 
-      <!-- Goals Progress -->
       <div class="tile">
         <h2>Goals Progress</h2>
         <div id="goalsProgress">Loading...</div>
       </div>
 
-      <!-- Recent Transactions -->
-<div class="tile" onclick="window.location.href='transactions.html'" style="cursor:pointer;">
-  <h2>Recent Transactions</h2>
-  <ul id="recentTx">
-    <li>Loading...</li>
-  </ul>
-  <small style="display:block;margin-top:6px;color:#39ff14;">Click for full list →</small>
-</div>
-
-
+      <div class="tile" onclick="window.location.href='transactions.html'" style="cursor:pointer;">
+        <h2>Recent Transactions</h2>
+        <ul id="recentTx"><li>Loading...</li></ul>
+        <small>Click for full list →</small>
+      </div>
     </div>
   </div>
-
-  <!-- Firebase Loaders -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } 
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
-      projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.appspot.com",
-      messagingSenderId: "80382766144",
-      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // --- Upcoming Bills ---
-    async function loadUpcomingBills() {
-      const snap = await getDocs(collection(db, "bills"));
-      let bills = [];
-      snap.forEach(d => bills.push(d.data()));
-
-      bills.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-      const nextThree = bills.slice(0, 3);
-
-      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      document.getElementById("upcomingBills").innerHTML = nextThree.length
-        ? nextThree.map(b => `<li>${b.name} — ${fmt.format(b.amount)} (Due: ${b.dueDate})</li>`).join("")
-        : "<li>No upcoming bills</li>";
-    }
-
-    // --- Goals Progress ---
-    async function loadGoalsProgress() {
-      const snap = await getDocs(collection(db, "goals"));
-      let goals = [];
-      snap.forEach(d => goals.push(d.data()));
-
-      goals.sort((a, b) => ((b.saved || 0) / b.target) - ((a.saved || 0) / a.target));
-      const topGoals = goals.slice(0, 2); // show top 2
-
-      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      document.getElementById("goalsProgress").innerHTML = topGoals.length
-        ? topGoals.map(g => {
-            const pct = ((g.saved || 0) / g.target * 100).toFixed(1);
-            return `
-              <div style="margin:6px 0;text-align:left;">
-                <b>${g.name}</b> — ${fmt.format(g.saved || 0)} / ${fmt.format(g.target)} (${pct}%)
-                <progress value="${g.saved || 0}" max="${g.target}" style="width:100%;"></progress>
-              </div>
-            `;
-          }).join("")
-        : "<p>No goals yet</p>";
-    }
-
-    // --- Recent Transactions ---
-    async function loadRecentTransactions() {
-      const snap = await getDocs(collection(db, "manual_transactions"));
-      let tx = [];
-      snap.forEach(d => tx.push(d.data()));
-
-      tx.sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
-      const lastFive = tx.slice(0, 5);
-
-      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      document.getElementById("recentTx").innerHTML = lastFive.length
-        ? lastFive.map(t => `<li>${t.date} — ${t.account} — ${t.category} — ${fmt.format(t.amount)}</li>`).join("")
-        : "<li>No transactions yet</li>";
-    }
-
-    // --- Init ---
-    window.addEventListener("DOMContentLoaded", () => {
-      loadUpcomingBills();
-      loadGoalsProgress();
-      loadRecentTransactions();
-    });
-	// --- Load Settings ---
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-async function applySettings() {
-  const snap = await getDoc(doc(db, "settings", "user1"));
-  if (snap.exists()) {
-    const data = snap.data();
-
-    // Update dashboard title
-    document.title = data.title || "Smart Money Cockpit - Dashboard";
-    const h1 = document.querySelector("h1");
-    if (h1) h1.innerText = data.title || "Dashboard";
-
-    // Update theme color
-    if (data.themeColor) {
-      document.documentElement.style.setProperty("--themeColor", data.themeColor);
-    }
-
-    // Store demoMode flag for payCycle.js
-    if (data.demoMode !== undefined) {
-      localStorage.setItem("demoMode", data.demoMode ? "true" : "false");
-    }
-  }
-}
-
-// --- Init ---
-window.addEventListener("DOMContentLoaded", () => {
-  loadUpcomingBills();
-  loadGoalsProgress();
-  loadRecentTransactions();
-  applySettings();   // 👈 add this line
-});
-</script>
-
-  </script>
 </body>
 </html>
