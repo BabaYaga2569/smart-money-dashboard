@@ -7,6 +7,7 @@
   <script src="payCycle.js" defer></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item active">Dashboard</a>
@@ -15,6 +16,7 @@
     <a href="transactions.html" class="nav-item">Transactions</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>📊 Dashboard</h1>
     <div class="dashboard">
@@ -40,24 +42,33 @@
           <li>Loading...</li>
         </ul>
       </div>
-	  <!-- Upcoming Paychecks -->
+
+      <!-- Upcoming Paychecks -->
       <div class="tile">
         <h2>Upcoming Paychecks</h2>
         <ul id="upcomingPaychecks">
           <li>Loading...</li>
-       </ul>
-       </div>
-	   <!-- Goals Progress -->
-       <div class="tile">
-         <h2>Goals Progress</h2>
-         <div id="goalsProgress">Loading...</div>
-       </div>
+        </ul>
+      </div>
 
+      <!-- Goals Progress -->
+      <div class="tile">
+        <h2>Goals Progress</h2>
+        <div id="goalsProgress">Loading...</div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="tile">
+        <h2>Recent Transactions</h2>
+        <ul id="recentTx">
+          <li>Loading...</li>
+        </ul>
+      </div>
 
     </div>
   </div>
 
-   <!-- Firebase Loaders for Upcoming Bills + Goals Progress -->
+  <!-- Firebase Loaders -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getFirestore, collection, getDocs } 
@@ -75,7 +86,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- Upcoming Bills Loader ---
+    // --- Upcoming Bills ---
     async function loadUpcomingBills() {
       const snap = await getDocs(collection(db, "bills"));
       let bills = [];
@@ -90,18 +101,18 @@
         : "<li>No upcoming bills</li>";
     }
 
-    // --- Goals Progress Loader ---
+    // --- Goals Progress ---
     async function loadGoalsProgress() {
       const snap = await getDocs(collection(db, "goals"));
       let goals = [];
       snap.forEach(d => goals.push(d.data()));
 
       goals.sort((a, b) => ((b.saved || 0) / b.target) - ((a.saved || 0) / a.target));
-      const topTwo = goals.slice(0, 2);
+      const topGoals = goals.slice(0, 2); // show top 2
 
       const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      document.getElementById("goalsProgress").innerHTML = topTwo.length
-        ? topTwo.map(g => {
+      document.getElementById("goalsProgress").innerHTML = topGoals.length
+        ? topGoals.map(g => {
             const pct = ((g.saved || 0) / g.target * 100).toFixed(1);
             return `
               <div style="margin:6px 0;text-align:left;">
@@ -113,10 +124,26 @@
         : "<p>No goals yet</p>";
     }
 
-    // --- Init both loaders ---
+    // --- Recent Transactions ---
+    async function loadRecentTransactions() {
+      const snap = await getDocs(collection(db, "manual_transactions"));
+      let tx = [];
+      snap.forEach(d => tx.push(d.data()));
+
+      tx.sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
+      const lastFive = tx.slice(0, 5);
+
+      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      document.getElementById("recentTx").innerHTML = lastFive.length
+        ? lastFive.map(t => `<li>${t.date} — ${t.account} — ${t.category} — ${fmt.format(t.amount)}</li>`).join("")
+        : "<li>No transactions yet</li>";
+    }
+
+    // --- Init ---
     window.addEventListener("DOMContentLoaded", () => {
       loadUpcomingBills();
       loadGoalsProgress();
+      loadRecentTransactions();
     });
   </script>
 </body>
