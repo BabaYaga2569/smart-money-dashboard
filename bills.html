@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bills</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // 🔑 Firebase config (your live project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadBills(){
+      const snap = await getDocs(collection(db,"bills"));
+      let html = "";
+      snap.forEach(d=>{
+        const b = d.data();
+        html += `
+          <div class="bill">
+            💸 <b>${b.name}</b> — $${b.amount} 
+            (Due: ${b.dueDate}, ${b.frequency})
+            <button onclick="markPaid('${d.id}','${b.dueDate}','${b.frequency}')">Mark Paid</button>
+            <button onclick="deleteBill('${d.id}')">Delete</button>
+          </div>`;
+      });
+      document.getElementById("billsList").innerHTML = html || "<p>No bills yet</p>";
+    }
+
+    async function addBill(e){
+      e.preventDefault();
+      const data = {
+        name: billName.value,
+        amount: parseFloat(billAmount.value),
+        dueDate: billDueDate.value,
+        frequency: billFrequency.value
+      };
+      await addDoc(collection(db,"bills"), data);
+      loadBills();
+      e.target.reset();
+    }
+
+    async function markPaid(id,dueDate,frequency){
+      const ref = doc(db,"bills",id);
+      let next = new Date(dueDate);
+      if(frequency==="Weekly") next.setDate(next.getDate()+7);
+      if(frequency==="Biweekly") next.setDate(next.getDate()+14);
+      if(frequency==="Monthly") next.setMonth(next.getMonth()+1);
+      if(frequency==="Quarterly") next.setMonth(next.getMonth()+3);
+      if(frequency==="Yearly") next.setFullYear(next.getFullYear()+1);
+      const newDate = next.toISOString().split('T')[0];
+      await updateDoc(ref,{dueDate:newDate});
+      loadBills();
+    }
+
+    async function deleteBill(id){
+      await deleteDoc(doc(db,"bills",id));
+      loadBills();
+    }
+
+    window.addEventListener("DOMContentLoaded",()=>{
+      document.getElementById("billForm").addEventListener("submit",addBill);
+      loadBills();
+    });
+
+    window.markPaid = markPaid;
+    window.deleteBill = deleteBill;
+  </script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item">Dashboard</a>
+    <a href="goals.html" class="nav-item">Goals</a>
+    <a href="bills.html" class="nav-item active">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+  </div>
+  <div class="main">
+    <h2>📑 Bills</h2>
+    <form id="billForm">
+      <label>Name <input type="text" id="billName" required></label>
+      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
+      <label>Due Date <input type="date" id="billDueDate" required></label>
+      <label>Frequency 
+        <select id="billFrequency">
+          <option>Weekly</option>
+          <option>Biweekly</option>
+          <option>Monthly</option>
+          <option>Quarterly</option>
+          <option>Yearly</option>
+        </select>
+      </label>
+      <button type="submit">+ Add Bill</button>
+    </form>
+    <div id="billsList"></div>
+  </div>
+</body>
+</html>
 <html><body><h1>Bills Page (styled placeholder)</h1></body></html>
