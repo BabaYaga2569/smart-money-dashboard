@@ -47,12 +47,17 @@
           <li>Loading...</li>
        </ul>
        </div>
+	   <!-- Goals Progress -->
+       <div class="tile">
+         <h2>Goals Progress</h2>
+         <div id="goalsProgress">Loading...</div>
+       </div>
 
 
     </div>
   </div>
 
-  <!-- Firebase Loader for Upcoming Bills -->
+   <!-- Firebase Loaders for Upcoming Bills + Goals Progress -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getFirestore, collection, getDocs } 
@@ -70,10 +75,12 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // --- Upcoming Bills Loader ---
     async function loadUpcomingBills() {
       const snap = await getDocs(collection(db, "bills"));
       let bills = [];
       snap.forEach(d => bills.push(d.data()));
+
       bills.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
       const nextThree = bills.slice(0, 3);
 
@@ -83,7 +90,34 @@
         : "<li>No upcoming bills</li>";
     }
 
-    window.addEventListener("DOMContentLoaded", loadUpcomingBills);
+    // --- Goals Progress Loader ---
+    async function loadGoalsProgress() {
+      const snap = await getDocs(collection(db, "goals"));
+      let goals = [];
+      snap.forEach(d => goals.push(d.data()));
+
+      goals.sort((a, b) => ((b.saved || 0) / b.target) - ((a.saved || 0) / a.target));
+      const topTwo = goals.slice(0, 2);
+
+      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      document.getElementById("goalsProgress").innerHTML = topTwo.length
+        ? topTwo.map(g => {
+            const pct = ((g.saved || 0) / g.target * 100).toFixed(1);
+            return `
+              <div style="margin:6px 0;text-align:left;">
+                <b>${g.name}</b> — ${fmt.format(g.saved || 0)} / ${fmt.format(g.target)} (${pct}%)
+                <progress value="${g.saved || 0}" max="${g.target}" style="width:100%;"></progress>
+              </div>
+            `;
+          }).join("")
+        : "<p>No goals yet</p>";
+    }
+
+    // --- Init both loaders ---
+    window.addEventListener("DOMContentLoaded", () => {
+      loadUpcomingBills();
+      loadGoalsProgress();
+    });
   </script>
 </body>
 </html>
