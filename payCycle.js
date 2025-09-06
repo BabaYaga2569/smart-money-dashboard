@@ -1,6 +1,6 @@
 // --- Config ---
-const myPay = { total: 1883.81, sofi: 400, bofa: 1483.81, frequency: 14 };
-const tanciPay = { fifteenth: 1851.04, thirtieth: 2139.18 };
+const myPay = { total: 3000.00, sofi: 400, bofa: 2600.00, frequency: 14 };
+const tanciPay = { fifteenth: 3200.00, thirtieth: 3200.00 };
 
 // --- Helpers ---
 function addDays(d, days) {
