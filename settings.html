@@ -7,7 +7,7 @@
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
+    <h2>🛠️ Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
@@ -16,72 +16,77 @@
   </div>
 
   <div class="main">
-    <h1>⚙️ Settings</h1>
-    <form id="settingsForm">
-      <label>
-        Dashboard Title:
-        <input type="text" id="dashboardTitle" placeholder="Smart Money Cockpit">
-      </label>
-      <br><br>
+    <h2>⚙️ Settings</h2>
 
-      <label>
-        Theme Color:
-        <input type="color" id="themeColor" value="#39ff14">
-      </label>
-      <br><br>
+    <label>Dashboard Title:
+      <input type="text" id="dashboardTitle" value="Smart Money Cockpit">
+    </label>
+    <br><br>
 
-      <label>
-        Demo Mode:
-        <input type="checkbox" id="demoMode">
-      </label>
-      <br><br>
+    <label>Theme Color:
+      <input type="color" id="themeColor" value="#39ff14">
+    </label>
+    <br><br>
 
-      <button type="submit">Save Settings</button>
-    </form>
+    <label>Accent Color:
+      <input type="color" id="accentColor" value="#D7A22A">
+    </label>
+    <br><br>
+
+    <label>Background Color:
+      <input type="color" id="bgColor" value="#0b0e14">
+    </label>
+    <br><br>
+
+    <label>Text Color:
+      <input type="color" id="textColor" value="#e6e6e6">
+    </label>
+    <br><br>
+
+    <label><input type="checkbox" id="demoMode"> Demo Mode</label>
+    <br><br>
+
+    <button onclick="saveSettings()">Save Settings</button>
+
+    <h3>🏈 NFL Team Presets</h3>
+    <label for="teamSelect">Choose a team:</label>
+    <select id="teamSelect" onchange="applyTeamPreset()">
+      <option value="">-- Select Team --</option>
+      <option value="jags">Jacksonville Jaguars</option>
+      <option value="rams">LA Rams</option>
+      <option value="steelers">Pittsburgh Steelers</option>
+      <option value="bulldogs">Georgia Bulldogs (NCAA)</option>
+    </select>
   </div>
 
-  <!-- Firebase + Settings Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } 
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+  <script>
+    function applyTeamPreset() {
+      const team = document.getElementById("teamSelect").value;
+      const presets = {
+        jags: {theme:"#39FF14", accent:"#D7A22A", bg:"#0B0E14", text:"#E6E6E6"},
+        rams: {theme:"#003594", accent:"#FFD100", bg:"#002244", text:"#FFFFFF"},
+        steelers: {theme:"#101820", accent:"#FFB612", bg:"#101820", text:"#FFFFFF"},
+        bulldogs: {theme:"#BA0C2F", accent:"#000000", bg:"#000000", text:"#FFFFFF"}
+      };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
-      projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.appspot.com",
-      messagingSenderId: "80382766144",
-      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
-    };
+      if (team && presets[team]) {
+        const p = presets[team];
+        document.getElementById("themeColor").value = p.theme;
+        document.getElementById("accentColor").value = p.accent;
+        document.getElementById("bgColor").value = p.bg;
+        document.getElementById("textColor").value = p.text;
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const settingsRef = doc(db, "settings", "user1"); // one settings doc per user
-
-    // Load settings on page load
-    async function loadSettings() {
-      const snap = await getDoc(settingsRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        document.getElementById("dashboardTitle").value = data.title || "Smart Money Cockpit";
-        document.getElementById("themeColor").value = data.themeColor || "#39ff14";
-        document.getElementById("demoMode").checked = !!data.demoMode;
+        // Instantly apply colors without hitting Save
+        document.documentElement.style.setProperty("--themeColor", p.theme);
+        document.documentElement.style.setProperty("--accentColor", p.accent);
+        document.documentElement.style.setProperty("--bgColor", p.bg);
+        document.documentElement.style.setProperty("--textColor", p.text);
       }
     }
 
-    // Save settings on form submit
-    document.getElementById("settingsForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const title = document.getElementById("dashboardTitle").value;
-      const themeColor = document.getElementById("themeColor").value;
-      const demoMode = document.getElementById("demoMode").checked;
-
-      await setDoc(settingsRef, { title, themeColor, demoMode });
-      alert("✅ Settings saved!");
-    };
-
-    loadSettings();
+    function saveSettings() {
+      alert("Settings saved! (Hook this into Firestore later)");
+    }
   </script>
 </body>
 </html>
