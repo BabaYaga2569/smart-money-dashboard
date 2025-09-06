@@ -1,6 +1,6 @@
 // --- Config ---
 const myPay = { total: 1883.81, sofi: 400, bofa: 1483.81, frequency: 14 };
-const wifePay = { fifteenth: 1851.04, thirtieth: 2139.18 };
+const tanciPay = { fifteenth: 1851.04, thirtieth: 2139.18 };
 
 // --- Helpers ---
 function addDays(d, days) {
@@ -13,17 +13,19 @@ function isWeekend(d) {
   return d.getDay() === 0 || d.getDay() === 6;
 }
 
-// --- Payday Logic ---
+// --- Payday Logic (Steve) ---
 function getNextMyPayday(today = new Date()) {
-  const anchor = new Date("2025-01-10"); // baseline payday
+  // Anchor to a known Friday (Jan 10, 2025 is a Friday)
+  const anchor = new Date("2025-01-10");
   let next = new Date(anchor);
   while (next <= today) {
     next = addDays(next, myPay.frequency);
   }
-  return next;
+  return next; // always a Friday
 }
 
-function getNextWifePayday(today = new Date()) {
+// --- Payday Logic (Tanci) ---
+function getNextTanciPayday(today = new Date()) {
   let y = today.getFullYear(),
     m = today.getMonth();
 
@@ -33,24 +35,24 @@ function getNextWifePayday(today = new Date()) {
   let t = new Date(y, m, 30);
   if (isWeekend(t)) t.setDate(t.getDate() - (t.getDay() === 0 ? 2 : 1));
 
-  if (today < f) return { date: f, amount: wifePay.fifteenth };
-  if (today < t) return { date: t, amount: wifePay.thirtieth };
+  if (today < f) return { date: f, amount: tanciPay.fifteenth };
+  if (today < t) return { date: t, amount: tanciPay.thirtieth };
 
   let nm = new Date(y, m + 1, 15);
   if (isWeekend(nm)) nm.setDate(nm.getDate() - (nm.getDay() === 0 ? 2 : 1));
 
-  return { date: nm, amount: wifePay.fifteenth };
+  return { date: nm, amount: tanciPay.fifteenth };
 }
 
 // --- Core Calculations ---
 function calculatePayCycle(today = new Date()) {
   const myNext = getNextMyPayday(today);
-  const wifeNext = getNextWifePayday(today);
+  const tanciNext = getNextTanciPayday(today);
 
   const daysLeft = Math.ceil((myNext - today) / (1000 * 60 * 60 * 24));
   let cycleIncome = myPay.total;
-  if (wifeNext.date <= myNext) {
-    cycleIncome += wifeNext.amount;
+  if (tanciNext.date <= myNext) {
+    cycleIncome += tanciNext.amount;
   }
 
   return {
@@ -82,16 +84,21 @@ function updateDashboard() {
 function loadUpcomingPaychecks() {
   const today = new Date();
   const myNext = getNextMyPayday(today);
-  const wifeNextData = getNextWifePayday(today);
+  const tanciNextData = getNextTanciPayday(today);
 
   const fmt = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
 
+  // Steve has 2 parts: SoFi (Wed), BofA (Fri)
+  const steveSofi = new Date(myNext);
+  steveSofi.setDate(myNext.getDate() - 2); // 2 days before Friday
+
   const checks = [
-    { who: "Steve", date: myNext, amount: myPay.total },
-    { who: "Wife", date: wifeNextData.date, amount: wifeNextData.amount },
+    { who: "Steve (SoFi)", date: steveSofi, amount: myPay.sofi },
+    { who: "Steve (BofA)", date: myNext, amount: myPay.bofa },
+    { who: "Tanci", date: tanciNextData.date, amount: tanciNextData.amount },
   ];
 
   if (document.getElementById("upcomingPaychecks")) {
