@@ -1,6 +1,9 @@
 // --- Config ---
-const myPay = { total: 3000.00, sofi: 400, bofa: 2600.00, frequency: 14 };
-const tanciPay = { fifteenth: 3200.00, thirtieth: 3200.00 };
+// Steve's pay split: $400 to SoFi (Wednesday), rest to BofA (Friday)
+const myPay = { total: 3000.00, sofi: 400.00, bofa: 2600.00, frequency: 14 };
+
+// Tanci: same check twice a month (15th and 30th, adjusted for weekends)
+const tanciPay = { amount: 3200.00 };
 
 // --- Helpers ---
 function addDays(d, days) {
@@ -35,13 +38,13 @@ function getNextTanciPayday(today = new Date()) {
   let t = new Date(y, m, 30);
   if (isWeekend(t)) t.setDate(t.getDate() - (t.getDay() === 0 ? 2 : 1));
 
-  if (today < f) return { date: f, amount: tanciPay.fifteenth };
-  if (today < t) return { date: t, amount: tanciPay.thirtieth };
+  if (today < f) return { date: f, amount: tanciPay.amount };
+  if (today < t) return { date: t, amount: tanciPay.amount };
 
   let nm = new Date(y, m + 1, 15);
   if (isWeekend(nm)) nm.setDate(nm.getDate() - (nm.getDay() === 0 ? 2 : 1));
 
-  return { date: nm, amount: tanciPay.fifteenth };
+  return { date: nm, amount: tanciPay.amount };
 }
 
 // --- Core Calculations ---
@@ -93,7 +96,7 @@ function loadUpcomingPaychecks() {
 
   // Steve has 2 parts: SoFi (Wed), BofA (Fri)
   const steveSofi = new Date(myNext);
-  steveSofi.setDate(myNext.getDate() - 2); // 2 days before Friday
+  steveSofi.setDate(myNext.getDate() - 2); // Wednesday before payday Friday
 
   const checks = [
     { who: "Steve (SoFi)", date: steveSofi, amount: myPay.sofi },
