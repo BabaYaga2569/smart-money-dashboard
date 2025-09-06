@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Stage 1.1</title>
+  <title>Smart Money Cockpit - Dashboard</title>
   <link rel="stylesheet" href="style.css">
   <script src="payCycle.js" defer></script>
 </head>
@@ -14,18 +14,68 @@
     <a href="bills.html" class="nav-item">Bills</a>
     <a href="transactions.html" class="nav-item">Transactions</a>
   </div>
+
   <div class="main">
     <h1>📊 Dashboard</h1>
     <div class="dashboard">
+
+      <!-- Spendable Now -->
       <div class="tile">
         <h2>Spendable Now</h2>
         <p id="spendableNow">$0.00</p>
+        <small id="spendableSub">as of today</small>
       </div>
+
+      <!-- Days Left -->
       <div class="tile">
-        <h2>Days Left in Cycle</h2>
+        <h2>Days Left in Pay Cycle</h2>
         <p id="daysLeft">0 days</p>
+        <small id="nextPaydayLabel"></small>
       </div>
+
+      <!-- Upcoming Bills -->
+      <div class="tile">
+        <h2>Upcoming Bills</h2>
+        <ul id="upcomingBills">
+          <li>Loading...</li>
+        </ul>
+      </div>
+
     </div>
   </div>
+
+  <!-- Firebase Loader for Upcoming Bills -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadUpcomingBills() {
+      const snap = await getDocs(collection(db, "bills"));
+      let bills = [];
+      snap.forEach(d => bills.push(d.data()));
+      bills.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      const nextThree = bills.slice(0, 3);
+
+      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      document.getElementById("upcomingBills").innerHTML = nextThree.length
+        ? nextThree.map(b => `<li>${b.name} — ${fmt.format(b.amount)} (Due: ${b.dueDate})</li>`).join("")
+        : "<li>No upcoming bills</li>";
+    }
+
+    window.addEventListener("DOMContentLoaded", loadUpcomingBills);
+  </script>
 </body>
 </html>
