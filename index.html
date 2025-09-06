@@ -152,6 +152,40 @@
       loadGoalsProgress();
       loadRecentTransactions();
     });
+	// --- Load Settings ---
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+async function applySettings() {
+  const snap = await getDoc(doc(db, "settings", "user1"));
+  if (snap.exists()) {
+    const data = snap.data();
+
+    // Update dashboard title
+    document.title = data.title || "Smart Money Cockpit - Dashboard";
+    const h1 = document.querySelector("h1");
+    if (h1) h1.innerText = data.title || "Dashboard";
+
+    // Update theme color
+    if (data.themeColor) {
+      document.documentElement.style.setProperty("--themeColor", data.themeColor);
+    }
+
+    // Store demoMode flag for payCycle.js
+    if (data.demoMode !== undefined) {
+      localStorage.setItem("demoMode", data.demoMode ? "true" : "false");
+    }
+  }
+}
+
+// --- Init ---
+window.addEventListener("DOMContentLoaded", () => {
+  loadUpcomingBills();
+  loadGoalsProgress();
+  loadRecentTransactions();
+  applySettings();   // 👈 add this line
+});
+</script>
+
   </script>
 </body>
 </html>

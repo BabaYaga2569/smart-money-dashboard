@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item">Dashboard</a>
+    <a href="goals.html" class="nav-item">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+    <a href="settings.html" class="nav-item active">Settings</a>
+  </div>
+
+  <div class="main">
+    <h1>⚙️ Settings</h1>
+    <form id="settingsForm">
+      <label>
+        Dashboard Title:
+        <input type="text" id="dashboardTitle" placeholder="Smart Money Cockpit">
+      </label>
+      <br><br>
+
+      <label>
+        Theme Color:
+        <input type="color" id="themeColor" value="#39ff14">
+      </label>
+      <br><br>
+
+      <label>
+        Demo Mode:
+        <input type="checkbox" id="demoMode">
+      </label>
+      <br><br>
+
+      <button type="submit">Save Settings</button>
+    </form>
+  </div>
+
+  <!-- Firebase + Settings Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const settingsRef = doc(db, "settings", "user1"); // one settings doc per user
+
+    // Load settings on page load
+    async function loadSettings() {
+      const snap = await getDoc(settingsRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById("dashboardTitle").value = data.title || "Smart Money Cockpit";
+        document.getElementById("themeColor").value = data.themeColor || "#39ff14";
+        document.getElementById("demoMode").checked = !!data.demoMode;
+      }
+    }
+
+    // Save settings on form submit
+    document.getElementById("settingsForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("dashboardTitle").value;
+      const themeColor = document.getElementById("themeColor").value;
+      const demoMode = document.getElementById("demoMode").checked;
+
+      await setDoc(settingsRef, { title, themeColor, demoMode });
+      alert("✅ Settings saved!");
+    };
+
+    loadSettings();
+  </script>
+</body>
+</html>
