@@ -6,46 +6,55 @@
   <link rel="stylesheet" href="style.css">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-    const firebaseConfig={
-      apiKey:"AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain:"smartmoneycockpit-18359.firebaseapp.com",
-      projectId:"smartmoneycockpit-18359",
-      storageBucket:"smartmoneycockpit-18359.appspot.com",
-      messagingSenderId:"80382766144",
-      appId:"1:80382766144:web:c6e9054fda82c2c90843a5"
+    // 🔑 Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
     };
 
-    const app=initializeApp(firebaseConfig);
-    const db=getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     async function loadTransactions() {
-      const manualSnap = await getDocs(collection(db,"manual_transactions"));
-      let html="";
-      manualSnap.forEach(d=>{
-        const t=d.data();
-        html+=`<tr><td>${t.date}</td><td>${t.account}</td><td>${t.category}</td><td>${t.amount}</td><td>${t.notes||""}</td></tr>`;
+      const snap = await getDocs(collection(db, "manual_transactions"));
+      let html = "";
+      snap.forEach(d => {
+        const t = d.data();
+        html += `
+          <tr>
+            <td>${t.date}</td>
+            <td>${t.account}</td>
+            <td>${t.category}</td>
+            <td>${t.amount}</td>
+            <td>${t.notes || ""}</td>
+          </tr>`;
       });
-      document.getElementById("txBody").innerHTML=html||"<tr><td colspan='5'>No transactions yet</td></tr>";
+      document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions yet</td></tr>";
     }
 
-    async function addTransaction(e){
+    async function addTransaction(e) {
       e.preventDefault();
-      const data={
-        date:document.getElementById("txDate").value,
-        account:document.getElementById("txAccount").value,
-        category:document.getElementById("txCategory").value,
-        amount:parseFloat(document.getElementById("txAmount").value),
-        notes:document.getElementById("txNotes").value
+      const data = {
+        date: document.getElementById("txDate").value,
+        account: document.getElementById("txAccount").value,
+        category: document.getElementById("txCategory").value,
+        amount: parseFloat(document.getElementById("txAmount").value),
+        notes: document.getElementById("txNotes").value
       };
-      await addDoc(collection(db,"manual_transactions"),data);
+      await addDoc(collection(db, "manual_transactions"), data);
       loadTransactions();
       e.target.reset();
     }
 
-    window.addEventListener("DOMContentLoaded",()=>{
-      document.getElementById("manualForm").addEventListener("submit",addTransaction);
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("manualForm").addEventListener("submit", addTransaction);
       loadTransactions();
     });
   </script>
@@ -69,13 +78,36 @@
           <option value="USAA">USAA</option>
         </select>
       </label>
-      <label>Category <input type="text" id="txCategory" required></label>
+      <label>Category 
+        <select id="txCategory">
+          <option>Car Payment</option>
+          <option>Utilities</option>
+          <option>Insurance</option>
+          <option>Groceries</option>
+          <option>Gas for Cars</option>
+          <option>Subscriptions</option>
+          <option>Dining/Entertainment</option>
+          <option>Shopping</option>
+          <option>Health/Medical</option>
+          <option>Home/Garden</option>
+          <option>Income/Paycheck</option>
+          <option>Transfer Between Banks</option>
+          <option>Cash Withdrawal</option>
+          <option>Investment/Savings</option>
+          <option>Bills/Other</option>
+          <option>Fees</option>
+          <option>Refund/Credit</option>
+          <option>Other</option>
+        </select>
+      </label>
       <label>Amount <input type="number" step="0.01" id="txAmount" required></label>
       <label>Notes <input type="text" id="txNotes"></label>
       <button type="submit">+ Add Manual Transaction</button>
     </form>
     <table>
-      <thead><tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr></thead>
+      <thead>
+        <tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr>
+      </thead>
       <tbody id="txBody"></tbody>
     </table>
   </div>
