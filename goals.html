@@ -1,1 +1,103 @@
-<html><body><h1>Goals Page (styled placeholder)</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Goals</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // 🔑 Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c2c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadGoals() {
+      const snap = await getDocs(collection(db, "goals"));
+      let html = "";
+      snap.forEach(d => {
+        const g = d.data();
+        const pct = ((g.saved || 0) / g.target * 100).toFixed(1);
+        html += `
+          <div class="goal">
+            🎯 <b>${g.name}</b> — $${g.saved || 0} / $${g.target} (${pct}%)
+            <progress value="${g.saved || 0}" max="${g.target}"></progress>
+            <div class="increments">
+              <button onclick="contribute('${d.id}',10)">+10</button>
+              <button onclick="contribute('${d.id}',25)">+25</button>
+              <button onclick="contribute('${d.id}',50)">+50</button>
+              <button onclick="contribute('${d.id}',100)">+100</button>
+            </div>
+            <button onclick="deleteGoal('${d.id}')">Delete</button>
+          </div>`;
+      });
+      document.getElementById("goalsList").innerHTML = html || "<p>No goals yet</p>";
+    }
+
+    async function addGoal(e) {
+      e.preventDefault();
+      const data = {
+        name: goalName.value,
+        target: parseFloat(goalTarget.value),
+        saved: 0
+      };
+      await addDoc(collection(db, "goals"), data);
+      loadGoals();
+      e.target.reset();
+    }
+
+    async function contribute(id, amt) {
+      const ref = doc(db, "goals", id);
+      const snap = await getDocs(collection(db, "goals"));
+      snap.forEach(async d => {
+        if (d.id === id) {
+          const g = d.data();
+          await updateDoc(ref, { saved: (g.saved || 0) + amt });
+        }
+      });
+      loadGoals();
+    }
+
+    async function deleteGoal(id) {
+      await deleteDoc(doc(db, "goals", id));
+      loadGoals();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("goalForm").addEventListener("submit", addGoal);
+      loadGoals();
+    });
+
+    window.contribute = contribute;
+    window.deleteGoal = deleteGoal;
+  </script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item">Dashboard</a>
+    <a href="goals.html" class="nav-item active">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+  </div>
+  <div class="main">
+    <h2>🎯 Goals</h2>
+    <form id="goalForm">
+      <label>Name <input type="text" id="goalName" required></label>
+      <label>Target Amount <input type="number" id="goalTarget" step="0.01" required></label>
+      <button type="submit">+ Add Goal</button>
+    </form>
+    <div id="goalsList"></div>
+  </div>
+</body>
+</html>
