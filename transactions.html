@@ -9,7 +9,7 @@
     import { getFirestore, collection, addDoc, getDocs } 
       from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-    // 🔑 Firebase config (your project)
+    // 🔑 Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
       authDomain: "smartmoneycockpit-18359.firebaseapp.com",
@@ -22,7 +22,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 🔹 Load accounts dynamically from Firebase
+    // 🔹 Load accounts dynamically
     async function loadAccounts() {
       const snap = await getDocs(collection(db, "accounts"));
       let html = "";
@@ -33,10 +33,11 @@
       document.getElementById("txAccount").innerHTML = html;
     }
 
-    // 🔹 Load manual transactions
+    // 🔹 Load transactions (with currency formatting)
     async function loadTransactions() {
       const snap = await getDocs(collection(db, "manual_transactions"));
       let html = "";
+      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
       snap.forEach(d => {
         const t = d.data();
         html += `
@@ -44,14 +45,14 @@
             <td>${t.date}</td>
             <td>${t.account}</td>
             <td>${t.category}</td>
-            <td>${t.amount}</td>
+            <td>${fmt.format(t.amount)}</td>
             <td>${t.notes || ""}</td>
           </tr>`;
       });
       document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions yet</td></tr>";
     }
 
-    // 🔹 Add a new manual transaction
+    // 🔹 Add a new transaction
     async function addTransaction(e) {
       e.preventDefault();
       const data = {
@@ -68,7 +69,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("manualForm").addEventListener("submit", addTransaction);
-      loadAccounts();   // 🔑 load accounts dynamically
+      loadAccounts();
       loadTransactions();
     });
   </script>
