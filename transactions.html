@@ -9,7 +9,7 @@
     import { getFirestore, collection, addDoc, getDocs } 
       from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-    // 🔑 Firebase config
+    // 🔑 Firebase config (your project)
     const firebaseConfig = {
       apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
       authDomain: "smartmoneycockpit-18359.firebaseapp.com",
@@ -22,6 +22,18 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 🔹 Load accounts dynamically from Firebase
+    async function loadAccounts() {
+      const snap = await getDocs(collection(db, "accounts"));
+      let html = "";
+      snap.forEach(d => {
+        const a = d.data();
+        html += `<option value="${a.name}">${a.name}</option>`;
+      });
+      document.getElementById("txAccount").innerHTML = html;
+    }
+
+    // 🔹 Load manual transactions
     async function loadTransactions() {
       const snap = await getDocs(collection(db, "manual_transactions"));
       let html = "";
@@ -39,6 +51,7 @@
       document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions yet</td></tr>";
     }
 
+    // 🔹 Add a new manual transaction
     async function addTransaction(e) {
       e.preventDefault();
       const data = {
@@ -55,6 +68,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("manualForm").addEventListener("submit", addTransaction);
+      loadAccounts();   // 🔑 load accounts dynamically
       loadTransactions();
     });
   </script>
@@ -72,13 +86,7 @@
     <form id="manualForm">
       <label>Date <input type="date" id="txDate" required></label>
       <label>Account 
-        <select id="txAccount">
-         <option value="BofA">BofA</option>
-         <option value="SoFi">SoFi</option>
-         <option value="USAA">USAA</option>
-         <option value="CapOne">Capital One</option>
-        </select>
-
+        <select id="txAccount"></select>
       </label>
       <label>Category 
         <select id="txCategory">
