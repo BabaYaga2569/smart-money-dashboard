@@ -1,3 +1,4 @@
+<!-- TRANSACTIONS (transactions.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,44 +19,40 @@
   </div>
 
   <div class="main">
-    <h1>
-      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
-      Transactions
-    </h1>
-
+    <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Transactions</h1>
     <form id="manualForm">
       <label>Date <input type="date" id="txDate" required></label>
-      <label>Account
-        <select id="txAccount"></select>
-      </label>
+      <label>Account <select id="txAccount"></select></label>
       <label>Category
         <select id="txCategory">
-          <option>Car Payment</option>
-          <option>Utilities</option>
-          <option>Insurance</option>
-          <option>Groceries</option>
-          <option>Gas for Cars</option>
-          <option>Subscriptions</option>
-          <option>Dining/Entertainment</option>
-          <option>Shopping</option>
-          <option>Medical</option>
-          <option>Home/Garden</option>
-          <option>Income/Paycheck</option>
-          <option>Transfer Between Banks</option>
+          <option>Car Payment</option><option>Utilities</option><option>Insurance</option>
+          <option>Groceries</option><option>Gas for Cars</option><option>Subscriptions</option>
+          <option>Dining/Entertainment</option><option>Shopping</option><option>Medical</option>
+          <option>Home/Garden</option><option>Income/Paycheck</option><option>Transfer Between Banks</option>
         </select>
       </label>
       <label>Amount <input type="number" id="txAmount" step="0.01" required></label>
       <label>Notes <input type="text" id="txNotes"></label>
       <button type="submit">+ Add Manual Transaction</button>
     </form>
-
     <table>
-      <thead>
-        <tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr>
-      </thead>
+      <thead><tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr></thead>
       <tbody id="txBody"></tbody>
     </table>
   </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const theme = localStorage.getItem("themeColor") || "#39ff14";
+      const accent = localStorage.getItem("accentColor") || "#D7A22A";
+      const bg = localStorage.getItem("bgColor") || "#0b0e14";
+      const text = localStorage.getItem("textColor") || "#e6e6e6";
+      document.documentElement.style.setProperty("--themeColor", theme);
+      document.documentElement.style.setProperty("--accentColor", accent);
+      document.documentElement.style.setProperty("--bgColor", bg);
+      document.documentElement.style.setProperty("--textColor", text);
+    });
+  </script>
 </body>
 </html>
 <!-- TRANSACTIONS (transactions.html) END -->

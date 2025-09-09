@@ -1,3 +1,4 @@
+<!-- GOALS (goals.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,18 +19,27 @@
   </div>
 
   <div class="main">
-    <h1>
-      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
-      Goals
-    </h1>
-
+    <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Goals</h1>
     <form id="goalForm">
       <label>Name <input type="text" id="goalName" required></label>
       <label>Target Amount <input type="number" id="goalTarget" step="0.01" required></label>
-      <button type="submit" style="background:var(--accentColor); color:#fff;">+ Add Goal</button>
+      <button type="submit" style="background:var(--accentColor);color:#fff;">+ Add Goal</button>
     </form>
-
     <div id="goalsList"></div>
   </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const theme = localStorage.getItem("themeColor") || "#39ff14";
+      const accent = localStorage.getItem("accentColor") || "#D7A22A";
+      const bg = localStorage.getItem("bgColor") || "#0b0e14";
+      const text = localStorage.getItem("textColor") || "#e6e6e6";
+      document.documentElement.style.setProperty("--themeColor", theme);
+      document.documentElement.style.setProperty("--accentColor", accent);
+      document.documentElement.style.setProperty("--bgColor", bg);
+      document.documentElement.style.setProperty("--textColor", text);
+    });
+  </script>
 </body>
 </html>
+<!-- GOALS (goals.html) END -->
