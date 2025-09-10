@@ -7,6 +7,59 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit }
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadTransactions() {
+      const q = query(collection(db, "manual_transactions"), orderBy("date", "desc"), limit(10));
+      const snap = await getDocs(q);
+      let html = "";
+      snap.forEach(t => {
+        const tx = t.data();
+        html += `<tr>
+          <td>${tx.date}</td>
+          <td>${tx.account}</td>
+          <td>${tx.category}</td>
+          <td>$${tx.amount}</td>
+          <td>${tx.notes || ""}</td>
+        </tr>`;
+      });
+      document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions</td></tr>";
+    }
+
+    async function addTransaction(e) {
+      e.preventDefault();
+      const data = {
+        date: document.getElementById("txDate").value,
+        account: document.getElementById("txAccount").value,
+        category: document.getElementById("txCategory").value,
+        amount: parseFloat(document.getElementById("txAmount").value),
+        notes: document.getElementById("txNotes").value
+      };
+      await addDoc(collection(db, "manual_transactions"), data);
+      loadTransactions();
+      e.target.reset();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("manualForm").addEventListener("submit", addTransaction);
+      loadTransactions();
+    });
+  </script>
 </head>
 <body>
   <div class="sidebar">
@@ -22,9 +75,16 @@
     <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Transactions</h1>
     <form id="manualForm">
       <label>Date <input type="date" id="txDate" required></label>
-      <label>Account <select id="txAccount"></select></label>
+      <label>Account
+        <select id="txAccount" required>
+          <option value="BofA">BofA</option>
+          <option value="SoFi">SoFi</option>
+          <option value="USAA">USAA</option>
+          <option value="Capital One">Capital One</option>
+        </select>
+      </label>
       <label>Category
-        <select id="txCategory">
+        <select id="txCategory" required>
           <option>Car Payment</option><option>Utilities</option><option>Insurance</option>
           <option>Groceries</option><option>Gas for Cars</option><option>Subscriptions</option>
           <option>Dining/Entertainment</option><option>Shopping</option><option>Medical</option>
@@ -40,20 +100,6 @@
       <tbody id="txBody"></tbody>
     </table>
   </div>
-
-  <!-- Apply theme colors -->
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const theme = localStorage.getItem("themeColor") || "#39ff14";
-      const accent = localStorage.getItem("accentColor") || "#D7A22A";
-      const bg = localStorage.getItem("bgColor") || "#0b0e14";
-      const text = localStorage.getItem("textColor") || "#e6e6e6";
-      document.documentElement.style.setProperty("--themeColor", theme);
-      document.documentElement.style.setProperty("--accentColor", accent);
-      document.documentElement.style.setProperty("--bgColor", bg);
-      document.documentElement.style.setProperty("--textColor", text);
-    });
-  </script>
 </body>
 </html>
 <!-- TRANSACTIONS (transactions.html) END -->

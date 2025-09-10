@@ -7,6 +7,77 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc }
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadBills() {
+      const snap = await getDocs(collection(db, "bills"));
+      let html = "";
+      snap.forEach(b => {
+        const bill = b.data();
+        html += `
+          <div class="bill">
+            <strong>${bill.name}</strong> — $${bill.amount} (Due: ${bill.dueDate}, ${bill.frequency})
+            <button onclick="markPaid('${b.id}','${bill.dueDate}','${bill.frequency}')">Mark Paid</button>
+            <button onclick="deleteBill('${b.id}')">Delete</button>
+          </div>`;
+      });
+      document.getElementById("billsList").innerHTML = html || "<p>No bills yet</p>";
+    }
+
+    async function addBill(e) {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("billName").value,
+        amount: parseFloat(document.getElementById("billAmount").value),
+        dueDate: document.getElementById("billDueDate").value,
+        frequency: document.getElementById("billFrequency").value
+      };
+      await addDoc(collection(db, "bills"), data);
+      loadBills();
+      e.target.reset();
+    }
+
+    async function markPaid(id, dueDate, frequency) {
+      const ref = doc(db, "bills", id);
+      let nextDue = new Date(dueDate);
+      if(frequency === "Monthly") nextDue.setMonth(nextDue.getMonth()+1);
+      if(frequency === "Weekly") nextDue.setDate(nextDue.getDate()+7);
+      if(frequency === "Biweekly") nextDue.setDate(nextDue.getDate()+14);
+      if(frequency === "Quarterly") nextDue.setMonth(nextDue.getMonth()+3);
+      if(frequency === "Yearly") nextDue.setFullYear(nextDue.getFullYear()+1);
+      const newDate = nextDue.toISOString().split('T')[0];
+      await updateDoc(ref, { dueDate: newDate });
+      loadBills();
+    }
+
+    async function deleteBill(id) {
+      await deleteDoc(doc(db, "bills", id));
+      loadBills();
+    }
+
+    window.markPaid = markPaid;
+    window.deleteBill = deleteBill;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("billForm").addEventListener("submit", addBill);
+      loadBills();
+    });
+  </script>
 </head>
 <body>
   <div class="sidebar">
@@ -37,20 +108,6 @@
     </form>
     <div id="billsList"></div>
   </div>
-
-  <!-- Apply theme colors -->
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const theme = localStorage.getItem("themeColor") || "#39ff14";
-      const accent = localStorage.getItem("accentColor") || "#D7A22A";
-      const bg = localStorage.getItem("bgColor") || "#0b0e14";
-      const text = localStorage.getItem("textColor") || "#e6e6e6";
-      document.documentElement.style.setProperty("--themeColor", theme);
-      document.documentElement.style.setProperty("--accentColor", accent);
-      document.documentElement.style.setProperty("--bgColor", bg);
-      document.documentElement.style.setProperty("--textColor", text);
-    });
-  </script>
 </body>
 </html>
 <!-- BILLS (bills.html) END -->

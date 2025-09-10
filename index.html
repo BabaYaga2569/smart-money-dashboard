@@ -21,7 +21,8 @@
 
   <div class="main">
     <h1>
-      <img src="jags-icon.png" alt="Jaguars Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+      <img src="jags-icon.png" alt="Jaguars Logo"
+           style="height:40px; vertical-align:middle; margin-right:10px;">
       Dashboard
     </h1>
 
@@ -39,7 +40,7 @@
     </div>
   </div>
 
-  <!-- Apply theme colors -->
+  <!-- Theme Loader -->
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const theme = localStorage.getItem("themeColor") || "#39ff14";
@@ -55,3 +56,112 @@
 </body>
 </html>
 <!-- DASHBOARD (index.html) END -->
+
+<!-- GOALS (goals.html) START -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Money Cockpit - Goals</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc }
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
+      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
+      projectId: "smartmoneycockpit-18359",
+      storageBucket: "smartmoneycockpit-18359.appspot.com",
+      messagingSenderId: "80382766144",
+      appId: "1:80382766144:web:c6e9054fda82c90843a5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadGoals() {
+      const snap = await getDocs(collection(db, "goals"));
+      let html = "";
+      snap.forEach(g => {
+        const goal = g.data();
+        const pct = ((goal.saved || 0) / goal.target * 100).toFixed(1);
+        html += `
+          <div class="goal">
+            <strong>${goal.name}</strong> — $${goal.saved || 0} / $${goal.target} (${pct}%)
+            <progress value="${goal.saved || 0}" max="${goal.target}" style="width:200px;"></progress>
+            <div>
+              <button onclick="contribute('${g.id}',10)">+10</button>
+              <button onclick="contribute('${g.id}',25)">+25</button>
+              <button onclick="contribute('${g.id}',50)">+50</button>
+              <button onclick="contribute('${g.id}',100)">+100</button>
+              <button onclick="deleteGoal('${g.id}')">Delete</button>
+            </div>
+          </div>`;
+      });
+      document.getElementById("goalsList").innerHTML = html || "<p>No goals yet</p>";
+    }
+
+    async function addGoal(e) {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("goalName").value,
+        target: parseFloat(document.getElementById("goalTarget").value),
+        saved: 0
+      };
+      await addDoc(collection(db, "goals"), data);
+      loadGoals();
+      e.target.reset();
+    }
+
+    async function contribute(id, amt) {
+      const ref = doc(db, "goals", id);
+      const snap = await getDocs(collection(db, "goals"));
+      snap.forEach(async g => {
+        if (g.id === id) {
+          const data = g.data();
+          await updateDoc(ref, { saved: (data.saved || 0) + amt });
+        }
+      });
+      loadGoals();
+    }
+
+    async function deleteGoal(id) {
+      await deleteDoc(doc(db, "goals", id));
+      loadGoals();
+    }
+
+    window.contribute = contribute;
+    window.deleteGoal = deleteGoal;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("goalForm").addEventListener("submit", addGoal);
+      loadGoals();
+    });
+  </script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
+    <a href="index.html" class="nav-item">Dashboard</a>
+    <a href="goals.html" class="nav-item active">Goals</a>
+    <a href="bills.html" class="nav-item">Bills</a>
+    <a href="transactions.html" class="nav-item">Transactions</a>
+    <a href="settings.html" class="nav-item">Settings</a>
+  </div>
+
+  <div class="main">
+    <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Goals</h1>
+    <form id="goalForm">
+      <label>Name <input type="text" id="goalName" required></label>
+      <label>Target Amount <input type="number" id="goalTarget" step="0.01" required></label>
+      <button type="submit">+ Add Goal</button>
+    </form>
+    <div id="goalsList"></div>
+  </div>
+</body>
+</html>
+<!-- GOALS (goals.html) END -->
