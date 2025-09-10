@@ -1,11 +1,22 @@
+/* Global Theme Variables (defaults, overwritten by JS) */
+:root {
+  --themeColor: #39ff14;
+  --accentColor: #ffcc00;
+  --backgroundColor: #0b0e14;
+  --textColor: #e6e6e6;
+  --contrastText: #000;
+}
+
+/* Base Styles */
 body {
   margin: 0;
   font-family: sans-serif;
-  background: var(--bgColor, #0b0e14);
-  color: var(--textColor, #e6e6e6);
+  background: var(--backgroundColor);
+  color: var(--textColor);
   display: flex;
 }
 
+/* Sidebar */
 .sidebar {
   width: 220px;
   background: #11151d;
@@ -18,11 +29,12 @@ body {
 }
 
 .sidebar h2 {
-  color: var(--themeColor, #39ff14);
+  color: var(--themeColor);
   margin-bottom: 30px;
-  text-shadow: 0 0 10px var(--themeColor, #39ff14);
+  text-shadow: 0 0 10px var(--accentColor);
 }
 
+/* Nav Items */
 .nav-item {
   padding: 12px 20px;
   display: block;
@@ -33,49 +45,90 @@ body {
 
 .nav-item:hover,
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--themeColor, #39ff14);
-  box-shadow: inset 0 0 10px var(--accentColor, #daa520);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--contrastText);
+  border-left: 4px solid var(--themeColor);
 }
 
+/* Main Layout */
 .main {
   flex: 1;
   padding: 20px;
   margin-left: 220px;
 }
 
+/* Dashboard Grid */
 .dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
+/* Tiles */
 .tile {
   background: #161b25;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px var(--accentColor, #daa520);
+  box-shadow: 0 0 10px var(--accentColor);
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tile h2 {
   margin: 0 0 10px;
-  color: var(--themeColor, #39ff14);
+  color: var(--themeColor);
 }
 
+/* Buttons */
 button {
   margin-top: 10px;
   padding: 8px 15px;
-  background: var(--themeColor, #39ff14);
+  background: var(--themeColor);
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  color: #000;
+  color: var(--contrastText);
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background: var(--accentColor, #daa520);
-  transform: scale(1.05);
+  background: var(--accentColor);
+  color: var(--contrastText);
+  transform: translateY(-2px);
+}
+
+/* Inputs */
+input, select {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid var(--accentColor);
+  border-radius: 4px;
+  background: #0b0e14;
+  color: var(--textColor);
+}
+
+/* Progress Bars */
+progress {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+  background: #333;
+}
+
+progress::-webkit-progress-value {
+  background: var(--themeColor);
+}
+
+progress::-moz-progress-bar {
+  background: var(--themeColor);
+}
+
+/* Headings */
+h1, h2 {
+  font-weight: bold;
 }
