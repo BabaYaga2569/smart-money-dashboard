@@ -1,65 +1,32 @@
-<!-- TRANSACTIONS (transactions.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Transactions</title>
+  <title>Transactions - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit }
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
-      projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.appspot.com",
-      messagingSenderId: "80382766144",
-      appId: "1:80382766144:web:c6e9054fda82c90843a5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadTransactions() {
-      const q = query(collection(db, "manual_transactions"), orderBy("date", "desc"), limit(10));
-      const snap = await getDocs(q);
-      let html = "";
-      snap.forEach(t => {
-        const tx = t.data();
-        html += `<tr>
-          <td>${tx.date}</td>
-          <td>${tx.account}</td>
-          <td>${tx.category}</td>
-          <td>$${tx.amount}</td>
-          <td>${tx.notes || ""}</td>
-        </tr>`;
-      });
-      document.getElementById("txBody").innerHTML = html || "<tr><td colspan='5'>No transactions</td></tr>";
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: var(--bg-color, #161b25);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
-
-    async function addTransaction(e) {
-      e.preventDefault();
-      const data = {
-        date: document.getElementById("txDate").value,
-        account: document.getElementById("txAccount").value,
-        category: document.getElementById("txCategory").value,
-        amount: parseFloat(document.getElementById("txAmount").value),
-        notes: document.getElementById("txNotes").value
-      };
-      await addDoc(collection(db, "manual_transactions"), data);
-      loadTransactions();
-      e.target.reset();
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      text-align: left;
     }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("manualForm").addEventListener("submit", addTransaction);
-      loadTransactions();
-    });
-  </script>
+    th {
+      background: var(--theme-color, #39ff14);
+      color: var(--text-color, #fff);
+    }
+    tr:hover {
+      background: rgba(255,255,255,0.05);
+    }
+  </style>
 </head>
 <body>
   <div class="sidebar">
@@ -72,34 +39,50 @@
   </div>
 
   <div class="main">
-    <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Transactions</h1>
-    <form id="manualForm">
-      <label>Date <input type="date" id="txDate" required></label>
-      <label>Account
-        <select id="txAccount" required>
-          <option value="BofA">BofA</option>
-          <option value="SoFi">SoFi</option>
-          <option value="USAA">USAA</option>
-          <option value="Capital One">Capital One</option>
-        </select>
-      </label>
-      <label>Category
-        <select id="txCategory" required>
-          <option>Car Payment</option><option>Utilities</option><option>Insurance</option>
-          <option>Groceries</option><option>Gas for Cars</option><option>Subscriptions</option>
-          <option>Dining/Entertainment</option><option>Shopping</option><option>Medical</option>
-          <option>Home/Garden</option><option>Income/Paycheck</option><option>Transfer Between Banks</option>
-        </select>
-      </label>
-      <label>Amount <input type="number" id="txAmount" step="0.01" required></label>
-      <label>Notes <input type="text" id="txNotes"></label>
-      <button type="submit">+ Add Manual Transaction</button>
-    </form>
+    <h1>
+      <img class="team-logo" src="" alt="Team Logo"
+           style="height:40px;vertical-align:middle;margin-right:10px;">
+      Transactions
+    </h1>
+
     <table>
-      <thead><tr><th>Date</th><th>Account</th><th>Category</th><th>Amount</th><th>Notes</th></tr></thead>
-      <tbody id="txBody"></tbody>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>09/10</td><td>Starbucks</td><td>Coffee</td><td>-$6.50</td></tr>
+        <tr><td>09/09</td><td>Amazon</td><td>Shopping</td><td>-$89.99</td></tr>
+        <tr><td>09/08</td><td>Payroll</td><td>Income</td><td>+$1,483.81</td></tr>
+      </tbody>
     </table>
   </div>
+
+  <!-- Loader Script -->
+  <script>
+    function applyTheme(theme, accent, bg, text) {
+      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
+      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
+      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
+      if (text) document.documentElement.style.setProperty("--text-color", text);
+    }
+    function updateLogo(path) {
+      if (!path) return;
+      document.querySelectorAll(".team-logo").forEach(img => img.src = path);
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+      const logo = localStorage.getItem("teamLogo");
+      if (logo) updateLogo(logo);
+      const theme = localStorage.getItem("themeColor");
+      const accent = localStorage.getItem("accentColor");
+      const bg = localStorage.getItem("bgColor");
+      const text = localStorage.getItem("textColor");
+      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
+    });
+  </script>
 </body>
 </html>
-<!-- TRANSACTIONS (transactions.html) END -->

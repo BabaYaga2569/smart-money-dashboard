@@ -1,83 +1,24 @@
-<!-- BILLS (bills.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Bills</title>
+  <title>Bills - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc }
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAte0Mkww-fdYvlUTPPVDbEUxTMgmBrf7o",
-      authDomain: "smartmoneycockpit-18359.firebaseapp.com",
-      projectId: "smartmoneycockpit-18359",
-      storageBucket: "smartmoneycockpit-18359.appspot.com",
-      messagingSenderId: "80382766144",
-      appId: "1:80382766144:web:c6e9054fda82c90843a5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadBills() {
-      const snap = await getDocs(collection(db, "bills"));
-      let html = "";
-      snap.forEach(b => {
-        const bill = b.data();
-        html += `
-          <div class="bill">
-            <strong>${bill.name}</strong> — $${bill.amount} (Due: ${bill.dueDate}, ${bill.frequency})
-            <button onclick="markPaid('${b.id}','${bill.dueDate}','${bill.frequency}')">Mark Paid</button>
-            <button onclick="deleteBill('${b.id}')">Delete</button>
-          </div>`;
-      });
-      document.getElementById("billsList").innerHTML = html || "<p>No bills yet</p>";
+  <style>
+    .bill-list {
+      margin-top: 20px;
     }
-
-    async function addBill(e) {
-      e.preventDefault();
-      const data = {
-        name: document.getElementById("billName").value,
-        amount: parseFloat(document.getElementById("billAmount").value),
-        dueDate: document.getElementById("billDueDate").value,
-        frequency: document.getElementById("billFrequency").value
-      };
-      await addDoc(collection(db, "bills"), data);
-      loadBills();
-      e.target.reset();
+    .bill {
+      background: var(--bg-color, #161b25);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     }
-
-    async function markPaid(id, dueDate, frequency) {
-      const ref = doc(db, "bills", id);
-      let nextDue = new Date(dueDate);
-      if(frequency === "Monthly") nextDue.setMonth(nextDue.getMonth()+1);
-      if(frequency === "Weekly") nextDue.setDate(nextDue.getDate()+7);
-      if(frequency === "Biweekly") nextDue.setDate(nextDue.getDate()+14);
-      if(frequency === "Quarterly") nextDue.setMonth(nextDue.getMonth()+3);
-      if(frequency === "Yearly") nextDue.setFullYear(nextDue.getFullYear()+1);
-      const newDate = nextDue.toISOString().split('T')[0];
-      await updateDoc(ref, { dueDate: newDate });
-      loadBills();
+    .bill strong {
+      color: var(--theme-color, #39ff14);
     }
-
-    async function deleteBill(id) {
-      await deleteDoc(doc(db, "bills", id));
-      loadBills();
-    }
-
-    window.markPaid = markPaid;
-    window.deleteBill = deleteBill;
-
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("billForm").addEventListener("submit", addBill);
-      loadBills();
-    });
-  </script>
+  </style>
 </head>
 <body>
   <div class="sidebar">
@@ -90,24 +31,40 @@
   </div>
 
   <div class="main">
-    <h1><img src="jags-icon.png" alt="Jaguars Logo" style="height:40px;vertical-align:middle;margin-right:10px;">Bills</h1>
-    <form id="billForm">
-      <label>Name <input type="text" id="billName" required></label>
-      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
-      <label>Due Date <input type="date" id="billDueDate" required></label>
-      <label>Frequency
-        <select id="billFrequency">
-          <option>Weekly</option>
-          <option>Biweekly</option>
-          <option>Monthly</option>
-          <option>Quarterly</option>
-          <option>Yearly</option>
-        </select>
-      </label>
-      <button type="submit">+ Add Bill</button>
-    </form>
-    <div id="billsList"></div>
+    <h1>
+      <img class="team-logo" src="" alt="Team Logo"
+           style="height:40px;vertical-align:middle;margin-right:10px;">
+      Bills
+    </h1>
+
+    <div class="bill-list">
+      <div class="bill"><strong>Rent</strong> — $1,200 due Sep 30</div>
+      <div class="bill"><strong>Internet</strong> — $80 due Oct 2</div>
+      <div class="bill"><strong>Electric</strong> — $150 due Oct 5</div>
+    </div>
   </div>
+
+  <!-- Loader Script -->
+  <script>
+    function applyTheme(theme, accent, bg, text) {
+      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
+      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
+      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
+      if (text) document.documentElement.style.setProperty("--text-color", text);
+    }
+    function updateLogo(path) {
+      if (!path) return;
+      document.querySelectorAll(".team-logo").forEach(img => img.src = path);
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+      const logo = localStorage.getItem("teamLogo");
+      if (logo) updateLogo(logo);
+      const theme = localStorage.getItem("themeColor");
+      const accent = localStorage.getItem("accentColor");
+      const bg = localStorage.getItem("bgColor");
+      const text = localStorage.getItem("textColor");
+      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
+    });
+  </script>
 </body>
 </html>
-<!-- BILLS (bills.html) END -->

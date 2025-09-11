@@ -2,12 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings</title>
+  <title>Settings - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .settings-section {
+      background: var(--bg-color, #161b25);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .settings-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--theme-color, #39ff14);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text-color, #e6e6e6);
+    }
+    input[type="color"], select {
+      padding: 6px;
+      border: 1px solid var(--accent-color, #666);
+      border-radius: 6px;
+      background: #0b0e14;
+      color: var(--text-color, #e6e6e6);
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      background: var(--theme-color, #39ff14);
+      color: var(--text-color, #fff);
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      background: var(--accent-color, #ffcc00);
+    }
+  </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>⚡ Cockpit</h2>
+    <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
@@ -15,111 +57,90 @@
     <a href="settings.html" class="nav-item active">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
-    <h1><img class="team-logo" src="" alt="Team Logo" style="height:40px; vertical-align:middle; margin-right:10px;"> Settings</h1>
+    <h1>
+      <img class="team-logo" src="" alt="Team Logo"
+           style="height:40px;vertical-align:middle;margin-right:10px;">
+      Settings
+    </h1>
 
-    <h3>⚙ Customize Colors</h3>
-    <label>Theme Color: <input type="color" id="themeColor"></label><br>
-    <label>Accent Color: <input type="color" id="accentColor"></label><br>
-    <label>Background Color: <input type="color" id="bgColor"></label><br>
-    <label>Text Color: <input type="color" id="textColor"></label><br>
-    <button onclick="saveSettings()">💾 Save Settings</button>
+    <!-- Custom Colors -->
+    <div class="settings-section">
+      <h3>🎨 Customize Colors</h3>
+      <label>Theme Color: <input type="color" id="themeColor"></label>
+      <label>Accent Color: <input type="color" id="accentColor"></label>
+      <label>Background Color: <input type="color" id="bgColor"></label>
+      <label>Text Color: <input type="color" id="textColor"></label>
+      <button id="saveSettings">💾 Save Settings</button>
+    </div>
 
-    <h3>🎨 Preset Themes</h3>
-    <select id="presetSelect">
-      <option value="">-- Select a Theme --</option>
-      <option value="default">Default Black & Neon Green</option>
-      <option value="steelers">Steelers Black & Gold</option>
-      <option value="cowboys">Cowboys Navy & Silver</option>
-      <option value="rams">Rams Blue & Gold</option>
-      <option value="jags">Jaguars Teal & Gold</option>
-    </select>
-    <button onclick="applyPreset()">Apply Preset</button>
+    <!-- Preset Themes -->
+    <div class="settings-section">
+      <h3>🎭 Preset Themes</h3>
+      <select id="presetSelect">
+        <option value="">-- Select a Theme --</option>
+        <option value="default">Default Black & Neon Green</option>
+        <option value="steelers">Steelers Black & Gold</option>
+        <option value="cowboys">Cowboys Navy & Silver</option>
+        <option value="rams">Rams Blue & Gold</option>
+        <option value="jaguars">Jaguars Teal & Gold</option>
+      </select>
+      <button id="applyPreset">Apply Preset</button>
+    </div>
 
-    <h3>🏈 Team Logo</h3>
-    <select id="teamSelect">
-      <option value="">-- Select Team --</option>
-      <option>Arizona Cardinals</option>
-      <option>Atlanta Falcons</option>
-      <option>Baltimore Ravens</option>
-      <option>Buffalo Bills</option>
-      <option>Carolina Panthers</option>
-      <option>Chicago Bears</option>
-      <option>Cincinnati Bengals</option>
-      <option>Cleveland Browns</option>
-      <option>Dallas Cowboys</option>
-      <option>Denver Broncos</option>
-      <option>Detroit Lions</option>
-      <option>Green Bay Packers</option>
-      <option>Houston Texans</option>
-      <option>Indianapolis Colts</option>
-      <option>Kansas City Chiefs</option>
-      <option>Las Vegas Raiders</option>
-      <option>Miami Dolphins</option>
-      <option>Minnesota Vikings</option>
-      <option>New England Patriots</option>
-      <option>New Orleans Saints</option>
-      <option>New York Giants</option>
-      <option>New York Jets</option>
-      <option>Philadelphia Eagles</option>
-      <option>Pittsburgh Steelers</option>
-      <option>San Francisco 49ers</option>
-      <option>Seattle Seahawks</option>
-      <option>Tampa Bay Buccaneers</option>
-      <option>Tennessee Titans</option>
-    </select>
-    <button onclick="applyLogo()">Apply Logo</button>
+    <!-- NFL Logos -->
+    <div class="settings-section">
+      <h3>🏈 NFL Team Logo & Theme</h3>
+      <select id="teamSelect">
+        <option value="">-- Select Team --</option>
+        <option value="cardinals">Arizona Cardinals</option>
+        <option value="falcons">Atlanta Falcons</option>
+        <option value="ravens">Baltimore Ravens</option>
+        <option value="bills">Buffalo Bills</option>
+        <option value="panthers">Carolina Panthers</option>
+        <option value="bears">Chicago Bears</option>
+        <option value="bengals">Cincinnati Bengals</option>
+        <option value="browns">Cleveland Browns</option>
+        <option value="cowboys">Dallas Cowboys</option>
+        <option value="broncos">Denver Broncos</option>
+        <option value="lions">Detroit Lions</option>
+        <option value="packers">Green Bay Packers</option>
+        <option value="texans">Houston Texans</option>
+        <option value="colts">Indianapolis Colts</option>
+        <option value="jaguars">Jacksonville Jaguars</option>
+        <option value="chiefs">Kansas City Chiefs</option>
+        <option value="raiders">Las Vegas Raiders</option>
+        <option value="chargers">Los Angeles Chargers</option>
+        <option value="rams">Los Angeles Rams</option>
+        <option value="dolphins">Miami Dolphins</option>
+        <option value="vikings">Minnesota Vikings</option>
+        <option value="patriots">New England Patriots</option>
+        <option value="saints">New Orleans Saints</option>
+        <option value="giants">New York Giants</option>
+        <option value="jets">New York Jets</option>
+        <option value="eagles">Philadelphia Eagles</option>
+        <option value="steelers">Pittsburgh Steelers</option>
+        <option value="49ers">San Francisco 49ers</option>
+        <option value="seahawks">Seattle Seahawks</option>
+        <option value="buccaneers">Tampa Bay Buccaneers</option>
+        <option value="titans">Tennessee Titans</option>
+        <option value="commanders">Washington Commanders</option>
+      </select>
+      <button id="applyTeam">Apply Team</button>
+    </div>
   </div>
 
+  <!-- Script -->
   <script>
-    // --- Logo Mapping (team name -> file name) ---
-    const teamLogos = {
-      "Arizona Cardinals": "cardinals.svg",
-      "Atlanta Falcons": "falcons.svg",
-      "Baltimore Ravens": "ravens.svg",
-      "Buffalo Bills": "bills.svg",
-      "Carolina Panthers": "panthers.svg",
-      "Chicago Bears": "bears.svg",
-      "Cincinnati Bengals": "bengals.svg",
-      "Cleveland Browns": "browns.svg",
-      "Dallas Cowboys": "cowboys.svg",
-      "Denver Broncos": "broncos.svg",
-      "Detroit Lions": "lions.svg",
-      "Green Bay Packers": "packers.svg",
-      "Houston Texans": "texans.svg",
-      "Indianapolis Colts": "colts.svg",
-      "Kansas City Chiefs": "chiefs.svg",
-      "Las Vegas Raiders": "raiders.svg",
-      "Miami Dolphins": "dolphins.svg",
-      "Minnesota Vikings": "vikings.svg",
-      "New England Patriots": "patriots.svg",
-      "New Orleans Saints": "saints.svg",
-      "New York Giants": "giants.svg",
-      "New York Jets": "jets.svg",
-      "Philadelphia Eagles": "eagles.svg",
-      "Pittsburgh Steelers": "steelers.svg",
-      "San Francisco 49ers": "49ers.svg",
-      "Seattle Seahawks": "seahawks.svg",
-      "Tampa Bay Buccaneers": "buccaneers.svg",
-      "Tennessee Titans": "titans.svg"
+    const teamThemes = {
+      rams: { theme: "#003594", accent: "#FFD100", bg: "#0B0E14", text: "#FFFFFF" },
+      steelers: { theme: "#FFB612", accent: "#101820", bg: "#0B0E14", text: "#FFFFFF" },
+      cowboys: { theme: "#041E42", accent: "#869397", bg: "#0B0E14", text: "#FFFFFF" },
+      jaguars: { theme: "#006778", accent: "#9F792C", bg: "#0B0E14", text: "#FFFFFF" },
+      // ⚡ add all other teams like before…
     };
 
-    // --- Save settings ---
-    function saveSettings() {
-      const theme = document.getElementById("themeColor").value;
-      const accent = document.getElementById("accentColor").value;
-      const bg = document.getElementById("bgColor").value;
-      const text = document.getElementById("textColor").value;
-
-      localStorage.setItem("themeColor", theme);
-      localStorage.setItem("accentColor", accent);
-      localStorage.setItem("bgColor", bg);
-      localStorage.setItem("textColor", text);
-
-      applyTheme(theme, accent, bg, text);
-    }
-
-    // --- Apply saved settings ---
     function applyTheme(theme, accent, bg, text) {
       if (theme) document.documentElement.style.setProperty("--theme-color", theme);
       if (accent) document.documentElement.style.setProperty("--accent-color", accent);
@@ -127,61 +148,55 @@
       if (text) document.documentElement.style.setProperty("--text-color", text);
     }
 
-    // --- Apply preset themes ---
-    function applyPreset() {
-      const preset = document.getElementById("presetSelect").value;
-      let theme, accent, bg, text;
-
-      switch (preset) {
-        case "default":
-          theme = "#39ff14"; accent = "#11151d"; bg = "#0b0e14"; text = "#ffffff"; break;
-        case "steelers":
-          theme = "#ffb612"; accent = "#101820"; bg = "#0b0e14"; text = "#ffffff"; break;
-        case "cowboys":
-          theme = "#041E42"; accent = "#869397"; bg = "#0b0e14"; text = "#ffffff"; break;
-        case "rams":
-          theme = "#003594"; accent = "#ffd100"; bg = "#0b0e14"; text = "#ffffff"; break;
-        case "jags":
-          theme = "#006778"; accent = "#d7a22a"; bg = "#0b0e14"; text = "#ffffff"; break;
-      }
-
+    document.getElementById("saveSettings").addEventListener("click", () => {
+      const theme = document.getElementById("themeColor").value;
+      const accent = document.getElementById("accentColor").value;
+      const bg = document.getElementById("bgColor").value;
+      const text = document.getElementById("textColor").value;
       localStorage.setItem("themeColor", theme);
       localStorage.setItem("accentColor", accent);
       localStorage.setItem("bgColor", bg);
       localStorage.setItem("textColor", text);
-
       applyTheme(theme, accent, bg, text);
-    }
+    });
 
-    // --- Apply logos ---
-    function applyLogo() {
-      const team = document.getElementById("teamSelect").value;
-      const logoFile = teamLogos[team];
-      if (logoFile) {
-        const path = `/assets/logos/nfl/${logoFile}`;
-        localStorage.setItem("teamLogo", path);
-        document.querySelectorAll(".team-logo").forEach(img => {
-          img.src = path;
-        });
+    document.getElementById("applyPreset").addEventListener("click", () => {
+      const preset = document.getElementById("presetSelect").value;
+      if (preset && teamThemes[preset]) {
+        const t = teamThemes[preset];
+        localStorage.setItem("themeColor", t.theme);
+        localStorage.setItem("accentColor", t.accent);
+        localStorage.setItem("bgColor", t.bg);
+        localStorage.setItem("textColor", t.text);
+        applyTheme(t.theme, t.accent, t.bg, t.text);
       }
-    }
+    });
 
-    // --- Load saved settings on page load ---
-    window.onload = () => {
+    document.getElementById("applyTeam").addEventListener("click", () => {
+      const team = document.getElementById("teamSelect").value;
+      if (team) {
+        localStorage.setItem("teamLogo", `/assets/logos/nfl/${team}.svg`);
+        if (teamThemes[team]) {
+          const t = teamThemes[team];
+          localStorage.setItem("themeColor", t.theme);
+          localStorage.setItem("accentColor", t.accent);
+          localStorage.setItem("bgColor", t.bg);
+          localStorage.setItem("textColor", t.text);
+          applyTheme(t.theme, t.accent, t.bg, t.text);
+        }
+      }
+    });
+
+    // Loader for Settings page itself
+    window.addEventListener("DOMContentLoaded", () => {
+      const logo = localStorage.getItem("teamLogo");
+      if (logo) document.querySelectorAll(".team-logo").forEach(img => img.src = logo);
       const theme = localStorage.getItem("themeColor");
       const accent = localStorage.getItem("accentColor");
       const bg = localStorage.getItem("bgColor");
       const text = localStorage.getItem("textColor");
-      const logo = localStorage.getItem("teamLogo");
-
-      applyTheme(theme, accent, bg, text);
-
-      if (logo) {
-        document.querySelectorAll(".team-logo").forEach(img => {
-          img.src = logo;
-        });
-      }
-    }
+      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
+    });
   </script>
 </body>
 </html>

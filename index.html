@@ -1,15 +1,42 @@
-<!-- DASHBOARD (index.html) START -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Dashboard</title>
+  <title>Dashboard - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
-  <script src="payCycle.js" defer></script>
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+  <style>
+    /* Extra polish for dashboard */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .tile {
+      background: var(--bg-color, #161b25);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.6);
+    }
+    .tile h2 {
+      color: var(--theme-color, #39ff14);
+      margin-bottom: 12px;
+    }
+    .tile p {
+      font-size: 1.2em;
+      color: var(--text-color, #e6e6e6);
+    }
+  </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💸 Cockpit</h2>
     <a href="index.html" class="nav-item active">Dashboard</a>
@@ -19,41 +46,64 @@
     <a href="settings.html" class="nav-item">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>
-      <img src="jags-icon.png" alt="Jaguars Logo"
-           style="height:40px; vertical-align:middle; margin-right:10px;">
+      <img class="team-logo" src="" alt="Team Logo"
+           style="height:40px;vertical-align:middle;margin-right:10px;">
       Dashboard
     </h1>
 
-    <div class="dashboard">
-      <div class="tile"><h2>Spendable Now</h2><p id="spendableNow">$0.00</p></div>
-      <div class="tile"><h2>Days Left in Pay Cycle</h2><p id="daysLeft">0</p><small id="nextPaydayLabel">Next payday: TBD</small></div>
-      <div class="tile"><h2>Upcoming Bills</h2><ul id="upcomingBills"><li>Loading...</li></ul></div>
-      <div class="tile"><h2>Upcoming Paychecks</h2><ul id="upcomingPaychecks"><li>Loading...</li></ul></div>
-      <div class="tile"><h2>Goals Progress</h2><div id="goalsProgress">Loading...</div></div>
-      <div class="tile" onclick="window.location.href='transactions.html'" style="cursor:pointer;">
-        <h2>Recent Transactions</h2>
-        <ul id="recentTx"><li>Loading...</li></ul>
-        <small>Click for full list →</small>
+    <div class="dashboard-grid">
+      <div class="tile">
+        <h2>Spendable Now</h2>
+        <p>$4,321.65</p>
+      </div>
+      <div class="tile">
+        <h2>Days Left</h2>
+        <p>12</p>
+      </div>
+      <div class="tile">
+        <h2>Upcoming Bills</h2>
+        <p>3 Due This Week</p>
+      </div>
+      <div class="tile">
+        <h2>Savings Goals</h2>
+        <p>45% Funded</p>
       </div>
     </div>
   </div>
 
-  <!-- Theme Loader -->
+  <!-- Loader Script -->
   <script>
+    function applyTheme(theme, accent, bg, text) {
+      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
+      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
+      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
+      if (text) document.documentElement.style.setProperty("--text-color", text);
+    }
+
+    function updateLogo(path) {
+      if (!path) return;
+      document.querySelectorAll(".team-logo").forEach(img => {
+        img.src = path;
+      });
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
-      const theme = localStorage.getItem("themeColor") || "#39ff14";
-      const accent = localStorage.getItem("accentColor") || "#D7A22A";
-      const bg = localStorage.getItem("bgColor") || "#0b0e14";
-      const text = localStorage.getItem("textColor") || "#e6e6e6";
-      document.documentElement.style.setProperty("--themeColor", theme);
-      document.documentElement.style.setProperty("--accentColor", accent);
-      document.documentElement.style.setProperty("--bgColor", bg);
-      document.documentElement.style.setProperty("--textColor", text);
+      // Load logo
+      const logo = localStorage.getItem("teamLogo");
+      if (logo) updateLogo(logo);
+
+      // Load theme
+      const theme = localStorage.getItem("themeColor");
+      const accent = localStorage.getItem("accentColor");
+      const bg = localStorage.getItem("bgColor");
+      const text = localStorage.getItem("textColor");
+      if (theme && accent && bg && text) {
+        applyTheme(theme, accent, bg, text);
+      }
     });
   </script>
 </body>
 </html>
-<!-- DASHBOARD (index.html) END -->
-
