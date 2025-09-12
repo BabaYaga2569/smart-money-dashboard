@@ -2,27 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bills - Smart Money Cockpit</title>
+  <title>Smart Money Cockpit - Bills</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .bill-list {
-      margin-top: 20px;
+    .bill-card {
+      background: var(--bg-color);
+      border: 1px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .bill {
-      background: var(--bg-color, #161b25);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    .bill-info h2 {
+      margin: 0;
+      color: var(--theme-color);
     }
-    .bill strong {
-      color: var(--theme-color, #39ff14);
+    .bill-info p {
+      margin: 4px 0 0;
+      font-size: 0.9em;
+      color: var(--text-color);
+    }
+    .status {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.85em;
+    }
+    .status.paid {
+      background: #2ecc71;
+      color: #fff;
+    }
+    .status.upcoming {
+      background: #f39c12;
+      color: #fff;
+    }
+    .status.overdue {
+      background: #e74c3c;
+      color: #fff;
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
+    <h2>🪙 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item active">Bills</a>
@@ -30,6 +56,7 @@
     <a href="settings.html" class="nav-item">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>
       <img class="team-logo" src="" alt="Team Logo"
@@ -37,34 +64,32 @@
       Bills
     </h1>
 
-    <div class="bill-list">
-      <div class="bill"><strong>Rent</strong> — $1,200 due Sep 30</div>
-      <div class="bill"><strong>Internet</strong> — $80 due Oct 2</div>
-      <div class="bill"><strong>Electric</strong> — $150 due Oct 5</div>
+    <div class="bill-card">
+      <div class="bill-info">
+        <h2>🏠 Rent</h2>
+        <p>$1,200 due Sep 30</p>
+      </div>
+      <div class="status upcoming">⏳ Upcoming</div>
+    </div>
+
+    <div class="bill-card">
+      <div class="bill-info">
+        <h2>🌐 Internet</h2>
+        <p>$80 due Oct 2</p>
+      </div>
+      <div class="status paid">✅ Paid</div>
+    </div>
+
+    <div class="bill-card">
+      <div class="bill-info">
+        <h2>⚡ Electric</h2>
+        <p>$150 due Oct 5</p>
+      </div>
+      <div class="status overdue">❌ Overdue</div>
     </div>
   </div>
 
-  <!-- Loader Script -->
-  <script>
-    function applyTheme(theme, accent, bg, text) {
-      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
-      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
-      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
-      if (text) document.documentElement.style.setProperty("--text-color", text);
-    }
-    function updateLogo(path) {
-      if (!path) return;
-      document.querySelectorAll(".team-logo").forEach(img => img.src = path);
-    }
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = localStorage.getItem("teamLogo");
-      if (logo) updateLogo(logo);
-      const theme = localStorage.getItem("themeColor");
-      const accent = localStorage.getItem("accentColor");
-      const bg = localStorage.getItem("bgColor");
-      const text = localStorage.getItem("textColor");
-      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
-    });
-  </script>
+  <!-- Universal Loader -->
+  <script src="assets/js/theme-loader.js"></script>
 </body>
 </html>

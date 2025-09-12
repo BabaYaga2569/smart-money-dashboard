@@ -2,37 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Goals - Smart Money Cockpit</title>
+  <title>Smart Money Cockpit - Goals</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .goal-card {
-      background: var(--bg-color, #161b25);
-      padding: 20px;
+      background: var(--bg-color);
+      border: 1px solid var(--accent-color);
       border-radius: 12px;
+      padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
-    .goal-card h3 {
+    .goal-card h2 {
       margin: 0 0 10px;
-      color: var(--theme-color, #39ff14);
+      color: var(--theme-color);
     }
     .progress {
       width: 100%;
       height: 14px;
-      background: #333;
+      background: rgba(255,255,255,0.1);
       border-radius: 7px;
       overflow: hidden;
+      margin-bottom: 8px;
     }
     .progress-bar {
       height: 14px;
-      background: var(--theme-color, #39ff14);
-      width: 45%;
+      background: var(--theme-color);
+      width: 0;
+      transition: width 0.5s ease-in-out;
+    }
+    .goal-status {
+      font-size: 0.9em;
+      color: var(--text-color);
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
+    <h2>🪙 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item active">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
@@ -40,6 +48,7 @@
     <a href="settings.html" class="nav-item">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>
       <img class="team-logo" src="" alt="Team Logo"
@@ -48,39 +57,19 @@
     </h1>
 
     <div class="goal-card">
-      <h3>🏖️ Trip to Jamaica</h3>
+      <h2>🏖️ Trip to Jamaica</h2>
       <div class="progress"><div class="progress-bar" style="width: 65%;"></div></div>
-      <p>65% funded</p>
+      <div class="goal-status">65% funded ($3,250 of $5,000)</div>
     </div>
 
     <div class="goal-card">
-      <h3>🚗 New Car</h3>
+      <h2>🚗 New Car</h2>
       <div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-      <p>30% funded</p>
+      <div class="goal-status">30% funded ($6,000 of $20,000)</div>
     </div>
   </div>
 
-  <!-- Loader Script -->
-  <script>
-    function applyTheme(theme, accent, bg, text) {
-      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
-      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
-      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
-      if (text) document.documentElement.style.setProperty("--text-color", text);
-    }
-    function updateLogo(path) {
-      if (!path) return;
-      document.querySelectorAll(".team-logo").forEach(img => img.src = path);
-    }
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = localStorage.getItem("teamLogo");
-      if (logo) updateLogo(logo);
-      const theme = localStorage.getItem("themeColor");
-      const accent = localStorage.getItem("accentColor");
-      const bg = localStorage.getItem("bgColor");
-      const text = localStorage.getItem("textColor");
-      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
-    });
-  </script>
+  <!-- Universal Loader -->
+  <script src="assets/js/theme-loader.js"></script>
 </body>
 </html>

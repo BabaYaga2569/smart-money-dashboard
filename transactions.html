@@ -2,35 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Transactions - Smart Money Cockpit</title>
+  <title>Smart Money Cockpit - Transactions</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: var(--bg-color, #161b25);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      text-align: left;
-    }
-    th {
-      background: var(--theme-color, #39ff14);
-      color: var(--text-color, #fff);
-    }
-    tr:hover {
-      background: rgba(255,255,255,0.05);
-    }
-  </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
+    <h2>🪙 Cockpit</h2>
     <a href="index.html" class="nav-item">Dashboard</a>
     <a href="goals.html" class="nav-item">Goals</a>
     <a href="bills.html" class="nav-item">Bills</a>
@@ -38,6 +16,7 @@
     <a href="settings.html" class="nav-item">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>
       <img class="team-logo" src="" alt="Team Logo"
@@ -62,27 +41,7 @@
     </table>
   </div>
 
-  <!-- Loader Script -->
-  <script>
-    function applyTheme(theme, accent, bg, text) {
-      if (theme) document.documentElement.style.setProperty("--theme-color", theme);
-      if (accent) document.documentElement.style.setProperty("--accent-color", accent);
-      if (bg) document.documentElement.style.setProperty("--bg-color", bg);
-      if (text) document.documentElement.style.setProperty("--text-color", text);
-    }
-    function updateLogo(path) {
-      if (!path) return;
-      document.querySelectorAll(".team-logo").forEach(img => img.src = path);
-    }
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = localStorage.getItem("teamLogo");
-      if (logo) updateLogo(logo);
-      const theme = localStorage.getItem("themeColor");
-      const accent = localStorage.getItem("accentColor");
-      const bg = localStorage.getItem("bgColor");
-      const text = localStorage.getItem("textColor");
-      if (theme && accent && bg && text) applyTheme(theme, accent, bg, text);
-    });
-  </script>
+  <!-- Universal Loader -->
+  <script src="assets/js/theme-loader.js"></script>
 </body>
 </html>
