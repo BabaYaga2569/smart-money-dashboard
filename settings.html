@@ -1,145 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Settings</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .settings-container { padding: 20px; color: var(--text-color); }
-    h1 { display: flex; align-items: center; gap: 10px; }
-    .settings-section { margin: 20px 0; padding: 15px; background: #11151d; border-radius: 8px; }
-    label { display: block; margin-top: 10px; }
-    input[type="color"] { margin-left: 10px; }
-    select, button { margin-top: 10px; padding: 6px 10px; border-radius: 6px; border: none; }
-    button { cursor: pointer; background: var(--theme-color); color: #000; font-weight: bold; }
-    .team-logo { height: 40px; }
-  </style>
-</head>
-<body>
-  <div class="sidebar">
-    <h2>🪙 Cockpit</h2>
-    <a href="index.html" class="nav-item">Dashboard</a>
-    <a href="goals.html" class="nav-item">Goals</a>
-    <a href="bills.html" class="nav-item">Bills</a>
-    <a href="transactions.html" class="nav-item">Transactions</a>
-    <a href="settings.html" class="nav-item active">Settings</a>
-  </div>
-
-  <div class="main settings-container">
-    <h1><img class="team-logo" src="assets/logos/nfl/jags.svg" alt="Team Logo"> Settings</h1>
-
-    <!-- Customize Colors -->
-    <div class="settings-section">
-      <h2>⚙️ Customize Colors</h2>
-      <label>Theme Color: <input type="color" id="themeColor"></label>
-      <label>Accent Color: <input type="color" id="accentColor"></label>
-      <label>Background Color: <input type="color" id="backgroundColor"></label>
-      <label>Text Color: <input type="color" id="textColor"></label>
-      <button id="saveSettings">💾 Save Settings</button>
-    </div>
-
-    <!-- Presets -->
-    <div class="settings-section">
-      <h2>🎨 Preset Themes</h2>
-      <select id="presetSelect">
-        <option value="">-- Select a Theme --</option>
-        <option value="jaguars">Jacksonville Jaguars</option>
-        <option value="steelers">Pittsburgh Steelers</option>
-        <option value="rams">Los Angeles Rams</option>
-      </select>
-      <button id="applyPreset">Apply Preset</button>
-    </div>
-
-    <!-- Team Logos -->
-    <div class="settings-section">
-      <h2>🏈 Team Logo</h2>
-      <select id="logoSelect">
-        <option value="">-- Select Team --</option>
-        <option value="jaguars">Jacksonville Jaguars</option>
-        <option value="steelers">Pittsburgh Steelers</option>
-        <option value="rams">Los Angeles Rams</option>
-      </select>
-      <button id="applyLogo">Apply Logo</button>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const root = document.documentElement;
-
-      // Load saved settings or defaults
-      const savedTheme = JSON.parse(localStorage.getItem("themeSettings")) || {
-        theme: "#39ff14",
-        accent: "#FFD700",
-        background: "#0b0e14",
-        text: "#ffffff",
-        logo: "assets/logos/nfl/jaguars.svg"
-      };
-
-      // Apply theme + logo
-      function applyTheme(settings) {
-        root.style.setProperty("--theme-color", settings.theme);
-        root.style.setProperty("--accent-color", settings.accent);
-        root.style.setProperty("--background-color", settings.background);
-        root.style.setProperty("--text-color", settings.text);
-
-        const logoImg = document.querySelector(".team-logo");
-        if (logoImg) logoImg.src = settings.logo;
-      }
-
-      // Init UI with saved values
-      document.getElementById("themeColor").value = savedTheme.theme;
-      document.getElementById("accentColor").value = savedTheme.accent;
-      document.getElementById("backgroundColor").value = savedTheme.background;
-      document.getElementById("textColor").value = savedTheme.text;
-
-      applyTheme(savedTheme);
-
-      // Save button
-      document.getElementById("saveSettings").addEventListener("click", () => {
-        const newSettings = {
-          theme: document.getElementById("themeColor").value || savedTheme.theme,
-          accent: document.getElementById("accentColor").value || savedTheme.accent,
-          background: document.getElementById("backgroundColor").value || savedTheme.background,
-          text: document.getElementById("textColor").value || savedTheme.text,
-          logo: savedTheme.logo
-        };
-        localStorage.setItem("themeSettings", JSON.stringify(newSettings));
-        applyTheme(newSettings);
-      });
-
-      // Preset themes
-      const presets = {
-        jaguars: { theme: "#39ff14", accent: "#FFD700", background: "#0b0e14", text: "#ffffff" },
-        steelers: { theme: "#FFB612", accent: "#101820", background: "#000000", text: "#ffffff" },
-        rams: { theme: "#003594", accent: "#FFD100", background: "#ffffff", text: "#000000" }
-      };
-
-      document.getElementById("applyPreset").addEventListener("click", () => {
-        const preset = document.getElementById("presetSelect").value;
-        if (preset && presets[preset]) {
-          const newSettings = { ...savedTheme, ...presets[preset] };
-          localStorage.setItem("themeSettings", JSON.stringify(newSettings));
-          applyTheme(newSettings);
-        }
-      });
-
-      // Apply logo
-      const teamLogos = {
-        jaguars: "assets/logos/nfl/jaguars.svg",
-        steelers: "assets/logos/nfl/steelers.svg",
-        rams: "assets/logos/nfl/rams.svg"
-      };
-
-      document.getElementById("applyLogo").addEventListener("click", () => {
-        const team = document.getElementById("logoSelect").value;
-        if (team && teamLogos[team]) {
-          const newSettings = { ...savedTheme, logo: teamLogos[team] };
-          localStorage.setItem("themeSettings", JSON.stringify(newSettings));
-          applyTheme(newSettings);
-        }
-      });
-    });
-  </script>
-</body>
-</html>
+const teamPresets = {
+  "Arizona Cardinals": {
+    logo: "assets/logos/nfl/cardinals.svg",
+    theme: "#97233F",
+    accent: "#000000",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Atlanta Falcons": {
+    logo: "assets/logos/nfl/falcons.svg",
+    theme: "#A71930",
+    accent: "#000000",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Baltimore Ravens": {
+    logo: "assets/logos/nfl/ravens.svg",
+    theme: "#241773",
+    accent: "#9E7C0C",
+    background: "#000000",
+    text: "#FFFFFF"
+  },
+  "Buffalo Bills": {
+    logo: "assets/logos/nfl/bills.svg",
+    theme: "#00338D",
+    accent: "#C60C30",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Carolina Panthers": {
+    logo: "assets/logos/nfl/panthers.svg",
+    theme: "#0085CA",
+    accent: "#101820",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Chicago Bears": {
+    logo: "assets/logos/nfl/bears.svg",
+    theme: "#0B162A",
+    accent: "#C83803",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Cincinnati Bengals": {
+    logo: "assets/logos/nfl/bengals.svg",
+    theme: "#FB4F14",
+    accent: "#000000",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Cleveland Browns": {
+    logo: "assets/logos/nfl/browns.svg",
+    theme: "#311D00",
+    accent: "#FF3C00",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Dallas Cowboys": {
+    logo: "assets/logos/nfl/cowboys.svg",
+    theme: "#041E42",
+    accent: "#869397",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Denver Broncos": {
+    logo: "assets/logos/nfl/broncos.svg",
+    theme: "#002244",
+    accent: "#FB4F14",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Detroit Lions": {
+    logo: "assets/logos/nfl/lions.svg",
+    theme: "#0076B6",
+    accent: "#B0B7BC",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Green Bay Packers": {
+    logo: "assets/logos/nfl/packers.svg",
+    theme: "#203731",
+    accent: "#FFB612",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Houston Texans": {
+    logo: "assets/logos/nfl/texans.svg",
+    theme: "#03202F",
+    accent: "#A71930",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Indianapolis Colts": {
+    logo: "assets/logos/nfl/colts.svg",
+    theme: "#002C5F",
+    accent: "#A5ACAF",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Jacksonville Jaguars": {
+    logo: "assets/logos/nfl/jaguars.svg",
+    theme: "#006778",
+    accent: "#9F792C",
+    background: "#101820",
+    text: "#FFFFFF"
+  },
+  "Kansas City Chiefs": {
+    logo: "assets/logos/nfl/chiefs.svg",
+    theme: "#E31837",
+    accent: "#FFB81C",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Las Vegas Raiders": {
+    logo: "assets/logos/nfl/raiders.svg",
+    theme: "#000000",
+    accent: "#A5ACAF",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Los Angeles Chargers": {
+    logo: "assets/logos/nfl/chargers.svg",
+    theme: "#002A5E",
+    accent: "#FFC20E",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Los Angeles Rams": {
+    logo: "assets/logos/nfl/rams.svg",
+    theme: "#003594",
+    accent: "#FFD100",
+    background: "#101820",
+    text: "#FFFFFF"
+  },
+  "Miami Dolphins": {
+    logo: "assets/logos/nfl/dolphins.svg",
+    theme: "#008E97",
+    accent: "#F58220",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Minnesota Vikings": {
+    logo: "assets/logos/nfl/vikings.svg",
+    theme: "#4F2683",
+    accent: "#FFC62F",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "New England Patriots": {
+    logo: "assets/logos/nfl/patriots.svg",
+    theme: "#002244",
+    accent: "#C60C30",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "New Orleans Saints": {
+    logo: "assets/logos/nfl/saints.svg",
+    theme: "#101820",
+    accent: "#D3BC8D",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "New York Giants": {
+    logo: "assets/logos/nfl/giants.svg",
+    theme: "#0B2265",
+    accent: "#A71930",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "New York Jets": {
+    logo: "assets/logos/nfl/jets.svg",
+    theme: "#125740",
+    accent: "#000000",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Philadelphia Eagles": {
+    logo: "assets/logos/nfl/eagles.svg",
+    theme: "#004C54",
+    accent: "#A5ACAF",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Pittsburgh Steelers": {
+    logo: "assets/logos/nfl/steelers.svg",
+    theme: "#FFB612",
+    accent: "#101820",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "San Francisco 49ers": {
+    logo: "assets/logos/nfl/49ers.svg",
+    theme: "#AA0000",
+    accent: "#B3995D",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Seattle Seahawks": {
+    logo: "assets/logos/nfl/seahawks.svg",
+    theme: "#002244",
+    accent: "#69BE28",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Tampa Bay Buccaneers": {
+    logo: "assets/logos/nfl/buccaneers.svg",
+    theme: "#D50A0A",
+    accent: "#FF7900",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Tennessee Titans": {
+    logo: "assets/logos/nfl/titans.svg",
+    theme: "#0C2340",
+    accent: "#4B92DB",
+    background: "#FFFFFF",
+    text: "#000000"
+  },
+  "Washington Commanders": {
+    logo: "assets/logos/nfl/commanders.svg",
+    theme: "#5A1414",
+    accent: "#FFB612",
+    background: "#FFFFFF",
+    text: "#000000"
+  }
+};
