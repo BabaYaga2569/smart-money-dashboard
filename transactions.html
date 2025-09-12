@@ -2,61 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Transactions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Cockpit – Transactions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>🪙 Cockpit</h2>
-    <a href="index.html" class="nav-item">Dashboard</a>
-    <a href="goals.html" class="nav-item">Goals</a>
-    <a href="bills.html" class="nav-item">Bills</a>
-    <a href="transactions.html" class="nav-item active">Transactions</a>
-    <a href="settings.html" class="nav-item">Settings</a>
-  </div>
+  <aside class="sidebar">
+    <h2>🚀 Cockpit</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html" class="active">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="settings.html">Settings</a>
+  </aside>
 
   <!-- Main -->
-  <div class="main">
-    <h1>
-      <img class="team-logo" src="" alt="Team Logo"
-           style="height:40px;vertical-align:middle;margin-right:10px;">
-      Transactions
-    </h1>
+  <main>
+    <h1>💳 Transactions</h1>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>09/10</td>
-          <td>Starbucks</td>
-          <td>Coffee</td>
-          <td>-$6.50</td>
-        </tr>
-        <tr>
-          <td>09/09</td>
-          <td>Amazon</td>
-          <td>Shopping</td>
-          <td>-$89.99</td>
-        </tr>
-        <tr>
-          <td>09/08</td>
-          <td>Payroll</td>
-          <td>Income</td>
-          <td>+$1,483.81</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Filters -->
+    <div class="card">
+      <h3>Filter Transactions</h3>
+      <form id="filterForm">
+        <label>
+          Date From:
+          <input type="date" id="dateFrom">
+        </label>
+        <label>
+          Date To:
+          <input type="date" id="dateTo">
+        </label>
+        <label>
+          Category:
+          <select id="categoryFilter">
+            <option value="">All</option>
+            <option>Groceries</option>
+            <option>Clothing</option>
+            <option>Entertainment</option>
+            <option>Utilities</option>
+            <option>Travel</option>
+          </select>
+        </label>
+        <button type="submit">Apply</button>
+      </form>
+    </div>
 
-  <!-- Universal Loader -->
-<script src="assets/js/theme.js"></script>
+    <!-- Transactions Table -->
+    <div class="card">
+      <h3>All Transactions</h3>
+      <table border="0" width="100%" cellspacing="0" cellpadding="6">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsTable">
+          <tr>
+            <td>2025-09-01</td>
+            <td>BofA</td>
+            <td>Walmart</td>
+            <td><span class="tag red">Clothing</span></td>
+            <td>-$52.40</td>
+          </tr>
+          <tr>
+            <td>2025-09-02</td>
+            <td>SoFi</td>
+            <td>Safeway</td>
+            <td><span class="tag purple">Groceries</span></td>
+            <td>-$13.99</td>
+          </tr>
+          <tr>
+            <td>2025-09-03</td>
+            <td>USAA</td>
+            <td>Disneyland</td>
+            <td><span class="tag green">Entertainment</span></td>
+            <td>-$98.75</td>
+          </tr>
+          <tr>
+            <td>2025-09-04</td>
+            <td>Capital One</td>
+            <td>Electric Bill</td>
+            <td><span class="tag orange">Utilities</span></td>
+            <td>-$150.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="theme.js"></script>
+  <script>
+    // Basic filter logic (static demo for now)
+    document.getElementById("filterForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      alert("Filters applied! (This will be upgraded to live filtering)");
+    });
+  </script>
 </body>
 </html>

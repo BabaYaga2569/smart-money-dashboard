@@ -1,121 +1,76 @@
-// --- Config ---
-// Steve's pay split: $400 to SoFi (Wednesday), rest to BofA (Friday)
-const myPay = { total: 3000.00, sofi: 400.00, bofa: 2600.00, frequency: 14 };
+// ============================
+// Pay Cycle Manager
+// ============================
 
-// Tanci: same check twice a month (15th and 30th, adjusted for weekends)
-const tanciPay = { amount: 3200.00 };
+// Configurable pay setup
+const payConfig = {
+  myPay: {
+    baseAmount: 1883.81,      // total paycheck
+    split: { sofi: 400, bofa: 1483.81 }, // split accounts
+    schedule: "biweekly",     // biweekly pay
+    anchor: "2025-09-05",     // known payday (Friday)
+  },
+  tanciPay: {
+    baseAmount: 1851.04,      // paycheck amount
+    schedule: "semimonthly",  // 15th and 30th
+  },
+};
 
-// --- Helpers ---
-function addDays(d, days) {
-  let c = new Date(+d);
-  c.setDate(d.getDate() + days);
-  return c;
-}
-
-function isWeekend(d) {
-  return d.getDay() === 0 || d.getDay() === 6;
-}
-
-// --- Payday Logic (Steve) ---
-function getNextMyPayday(today = new Date()) {
-  // Anchor to a known Friday (Jan 10, 2025 is a Friday)
-  const anchor = new Date("2025-01-10");
-  let next = new Date(anchor);
-  while (next <= today) {
-    next = addDays(next, myPay.frequency);
-  }
-  return next; // always a Friday
-}
-
-// --- Payday Logic (Tanci) ---
-function getNextTanciPayday(today = new Date()) {
-  let y = today.getFullYear(),
-    m = today.getMonth();
-
-  let f = new Date(y, m, 15);
-  if (isWeekend(f)) f.setDate(f.getDate() - (f.getDay() === 0 ? 2 : 1));
-
-  let t = new Date(y, m, 30);
-  if (isWeekend(t)) t.setDate(t.getDate() - (t.getDay() === 0 ? 2 : 1));
-
-  if (today < f) return { date: f, amount: tanciPay.amount };
-  if (today < t) return { date: t, amount: tanciPay.amount };
-
-  let nm = new Date(y, m + 1, 15);
-  if (isWeekend(nm)) nm.setDate(nm.getDate() - (nm.getDay() === 0 ? 2 : 1));
-
-  return { date: nm, amount: tanciPay.amount };
-}
-
-// --- Core Calculations ---
-function calculatePayCycle(today = new Date()) {
-  const myNext = getNextMyPayday(today);
-  const tanciNext = getNextTanciPayday(today);
-
-  const daysLeft = Math.ceil((myNext - today) / (1000 * 60 * 60 * 24));
-  let cycleIncome = myPay.total;
-  if (tanciNext.date <= myNext) {
-    cycleIncome += tanciNext.amount;
-  }
-
-  return {
-    spendableNow: cycleIncome,
-    daysLeft,
-    nextMyPayday: myNext.toDateString(),
-  };
-}
-
-// --- Dashboard Updater ---
-function updateDashboard() {
-  const r = calculatePayCycle();
-  const fmt = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  if (document.getElementById("spendableNow"))
-    document.getElementById("spendableNow").innerText = fmt.format(r.spendableNow);
-
-  if (document.getElementById("daysLeft"))
-    document.getElementById("daysLeft").innerText = `${r.daysLeft} days left in cycle`;
-
-  if (document.getElementById("nextPaydayLabel"))
-    document.getElementById("nextPaydayLabel").innerText = `Next payday: ${r.nextMyPayday}`;
-}
-
-// --- Upcoming Paychecks Tile ---
-function loadUpcomingPaychecks() {
+// Utility: get next payday for biweekly
+function getNextBiweekly(anchorDate) {
+  const anchor = new Date(anchorDate);
   const today = new Date();
-  const myNext = getNextMyPayday(today);
-  const tanciNextData = getNextTanciPayday(today);
+  let next = new Date(anchor);
 
-  const fmt = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  // Steve has 2 parts: SoFi (Wed), BofA (Fri)
-  const steveSofi = new Date(myNext);
-  steveSofi.setDate(myNext.getDate() - 2); // Wednesday before payday Friday
-
-  const checks = [
-    { who: "Steve (SoFi)", date: steveSofi, amount: myPay.sofi },
-    { who: "Steve (BofA)", date: myNext, amount: myPay.bofa },
-    { who: "Tanci", date: tanciNextData.date, amount: tanciNextData.amount },
-  ];
-
-  if (document.getElementById("upcomingPaychecks")) {
-    document.getElementById("upcomingPaychecks").innerHTML = checks
-      .map(
-        (c) =>
-          `<li>${c.who} — ${c.date.toDateString()} — ${fmt.format(c.amount)}</li>`
-      )
-      .join("");
+  // add 14 days until it's after today
+  while (next <= today) {
+    next.setDate(next.getDate() + 14);
   }
+  return next;
 }
 
-// --- Init ---
+// Utility: get next payday for semimonthly (15th & 30th)
+function getNextSemiMonthly() {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = today.getMonth();
+
+  const fifteenth = new Date(y, m, 15);
+  const thirtieth = new Date(y, m, 30);
+
+  if (today < fifteenth) return fifteenth;
+  if (today < thirtieth) return thirtieth;
+  return new Date(y, m + 1, 15);
+}
+
+// Calculate days left in cycle
+function daysUntil(date) {
+  const today = new Date();
+  const diff = date - today;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+// Render tiles if on dashboard
 document.addEventListener("DOMContentLoaded", () => {
-  updateDashboard();
-  loadUpcomingPaychecks();
+  const spendableTile = document.querySelector(".card h3:contains('Spendable Now')");
+  const daysLeftTile = document.querySelector(".card h3:contains('Days Left')");
+
+  const nextMyPay = getNextBiweekly(payConfig.myPay.anchor);
+  const nextTanciPay = getNextSemiMonthly();
+
+  const daysLeft = daysUntil(nextMyPay);
+  const spendable = payConfig.myPay.baseAmount; // later deduct bills if needed
+
+  if (spendableTile) {
+    spendableTile.parentElement.querySelector("p").innerHTML =
+      `<strong>$${spendable.toFixed(2)}</strong> left this cycle`;
+  }
+
+  if (daysLeftTile) {
+    daysLeftTile.parentElement.querySelector("p").innerHTML =
+      `<strong>${daysLeft}</strong> days until next payday`;
+  }
+
+  console.log("Next My Pay:", nextMyPay.toDateString());
+  console.log("Next Tanci Pay:", nextTanciPay.toDateString());
 });

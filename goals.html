@@ -2,42 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Goals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Cockpit – Goals</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>🪙 Cockpit</h2>
-    <a href="index.html" class="nav-item">Dashboard</a>
-    <a href="goals.html" class="nav-item active">Goals</a>
-    <a href="bills.html" class="nav-item">Bills</a>
-    <a href="transactions.html" class="nav-item">Transactions</a>
-    <a href="settings.html" class="nav-item">Settings</a>
-  </div>
+  <aside class="sidebar">
+    <h2>🚀 Cockpit</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html" class="active">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="settings.html">Settings</a>
+  </aside>
 
   <!-- Main -->
-  <div class="main">
-    <h1>
-      <img class="team-logo" src="" alt="Team Logo"
-           style="height:40px;vertical-align:middle;margin-right:10px;">
-      Goals
-    </h1>
+  <main>
+    <h1>🎯 Savings Goals</h1>
 
-    <div class="goal-card">
-      <h2>🏖️ Trip to Jamaica</h2>
-      <div class="progress"><div class="progress-bar" style="width: 65%;"></div></div>
-      <div class="goal-status">65% funded ($3,250 of $5,000)</div>
+    <!-- Add Goal Form -->
+    <div class="card">
+      <h3>Add a New Goal</h3>
+      <form id="goalForm">
+        <label>
+          Goal Name:
+          <input type="text" id="goalName" required>
+        </label>
+        <label>
+          Target Amount:
+          <input type="number" id="goalTarget" required>
+        </label>
+        <label>
+          Current Amount:
+          <input type="number" id="goalCurrent" value="0">
+        </label>
+        <button type="submit">Add Goal</button>
+      </form>
     </div>
 
-    <div class="goal-card">
-      <h2>🚗 New Car</h2>
-      <div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-      <div class="goal-status">30% funded ($6,000 of $20,000)</div>
+    <!-- Goals List -->
+    <div id="goalsList">
+      <div class="card">
+        <h3>Vacation</h3>
+        <div class="progress">
+          <div class="progress-bar" style="width:45%">$450 / $1000</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Emergency Fund</h3>
+        <div class="progress">
+          <div class="progress-bar" style="width:70%">$3,500 / $5,000</div>
+        </div>
+      </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Universal Loader -->
-<script src="assets/js/theme.js"></script>
+  <script src="theme.js"></script>
+  <script>
+    // Demo goal adding (static, can upgrade to Firebase later)
+    const goalForm = document.getElementById("goalForm");
+    const goalsList = document.getElementById("goalsList");
+
+    goalForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("goalName").value;
+      const target = parseFloat(document.getElementById("goalTarget").value);
+      const current = parseFloat(document.getElementById("goalCurrent").value);
+
+      const percent = Math.min(100, (current / target) * 100).toFixed(0);
+
+      const newGoal = document.createElement("div");
+      newGoal.classList.add("card");
+      newGoal.innerHTML = `
+        <h3>${name}</h3>
+        <div class="progress">
+          <div class="progress-bar" style="width:${percent}%">
+            $${current} / $${target}
+          </div>
+        </div>
+      `;
+
+      goalsList.appendChild(newGoal);
+      goalForm.reset();
+    });
+  </script>
 </body>
 </html>

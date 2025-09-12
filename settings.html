@@ -2,70 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Cockpit – Settings</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .settings-container { padding: 20px; }
-    h1 { display: flex; align-items: center; gap: 10px; }
-    .settings-section { margin: 20px 0; padding: 15px; background: #11151d; border-radius: 8px; }
-    label { display: block; margin-top: 10px; }
-    input[type="color"] { margin-left: 10px; }
-    select, button { margin-top: 10px; padding: 6px 10px; border-radius: 6px; border: none; }
-    button { cursor: pointer; background: var(--theme-color); color: var(--text-color); font-weight: bold; }
-    .team-logo { height: 40px; }
-  </style>
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>🪙 Cockpit</h2>
-    <a href="index.html" class="nav-item">Dashboard</a>
-    <a href="goals.html" class="nav-item">Goals</a>
-    <a href="bills.html" class="nav-item">Bills</a>
-    <a href="transactions.html" class="nav-item">Transactions</a>
-    <a href="settings.html" class="nav-item active">Settings</a>
-  </div>
+  <aside class="sidebar">
+    <h2>🚀 Cockpit</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="settings.html" class="active">Settings</a>
+  </aside>
 
   <!-- Main -->
-  <div class="main settings-container">
-    <h1>
-      <img class="team-logo" src="" alt="Team Logo"> Settings
-    </h1>
+  <main>
+    <h1>⚙️ Settings</h1>
 
-    <!-- Custom Colors -->
-    <div class="settings-section">
-      <h2>⚙️ Customize Colors</h2>
-      <label>Theme Color: <input type="color" id="themeColor"></label>
-      <label>Accent Color: <input type="color" id="accentColor"></label>
-      <label>Background Color: <input type="color" id="backgroundColor"></label>
-      <label>Text Color: <input type="color" id="textColor"></label>
-      <button id="saveSettings">💾 Save Settings</button>
+    <div class="card">
+      <h3>Theme Colors</h3>
+      <form id="themeForm">
+        <label>
+          Theme Color:
+          <input type="color" id="themeColor" value="#39ff14">
+        </label>
+        <label>
+          Accent Color:
+          <input type="color" id="accentColor" value="#FFD700">
+        </label>
+        <label>
+          Background Color:
+          <input type="color" id="bgColor" value="#0b0e14">
+        </label>
+        <label>
+          Text Color:
+          <input type="color" id="textColor" value="#ffffff">
+        </label>
+        <button type="submit">Apply</button>
+      </form>
     </div>
 
-    <!-- Bonus Presets -->
-    <div class="settings-section">
-      <h2>🎨 Bonus Presets</h2>
-      <select id="presetSelect">
-        <option value="">-- Select a Preset --</option>
-        <option value="darkNeon">Dark Neon</option>
-        <option value="cleanWhite">Clean White</option>
-        <option value="midnightBlue">Midnight Blue</option>
-        <option value="retro90s">Retro 90s</option>
-      </select>
-      <button id="applyPreset">Apply Preset</button>
+    <div class="card">
+      <h3>Preset Themes</h3>
+      <button onclick="applyPreset('default')">Default (Neon Green)</button>
+      <button onclick="applyPreset('ocean')">Ocean Blue</button>
+      <button onclick="applyPreset('sunset')">Sunset Orange</button>
+      <button onclick="applyPreset('midnight')">Midnight Purple</button>
     </div>
+  </main>
 
-    <!-- NFL Teams -->
-    <div class="settings-section">
-      <h2>🏈 NFL Team Logo & Theme</h2>
-      <select id="teamSelect">
-        <option value="">-- Select Team --</option>
-      </select>
-      <button id="applyTeam">Apply Team</button>
-    </div>
-  </div>
-
-  <!-- Universal Loader -->
-<script src="assets/js/theme.js"></script>
+  <script src="theme.js"></script>
 </body>
 </html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Money Cockpit – Cash Flow</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>🚀 Cockpit</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html" class="active">Cash Flow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="settings.html">Settings</a>
+  </aside>
+
+  <!-- Main -->
+  <main>
+    <h1>💵 Cash Flow</h1>
+
+    <!-- Net Summary -->
+    <div class="grid">
+      <div class="card">
+        <h3>Total Income</h3>
+        <p><strong>$5,200</strong></p>
+      </div>
+      <div class="card">
+        <h3>Total Expenses</h3>
+        <p><strong>$4,300</strong></p>
+      </div>
+      <div class="card">
+        <h3>Net</h3>
+        <p><strong>$900</strong></p>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card wide">
+      <h3>Income vs Expenses</h3>
+      <canvas id="cashflowChart"></canvas>
+    </div>
+  </main>
+
+  <script src="theme.js"></script>
+  <script>
+    new Chart(document.getElementById('cashflowChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May'],
+        datasets: [
+          { label: 'Income', data: [5000,5200,5100,5500,5400], backgroundColor:'#00cc66' },
+          { label: 'Expenses', data: [4200,4500,4300,4700,4600], backgroundColor:'#ff3333' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
