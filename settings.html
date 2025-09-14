@@ -2,60 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Cockpit – Settings</title>
+  <title>Settings - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cash Flow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="settings.html" class="active">Settings</a>
-  </aside>
-
-  <!-- Main -->
-  <main>
+  <div class="main-content">
     <h1>⚙️ Settings</h1>
 
-    <div class="card">
-      <h3>Theme Colors</h3>
-      <form id="themeForm">
-        <label>
-          Theme Color:
-          <input type="color" id="themeColor" value="#39ff14">
-        </label>
-        <label>
-          Accent Color:
-          <input type="color" id="accentColor" value="#FFD700">
-        </label>
-        <label>
-          Background Color:
-          <input type="color" id="bgColor" value="#0b0e14">
-        </label>
-        <label>
-          Text Color:
-          <input type="color" id="textColor" value="#ffffff">
-        </label>
-        <button type="submit">Apply</button>
-      </form>
+    <div class="theme-section card">
+      <h2>Theme Colors</h2>
+      <label>Theme Color: <input type="color" id="themeColor" value="#39FF14"></label>
+      <label>Accent Color: <input type="color" id="accentColor" value="#FFD700"></label>
+      <label>Background Color: <input type="color" id="backgroundColor" value="#121212"></label>
+      <label>Text Color: <input type="color" id="textColor" value="#FFFFFF"></label>
+      <button id="applyThemeBtn">Apply</button>
     </div>
 
-    <div class="card">
-      <h3>Preset Themes</h3>
-      <button onclick="applyPreset('default')">Default (Neon Green)</button>
-      <button onclick="applyPreset('ocean')">Ocean Blue</button>
-      <button onclick="applyPreset('sunset')">Sunset Orange</button>
-      <button onclick="applyPreset('midnight')">Midnight Purple</button>
+    <div class="preset-section card">
+      <h2>Preset Themes</h2>
+      <button data-preset="default">Default (Neon Green)</button>
+      <button data-preset="oceanBlue">Ocean Blue</button>
+      <button data-preset="sunsetOrange">Sunset Orange</button>
+      <button data-preset="midnightPurple">Midnight Purple</button>
     </div>
-  </main>
+  </div>
 
-  <script src="theme.js"></script>
+  <script src="assets/js/theme.js"></script>
 </body>
 </html>

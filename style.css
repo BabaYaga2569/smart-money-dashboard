@@ -1,123 +1,49 @@
-/* ============================
-   GLOBAL THEME VARIABLES
-   ============================ */
 :root {
-  --theme-color: #39ff14;   /* Neon green */
-  --accent-color: #FFD700;  /* Gold */
-  --bg-color: #0b0e14;      /* Dark */
-  --text-color: #ffffff;    /* White */
+  --theme-color: #39FF14;
+  --accent-color: #FFD700;
+  --background-color: #121212;
+  --text-color: #FFFFFF;
 }
 
-/* Base */
 body {
-  margin: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background: var(--bg-color);
+  background-color: var(--background-color);
   color: var(--text-color);
-  display: flex;
+  font-family: Arial, sans-serif;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 220px;
-  background: #11151d;
-  height: 100vh;
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-}
-.sidebar h2 {
-  text-align: center;
-  color: var(--theme-color);
-  margin-bottom: 20px;
-}
-.sidebar a {
-  padding: 12px 20px;
-  display: block;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.sidebar a:hover,
-.sidebar a.active {
-  background: var(--theme-color);
-  color: #000;
-  font-weight: bold;
-}
-
-/* Main area */
-main {
-  flex: 1;
-  padding: 20px;
-}
-h1 {
-  margin-top: 0;
+h1, h2 {
   color: var(--theme-color);
 }
 
-/* Grid for dashboard */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
 .card {
-  background: #161b25;
+  background-color: #1c1c1c;
+  border: 2px solid var(--accent-color);
+  padding: 15px;
+  margin: 15px 0;
   border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-.card h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-.card.wide {
-  grid-column: span 2;
-}
-.view-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 0.9em;
-  color: var(--theme-color);
-  text-decoration: none;
-}
-.view-link:hover { text-decoration: underline; }
-
-/* Lists */
-.preview-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.preview-list li {
-  margin: 6px 0;
+  color: var(--text-color);
 }
 
-/* Tags */
-.tag {
-  padding: 3px 8px;
-  border-radius: 5px;
-  font-size: 0.8em;
-  color: #fff;
-}
-.tag.red { background: #ff4d4d; }
-.tag.green { background: #28a745; }
-.tag.orange { background: #ff9800; }
-.tag.purple { background: #9c27b0; }
-
-/* Progress bars */
-.progress {
-  background: #333;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 18px;
-}
-.progress-bar {
-  background: var(--theme-color);
-  height: 100%;
-  text-align: center;
-  font-size: 0.8em;
-  line-height: 18px;
-  color: #000;
+button {
+  background-color: var(--theme-color);
+  color: var(--background-color);
+  border: none;
+  padding: 8px 14px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
   font-weight: bold;
+}
+
+button:hover {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.sidebar {
+  background-color: var(--theme-color);
+}
+
+.sidebar a {
+  color: var(--text-color);
 }
