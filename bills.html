@@ -2,99 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Cockpit – Bills</title>
+  <title>Smart Money Cockpit - Bills</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>🚀 Cockpit</h2>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
     <a href="index.html">Dashboard</a>
     <a href="transactions.html">Transactions</a>
     <a href="goals.html">Goals</a>
     <a href="bills.html" class="active">Bills</a>
-    <a href="categories.html">Categories</a>
     <a href="cashflow.html">Cash Flow</a>
+    <a href="categories.html">Categories</a>
     <a href="accounts.html">Accounts</a>
     <a href="settings.html">Settings</a>
-  </aside>
+  </div>
 
   <!-- Main -->
-  <main>
-    <h1>📑 Recurring Bills</h1>
-
-    <!-- Add Bill Form -->
+  <div class="main">
+    <h1>Bills</h1>
     <div class="card">
-      <h3>Add a New Bill</h3>
-      <form id="billForm">
-        <label>
-          Bill Name:
-          <input type="text" id="billName" required>
-        </label>
-        <label>
-          Amount:
-          <input type="number" id="billAmount" required>
-        </label>
-        <label>
-          Due Date:
-          <input type="date" id="billDate" required>
-        </label>
-        <label>
-          Status:
-          <select id="billStatus">
-            <option>Upcoming</option>
-            <option>Paid</option>
-            <option>Overdue</option>
-          </select>
-        </label>
-        <button type="submit">Add Bill</button>
-      </form>
+      <table id="billsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Due Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
     </div>
+  </div>
 
-    <!-- Bills List -->
-    <div id="billsList">
-      <div class="card">
-        <h3>Rent – $1,200</h3>
-        <p><span class="tag orange">Upcoming</span> Due: 2025-09-30</p>
-      </div>
-      <div class="card">
-        <h3>Electric – $150</h3>
-        <p><span class="tag red">Overdue</span> Due: 2025-09-15</p>
-      </div>
-      <div class="card">
-        <h3>Internet – $80</h3>
-        <p><span class="tag green">Paid</span> Due: 2025-09-10</p>
-      </div>
-    </div>
-  </main>
-
-  <script src="theme.js"></script>
+  <!-- Scripts -->
+  <script src="assets/js/theme.js"></script>
   <script>
-    // Demo add bill
-    const billForm = document.getElementById("billForm");
-    const billsList = document.getElementById("billsList");
+    const bills = [
+      { name: "Rent", amount: 1200, due: "2024-09-25", status: "Upcoming" },
+      { name: "Electric", amount: 150, due: "2024-09-15", status: "Paid" },
+      { name: "Internet", amount: 75, due: "2024-09-20", status: "Upcoming" },
+      { name: "Credit Card", amount: 200, due: "2024-09-10", status: "Overdue" }
+    ];
 
-    billForm.addEventListener("submit", function(e){
-      e.preventDefault();
-      const name = document.getElementById("billName").value;
-      const amount = document.getElementById("billAmount").value;
-      const date = document.getElementById("billDate").value;
-      const status = document.getElementById("billStatus").value;
+    function renderBills() {
+      const tbody = document.querySelector("#billsTable tbody");
+      tbody.innerHTML = "";
 
-      const card = document.createElement("div");
-      card.classList.add("card");
-      let color = "orange";
-      if(status==="Paid") color="green";
-      if(status==="Overdue") color="red";
+      bills.forEach(b => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${b.name}</td>
+          <td>$${b.amount.toFixed(2)}</td>
+          <td>${b.due}</td>
+          <td style="color:${b.status === "Paid" ? "limegreen" : b.status === "Overdue" ? "red" : "orange"}">
+            ${b.status}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
 
-      card.innerHTML = `
-        <h3>${name} – $${amount}</h3>
-        <p><span class="tag ${color}">${status}</span> Due: ${date}</p>
-      `;
-      billsList.appendChild(card);
-      billForm.reset();
-    });
+    document.addEventListener("DOMContentLoaded", renderBills);
   </script>
 </body>
 </html>

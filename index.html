@@ -2,118 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Cockpit – Dashboard</title>
+  <title>Smart Money Cockpit - Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>🚀 Cockpit</h2>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
     <a href="index.html" class="active">Dashboard</a>
     <a href="transactions.html">Transactions</a>
     <a href="goals.html">Goals</a>
     <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
     <a href="cashflow.html">Cash Flow</a>
+    <a href="categories.html">Categories</a>
     <a href="accounts.html">Accounts</a>
     <a href="settings.html">Settings</a>
-  </aside>
+  </div>
 
-  <!-- Main Dashboard -->
-  <main>
-    <h1>📊 Dashboard</h1>
-    <div class="grid">
-
+  <!-- Main -->
+  <div class="main">
+    <h1>Dashboard</h1>
+    <div class="dashboard-grid">
       <!-- Spendable Now -->
       <div class="card">
         <h3>Spendable Now</h3>
-        <p><strong>$1,245.20</strong> left this cycle</p>
-        <a href="cashflow.html" class="view-link">View All →</a>
+        <div class="value" id="spendableNow">$0.00</div>
       </div>
 
-      <!-- Days Left -->
+      <!-- Payday Countdown -->
       <div class="card">
-        <h3>Days Left</h3>
-        <p><strong>7 days</strong> until next payday</p>
+        <h3>Days Until Payday</h3>
+        <div class="value" id="daysLeft">--</div>
       </div>
 
-      <!-- Monthly Spending -->
-      <div class="card">
-        <h3>Monthly Spending</h3>
-        <canvas id="spendingChart"></canvas>
-        <a href="transactions.html" class="view-link">View All →</a>
-      </div>
-
-      <!-- Transactions Preview -->
-      <div class="card">
-        <h3>Recent Transactions</h3>
-        <ul class="preview-list">
-          <li>Walmart — $52.40 <span class="tag red">Clothing</span></li>
-          <li>Safeway — $13.99 <span class="tag purple">Groceries</span></li>
-          <li>Disneyland — $98.75 <span class="tag green">Entertainment</span></li>
-        </ul>
-        <a href="transactions.html" class="view-link">View All →</a>
-      </div>
-
-      <!-- Upcoming Bills -->
+      <!-- Bills Preview -->
       <div class="card">
         <h3>Upcoming Bills</h3>
-        <ul class="preview-list">
-          <li>Rent — $1,200 <span class="tag orange">Due Sep 30</span></li>
-          <li>Electric — $150 <span class="tag red">Overdue</span></li>
-          <li>Internet — $80 <span class="tag green">Paid</span></li>
-        </ul>
-        <a href="bills.html" class="view-link">View All →</a>
+        <ul id="billPreview"></ul>
+        <a href="bills.html"><button>View All</button></a>
       </div>
 
-      <!-- Goals -->
+      <!-- Goals Preview -->
       <div class="card">
-        <h3>Savings Goals</h3>
-        <div class="progress">
-          <div class="progress-bar" style="width:45%">Vacation 45%</div>
-        </div>
-        <a href="goals.html" class="view-link">View All →</a>
+        <h3>Goals</h3>
+        <ul id="goalPreview"></ul>
+        <a href="goals.html"><button>View All</button></a>
       </div>
 
-      <!-- Cash Flow -->
-      <div class="card wide">
-        <h3>Cash Flow</h3>
-        <canvas id="cashflowChart"></canvas>
-        <a href="cashflow.html" class="view-link">View All →</a>
+      <!-- Recent Transactions -->
+      <div class="card">
+        <h3>Recent Transactions</h3>
+        <ul id="txPreview"></ul>
+        <a href="transactions.html"><button>View All</button></a>
       </div>
     </div>
-  </main>
+  </div>
 
   <!-- Scripts -->
-  <script src="theme.js"></script>
-  <script src="payCycle.js"></script>
-  <script>
-    // Example charts
-    new Chart(document.getElementById('spendingChart'), {
-      type: 'line',
-      data: {
-        labels: ['Week 1','Week 2','Week 3','Week 4'],
-        datasets: [{
-          label: 'Spending',
-          data: [200, 450, 760, 910],
-          borderColor: '#ff4d4d',
-          fill: false
-        }]
-      }
-    });
-
-    new Chart(document.getElementById('cashflowChart'), {
-      type: 'line',
-      data: {
-        labels: ['Jan','Feb','Mar','Apr','May'],
-        datasets: [
-          { label: 'Income', data: [2000,2200,2100,2500,2600], borderColor:'#00cc66', fill:false },
-          { label: 'Spend', data: [1800,1900,2000,2400,2500], borderColor:'#ff3333', fill:false }
-        ]
-      }
-    });
-  </script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/index.js"></script>
 </body>
 </html>

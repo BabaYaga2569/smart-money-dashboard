@@ -2,48 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Cockpit – Accounts</title>
+  <title>Smart Money Cockpit - Accounts</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>🚀 Cockpit</h2>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
     <a href="index.html">Dashboard</a>
     <a href="transactions.html">Transactions</a>
     <a href="goals.html">Goals</a>
     <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
     <a href="cashflow.html">Cash Flow</a>
+    <a href="categories.html">Categories</a>
     <a href="accounts.html" class="active">Accounts</a>
     <a href="settings.html">Settings</a>
-  </aside>
+  </div>
 
   <!-- Main -->
-  <main>
-    <h1>🏦 Accounts</h1>
-
-    <div class="grid">
-      <div class="card">
-        <h3>BofA</h3>
-        <p>Balance: <strong>$2,430.50</strong></p>
-      </div>
-      <div class="card">
-        <h3>SoFi</h3>
-        <p>Balance: <strong>$1,025.00</strong></p>
-      </div>
-      <div class="card">
-        <h3>USAA</h3>
-        <p>Balance: <strong>$5,320.75</strong></p>
-      </div>
-      <div class="card">
-        <h3>Capital One</h3>
-        <p>Balance: <strong>$720.10</strong></p>
-      </div>
+  <div class="main">
+    <h1>Accounts</h1>
+    <div class="card">
+      <table id="accountsTable">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled by JS -->
+        </tbody>
+      </table>
+      <h3 id="totalBalance"></h3>
     </div>
-  </main>
+  </div>
 
-  <script src="theme.js"></script>
+  <!-- Scripts -->
+  <script src="assets/js/theme.js"></script>
+  <script>
+    const accounts = [
+      { name: "BofA Checking", balance: 1483.81 },
+      { name: "SoFi Savings", balance: 400.00 },
+      { name: "USAA Joint", balance: 2250.50 },
+      { name: "Capital One", balance: 785.12 }
+    ];
+
+    function renderAccounts() {
+      const tbody = document.querySelector("#accountsTable tbody");
+      tbody.innerHTML = "";
+
+      let total = 0;
+      accounts.forEach(acc => {
+        total += acc.balance;
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${acc.name}</td>
+          <td>$${acc.balance.toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("totalBalance").innerText = 
+        "Total Balance: $" + total.toFixed(2);
+    }
+
+    document.addEventListener("DOMContentLoaded", renderAccounts);
+  </script>
 </body>
 </html>

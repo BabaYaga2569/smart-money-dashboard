@@ -2,108 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money Cockpit – Transactions</title>
+  <title>Smart Money Cockpit - Transactions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>🚀 Cockpit</h2>
+  <div class="sidebar">
+    <h2>💸 Cockpit</h2>
     <a href="index.html">Dashboard</a>
     <a href="transactions.html" class="active">Transactions</a>
     <a href="goals.html">Goals</a>
     <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
     <a href="cashflow.html">Cash Flow</a>
+    <a href="categories.html">Categories</a>
     <a href="accounts.html">Accounts</a>
     <a href="settings.html">Settings</a>
-  </aside>
+  </div>
 
   <!-- Main -->
-  <main>
-    <h1>💳 Transactions</h1>
+  <div class="main">
+    <h1>Transactions</h1>
 
-    <!-- Filters -->
+    <!-- Filter controls -->
     <div class="card">
-      <h3>Filter Transactions</h3>
-      <form id="filterForm">
-        <label>
-          Date From:
-          <input type="date" id="dateFrom">
-        </label>
-        <label>
-          Date To:
-          <input type="date" id="dateTo">
-        </label>
-        <label>
-          Category:
-          <select id="categoryFilter">
-            <option value="">All</option>
-            <option>Groceries</option>
-            <option>Clothing</option>
-            <option>Entertainment</option>
-            <option>Utilities</option>
-            <option>Travel</option>
-          </select>
-        </label>
-        <button type="submit">Apply</button>
-      </form>
+      <label>
+        Category:
+        <select id="filterCategory">
+          <option value="All">All</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Dining">Dining</option>
+          <option value="Income">Income</option>
+          <option value="Shopping">Shopping</option>
+        </select>
+      </label>
+      <button id="applyFilter">Apply Filter</button>
     </div>
 
-    <!-- Transactions Table -->
+    <!-- Transactions table -->
     <div class="card">
-      <h3>All Transactions</h3>
-      <table border="0" width="100%" cellspacing="0" cellpadding="6">
+      <table id="txTable">
         <thead>
           <tr>
             <th>Date</th>
-            <th>Account</th>
             <th>Description</th>
             <th>Category</th>
             <th>Amount</th>
           </tr>
         </thead>
-        <tbody id="transactionsTable">
-          <tr>
-            <td>2025-09-01</td>
-            <td>BofA</td>
-            <td>Walmart</td>
-            <td><span class="tag red">Clothing</span></td>
-            <td>-$52.40</td>
-          </tr>
-          <tr>
-            <td>2025-09-02</td>
-            <td>SoFi</td>
-            <td>Safeway</td>
-            <td><span class="tag purple">Groceries</span></td>
-            <td>-$13.99</td>
-          </tr>
-          <tr>
-            <td>2025-09-03</td>
-            <td>USAA</td>
-            <td>Disneyland</td>
-            <td><span class="tag green">Entertainment</span></td>
-            <td>-$98.75</td>
-          </tr>
-          <tr>
-            <td>2025-09-04</td>
-            <td>Capital One</td>
-            <td>Electric Bill</td>
-            <td><span class="tag orange">Utilities</span></td>
-            <td>-$150.00</td>
-          </tr>
+        <tbody>
+          <!-- Filled by JS -->
         </tbody>
       </table>
     </div>
-  </main>
+  </div>
 
-  <script src="theme.js"></script>
+  <!-- Scripts -->
+  <script src="assets/js/theme.js"></script>
   <script>
-    // Basic filter logic (static demo for now)
-    document.getElementById("filterForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      alert("Filters applied! (This will be upgraded to live filtering)");
+    // Dummy data (mirrors index.js for now)
+    const transactions = [
+      { date: "2024-09-12", desc: "Walmart", category: "Groceries", amount: -95.23 },
+      { date: "2024-09-11", desc: "Starbucks", category: "Dining", amount: -8.75 },
+      { date: "2024-09-10", desc: "Payroll Deposit", category: "Income", amount: 1427.42 },
+      { date: "2024-09-08", desc: "Amazon", category: "Shopping", amount: -59.99 },
+      { date: "2024-09-07", desc: "Costco", category: "Groceries", amount: -152.47 }
+    ];
+
+    function renderTable(filter = "All") {
+      const tbody = document.querySelector("#txTable tbody");
+      tbody.innerHTML = "";
+
+      transactions
+        .filter(t => filter === "All" || t.category === filter)
+        .forEach(t => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${t.date}</td>
+            <td>${t.desc}</td>
+            <td>${t.category}</td>
+            <td style="color:${t.amount < 0 ? 'red' : 'limegreen'}">
+              ${t.amount < 0 ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTable();
+
+      document.getElementById("applyFilter").addEventListener("click", () => {
+        const filter = document.getElementById("filterCategory").value;
+        renderTable(filter);
+      });
     });
   </script>
 </body>
