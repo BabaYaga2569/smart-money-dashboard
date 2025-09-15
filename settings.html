@@ -2,48 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="cashflow.html">Cash Flow</a>
-    <a href="categories.html">Categories</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="settings.html" class="active">Settings</a>
+    <h2>🚀 Cockpit</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="settings.html" class="active">Settings</a></li>
+    </ul>
   </div>
 
-  <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Settings</h1>
-
-    <!-- Custom Theme -->
     <div class="card">
-      <h3>Custom Theme</h3>
+      <h2>Theme</h2>
       <label>Theme Color: <input type="color" id="themeColor" value="#39FF14"></label><br>
       <label>Accent Color: <input type="color" id="accentColor" value="#FFD700"></label><br>
       <label>Background Color: <input type="color" id="backgroundColor" value="#121212"></label><br>
       <label>Text Color: <input type="color" id="textColor" value="#FFFFFF"></label><br>
       <button id="applyThemeBtn">Apply Theme</button>
     </div>
-
-    <!-- Presets -->
     <div class="card">
-      <h3>Preset Themes</h3>
-      <button data-preset="default">Default (Neon Green)</button>
+      <h2>Presets</h2>
+      <button data-preset="default">Default (Neon)</button>
       <button data-preset="oceanBlue">Ocean Blue</button>
       <button data-preset="sunsetOrange">Sunset Orange</button>
       <button data-preset="midnightPurple">Midnight Purple</button>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="assets/js/theme.js"></script>
 </body>
 </html>

@@ -2,64 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
-    <a href="index.html" class="active">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="cashflow.html">Cash Flow</a>
-    <a href="categories.html">Categories</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="settings.html">Settings</a>
+    <h2>🚀 Cockpit</h2>
+    <ul>
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
-  <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Dashboard</h1>
-    <div class="dashboard-grid">
-      <!-- Spendable Now -->
-      <div class="card">
-        <h3>Spendable Now</h3>
-        <div class="value" id="spendableNow">$0.00</div>
-      </div>
 
-      <!-- Payday Countdown -->
-      <div class="card">
-        <h3>Days Until Payday</h3>
-        <div class="value" id="daysLeft">--</div>
-      </div>
+    <div class="card">
+      <h2>Spendable Now</h2>
+      <p id="spendable">$0.00</p>
+    </div>
 
-      <!-- Bills Preview -->
-      <div class="card">
-        <h3>Upcoming Bills</h3>
-        <ul id="billPreview"></ul>
-        <a href="bills.html"><button>View All</button></a>
-      </div>
+    <div class="card">
+      <h2>Days Until Payday</h2>
+      <p id="days">6 days</p>
+    </div>
 
-      <!-- Goals Preview -->
-      <div class="card">
-        <h3>Goals</h3>
-        <ul id="goalPreview"></ul>
-        <a href="goals.html"><button>View All</button></a>
-      </div>
+    <div class="card">
+      <h2>Upcoming Bills</h2>
+      <ul>
+        <li>Rent – $1200 (Upcoming)</li>
+        <li>Electric – $150 (Paid)</li>
+        <li>Internet – $75 (Upcoming)</li>
+      </ul>
+      <a href="bills.html" class="btn">View All</a>
+    </div>
 
-      <!-- Recent Transactions -->
-      <div class="card">
-        <h3>Recent Transactions</h3>
-        <ul id="txPreview"></ul>
-        <a href="transactions.html"><button>View All</button></a>
-      </div>
+    <div class="card">
+      <h2>Goals</h2>
+      <ul>
+        <li>Jamaica Trip – 43% funded</li>
+        <li>New Laptop – 40% funded</li>
+        <li>Emergency Fund – 25% funded</li>
+      </ul>
+      <a href="goals.html" class="btn">View All</a>
+    </div>
+
+    <div class="card">
+      <h2>Recent Transactions</h2>
+      <ul>
+        <li>2024-09-12 – Walmart (Groceries) – $95.23</li>
+        <li>2024-09-11 – Apple Music (Entertainment) – $9.99</li>
+        <li>2024-09-10 – Shell (Gas) – $45.50</li>
+      </ul>
+      <a href="transactions.html" class="btn">View All</a>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="assets/js/theme.js"></script>
-  <script src="assets/js/index.js"></script>
+  <script src="payCycle.js"></script>
+  <script>
+    const balance = 5000;
+    const bills = [
+      { name: "Rent", amount: 1200, paid: false },
+      { name: "Internet", amount: 75, paid: true }
+    ];
+    const recurring = [
+      { name: "Car Loan", amount: 400, paid: false }
+    ];
+    document.getElementById("spendable").innerText =
+      "$" + calculateSpendable(balance, bills, recurring, 6);
+  </script>
 </body>
 </html>

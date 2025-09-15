@@ -2,56 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Cockpit - Cash Flow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash Flow - Smart Money Cockpit</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💸 Cockpit</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="cashflow.html" class="active">Cash Flow</a>
-    <a href="categories.html">Categories</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="settings.html">Settings</a>
+    <h2>🚀 Cockpit</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="cashflow.html" class="active">Cash Flow</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
-  <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Cash Flow</h1>
     <div class="card">
       <canvas id="cashflowChart"></canvas>
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="assets/js/theme.js"></script>
   <script>
     const ctx = document.getElementById("cashflowChart").getContext("2d");
-
-    const data = {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
-      datasets: [
-        {
-          label: "Income",
-          data: [3200, 3400, 3000, 3600, 3800, 3900, 3500, 4000],
-          backgroundColor: "limegreen"
-        },
-        {
-          label: "Expenses",
-          data: [2500, 2700, 2600, 2800, 3000, 3100, 2900, 2950],
-          backgroundColor: "red"
-        }
-      ]
-    };
-
-    const config = {
+    new Chart(ctx, {
       type: "bar",
-      data: data,
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+        datasets: [
+          { label: "Income", data: [3200, 3400, 3000, 3600, 3800, 3900, 3500, 4000], backgroundColor: "limegreen" },
+          { label: "Expenses", data: [2500, 2700, 2600, 2800, 3000, 3100, 2900, 2950], backgroundColor: "red" }
+        ]
+      },
       options: {
         responsive: true,
         plugins: {
@@ -63,9 +52,7 @@
           y: { ticks: { color: "white" } }
         }
       }
-    };
-
-    new Chart(ctx, config);
+    });
   </script>
 </body>
 </html>
