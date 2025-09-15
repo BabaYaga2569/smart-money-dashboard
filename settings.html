@@ -22,25 +22,28 @@
     </ul>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Settings</h1>
-    <div class="card">
+
+    <div class="settings-section">
       <h2>Theme</h2>
-      <label>Theme Color: <input type="color" id="themeColor" value="#39FF14"></label><br>
-      <label>Accent Color: <input type="color" id="accentColor" value="#FFD700"></label><br>
-      <label>Background Color: <input type="color" id="backgroundColor" value="#121212"></label><br>
-      <label>Text Color: <input type="color" id="textColor" value="#FFFFFF"></label><br>
-      <button id="applyThemeBtn">Apply Theme</button>
+      <label>Theme Color: <input type="color" id="themeColor"></label>
+      <label>Accent Color: <input type="color" id="accentColor"></label>
+      <label>Background Color: <input type="color" id="bgColor"></label>
+      <label>Text Color: <input type="color" id="textColor"></label>
+      <button onclick="saveCustomTheme()">Apply Theme</button>
     </div>
-    <div class="card">
+
+    <div class="settings-section">
       <h2>Presets</h2>
-      <button data-preset="default">Default (Neon)</button>
-      <button data-preset="oceanBlue">Ocean Blue</button>
-      <button data-preset="sunsetOrange">Sunset Orange</button>
-      <button data-preset="midnightPurple">Midnight Purple</button>
+      <button onclick="applyPreset('default')">Default (Neon)</button>
+      <button onclick="applyPreset('blue')">Ocean Blue</button>
+      <button onclick="applyPreset('orange')">Sunset Orange</button>
+      <button onclick="applyPreset('purple')">Midnight Purple</button>
     </div>
   </div>
 
+  <!-- Load the theme manager -->
   <script src="assets/js/theme.js"></script>
 </body>
 </html>
