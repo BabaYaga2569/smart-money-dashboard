@@ -1,50 +1,38 @@
 // theme.js
+function applyTheme(theme) {
+  document.documentElement.style.setProperty('--theme-color', theme.theme);
+  document.documentElement.style.setProperty('--accent-color', theme.accent);
+  document.documentElement.style.setProperty('--bg-color', theme.bg);
+  document.documentElement.style.setProperty('--text-color', theme.text);
 
-// Apply saved theme on page load
-document.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = JSON.parse(localStorage.getItem("themeSettings"));
-    if (savedTheme) {
-        applyTheme(savedTheme);
-    }
-});
-
-// Apply theme function
-function applyTheme(settings) {
-    document.documentElement.style.setProperty('--theme-color', settings.themeColor);
-    document.documentElement.style.setProperty('--accent-color', settings.accentColor);
-    document.documentElement.style.setProperty('--bg-color', settings.bgColor);
-    document.documentElement.style.setProperty('--text-color', settings.textColor);
-
-    // Save to localStorage so all pages remember
-    localStorage.setItem("themeSettings", JSON.stringify(settings));
+  // Save to localStorage so it sticks
+  localStorage.setItem('customTheme', JSON.stringify(theme));
 }
 
-// Called when you hit "Apply Theme" button
 function saveCustomTheme() {
-    const themeColor = document.getElementById("themeColor").value;
-    const accentColor = document.getElementById("accentColor").value;
-    const bgColor = document.getElementById("bgColor").value;
-    const textColor = document.getElementById("textColor").value;
-
-    applyTheme({ themeColor, accentColor, bgColor, textColor });
+  const theme = {
+    theme: document.getElementById('themeColor').value,
+    accent: document.getElementById('accentColor').value,
+    bg: document.getElementById('bgColor').value,
+    text: document.getElementById('textColor').value
+  };
+  applyTheme(theme);
 }
 
-// Called when selecting preset
-function applyPreset(theme) {
-    let settings;
-    switch (theme) {
-        case "default":
-            settings = { themeColor: "#39ff14", accentColor: "#ff00ff", bgColor: "#111", textColor: "#fff" };
-            break;
-        case "blue":
-            settings = { themeColor: "#007BFF", accentColor: "#00CFFF", bgColor: "#001f3f", textColor: "#fff" };
-            break;
-        case "orange":
-            settings = { themeColor: "#ff6600", accentColor: "#ffa500", bgColor: "#2a1a00", textColor: "#fff" };
-            break;
-        case "purple":
-            settings = { themeColor: "#8000ff", accentColor: "#b266ff", bgColor: "#1a001f", textColor: "#fff" };
-            break;
-    }
-    applyTheme(settings);
+function applyPreset(preset) {
+  const presets = {
+    default: { theme: '#39ff14', accent: '#ff00ff', bg: '#111111', text: '#ffffff' },
+    blue: { theme: '#0077ff', accent: '#00cfff', bg: '#0d1b2a', text: '#ffffff' },
+    orange: { theme: '#ff6600', accent: '#ffcc00', bg: '#1a0f0f', text: '#ffffff' },
+    purple: { theme: '#8000ff', accent: '#ff00ff', bg: '#1a0f1a', text: '#ffffff' }
+  };
+  applyTheme(presets[preset]);
 }
+
+// Load saved theme on startup
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('customTheme');
+  if (saved) {
+    applyTheme(JSON.parse(saved));
+  }
+});
