@@ -2,82 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
+  <script src="payCycle.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item active">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Dashboard</h1>
 
-    <div class="card">
-      <h2>Spendable Now</h2>
-      <p id="spendable">$0.00</p>
-    </div>
+    <div class="tiles">
+      <div class="tile">
+        <h3>Spendable Now</h3>
+        <p id="spendableNow">$0.00</p>
+        <button onclick="location.href='cashflow.html'">View All</button>
+      </div>
 
-    <div class="card">
-      <h2>Days Until Payday</h2>
-      <p id="days">6 days</p>
-    </div>
+      <div class="tile">
+        <h3>Next Paycheck</h3>
+        <p id="nextPayDisplay">Loading...</p>
+        <button onclick="location.href='accounts.html'">View All</button>
+      </div>
 
-    <div class="card">
-      <h2>Upcoming Bills</h2>
-      <ul>
-        <li>Rent – $1200 (Upcoming)</li>
-        <li>Electric – $150 (Paid)</li>
-        <li>Internet – $75 (Upcoming)</li>
-      </ul>
-      <a href="bills.html" class="btn">View All</a>
-    </div>
+      <div class="tile">
+        <h3>Recent Transactions</h3>
+        <ul id="recentTransactions"></ul>
+        <button onclick="location.href='transactions.html'">View All</button>
+      </div>
 
-    <div class="card">
-      <h2>Goals</h2>
-      <ul>
-        <li>Jamaica Trip – 43% funded</li>
-        <li>New Laptop – 40% funded</li>
-        <li>Emergency Fund – 25% funded</li>
-      </ul>
-      <a href="goals.html" class="btn">View All</a>
-    </div>
+      <div class="tile">
+        <h3>Upcoming Bills</h3>
+        <ul id="upcomingBills"></ul>
+        <button onclick="location.href='bills.html'">View All</button>
+      </div>
 
-    <div class="card">
-      <h2>Recent Transactions</h2>
-      <ul>
-        <li>2024-09-12 – Walmart (Groceries) – $95.23</li>
-        <li>2024-09-11 – Apple Music (Entertainment) – $9.99</li>
-        <li>2024-09-10 – Shell (Gas) – $45.50</li>
-      </ul>
-      <a href="transactions.html" class="btn">View All</a>
+      <div class="tile">
+        <h3>Goals Progress</h3>
+        <ul id="goalsProgress"></ul>
+        <button onclick="location.href='goals.html'">View All</button>
+      </div>
     </div>
   </div>
 
-  <script src="payCycle.js"></script>
   <script>
-    const balance = 5000;
-    const bills = [
-      { name: "Rent", amount: 1200, paid: false },
-      { name: "Internet", amount: 75, paid: true }
-    ];
-    const recurring = [
-      { name: "Car Loan", amount: 400, paid: false }
-    ];
-    document.getElementById("spendable").innerText =
-      "$" + calculateSpendable(balance, bills, recurring, 6);
+    // Load recent transactions from dummy data
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.dummyData) {
+        const txList = document.getElementById("recentTransactions");
+        txList.innerHTML = window.dummyData.transactions
+          .slice(0, 3)
+          .map(tx => `<li>${tx.date} - ${tx.description} - $${tx.amount}</li>`)
+          .join("");
+
+        const billsList = document.getElementById("upcomingBills");
+        billsList.innerHTML = window.dummyData.bills
+          .slice(0, 3)
+          .map(b => `<li>${b.name} - $${b.amount} due ${b.dueDate}</li>`)
+          .join("");
+
+        const goalsList = document.getElementById("goalsProgress");
+        goalsList.innerHTML = window.dummyData.goals
+          .slice(0, 3)
+          .map(g => `<li>${g.name}: $${g.saved}/$${g.target}</li>`)
+          .join("");
+      }
+    });
   </script>
 </body>
 </html>

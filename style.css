@@ -1,57 +1,142 @@
-:root {
-  --theme-color: #39ff14;
-  --accent-color: #ff00ff;
-  --bg-color: #111111;
-  --text-color: #ffffff;
-}
-
+/* Global Styles */
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: Arial, sans-serif;
   margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0e14;
+  color: #f0f0f0;
   display: flex;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 200px;
-  background-color: #111;
-  padding: 20px;
-  min-height: 100vh;
+  width: 220px;
+  background: #11151d;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
 }
 
 .sidebar h2 {
-  color: var(--theme-color);
+  text-align: center;
+  color: var(--theme-color, #39ff14);
+  margin-bottom: 30px;
+  text-shadow: 0 0 8px var(--theme-color, #39ff14);
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 10px 0;
-}
-
-.sidebar ul li a {
-  color: var(--text-color);
+.nav-item {
+  padding: 12px 20px;
+  display: block;
+  color: #ccc;
   text-decoration: none;
+  transition: all 0.3s;
 }
 
-.sidebar ul li a.active {
-  color: var(--theme-color);
+.nav-item:hover,
+.nav-item.active {
+  background: #1a1f2a;
+  color: var(--theme-color, #39ff14);
 }
 
+/* Main */
 .main {
   flex: 1;
   padding: 20px;
 }
 
-button {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: none;
+h1 {
+  margin-top: 0;
+  color: var(--theme-color, #39ff14);
+}
+
+/* Tiles */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.tile {
+  background: #161b25;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+
+.tile h3 {
+  margin: 0 0 10px;
+}
+
+.tile button {
+  margin-top: 10px;
   padding: 6px 12px;
-  margin-top: 5px;
+  background: var(--theme-color, #39ff14);
+  border: none;
+  border-radius: 4px;
+  color: #111;
+  font-weight: bold;
   cursor: pointer;
+}
+
+/* Data Tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.data-table th, .data-table td {
+  padding: 10px;
+  border: 1px solid #333;
+  text-align: left;
+}
+
+.data-table th {
+  background: #222;
+}
+
+.positive {
+  color: #39ff14;
+  font-weight: bold;
+}
+
+.negative {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+/* Forms */
+form {
+  margin-top: 20px;
+  background: #161b25;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 4px;
+}
+
+button {
+  background: var(--theme-color, #39ff14);
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Settings */
+.settings-section {
+  margin-bottom: 20px;
+  background: #161b25;
+  padding: 15px;
+  border-radius: 8px;
 }

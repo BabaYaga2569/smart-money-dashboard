@@ -1,76 +1,51 @@
-// ============================
-// Pay Cycle Manager
-// ============================
-
-// Configurable pay setup
-const payConfig = {
-  myPay: {
-    baseAmount: 1883.81,      // total paycheck
-    split: { sofi: 400, bofa: 1483.81 }, // split accounts
-    schedule: "biweekly",     // biweekly pay
-    anchor: "2025-09-05",     // known payday (Friday)
-  },
-  tanciPay: {
-    baseAmount: 1851.04,      // paycheck amount
-    schedule: "semimonthly",  // 15th and 30th
-  },
-};
-
-// Utility: get next payday for biweekly
-function getNextBiweekly(anchorDate) {
-  const anchor = new Date(anchorDate);
-  const today = new Date();
-  let next = new Date(anchor);
-
-  // add 14 days until it's after today
-  while (next <= today) {
-    next.setDate(next.getDate() + 14);
-  }
-  return next;
-}
-
-// Utility: get next payday for semimonthly (15th & 30th)
-function getNextSemiMonthly() {
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = today.getMonth();
-
-  const fifteenth = new Date(y, m, 15);
-  const thirtieth = new Date(y, m, 30);
-
-  if (today < fifteenth) return fifteenth;
-  if (today < thirtieth) return thirtieth;
-  return new Date(y, m + 1, 15);
-}
-
-// Calculate days left in cycle
-function daysUntil(date) {
-  const today = new Date();
-  const diff = date - today;
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
-
-// Render tiles if on dashboard
+// Pay cycle logic
 document.addEventListener("DOMContentLoaded", () => {
-  const spendableTile = document.querySelector(".card h3:contains('Spendable Now')");
-  const daysLeftTile = document.querySelector(".card h3:contains('Days Left')");
+  const spendableEl = document.getElementById("spendableNow");
+  const nextPayEl = document.getElementById("nextPayDisplay");
 
-  const nextMyPay = getNextBiweekly(payConfig.myPay.anchor);
-  const nextTanciPay = getNextSemiMonthly();
+  if (!spendableEl || !nextPayEl) return;
 
-  const daysLeft = daysUntil(nextMyPay);
-  const spendable = payConfig.myPay.baseAmount; // later deduct bills if needed
+  const today = new Date();
 
-  if (spendableTile) {
-    spendableTile.parentElement.querySelector("p").innerHTML =
-      `<strong>$${spendable.toFixed(2)}</strong> left this cycle`;
+  // Your pay (biweekly, split into SoFi early + BofA main)
+  const payAmount = 1883.81;
+  const sofiAmount = 400;
+  const bofaAmount = payAmount - sofiAmount;
+
+  // Wife's pay (15th + 30th)
+  const tanciPay = 1851.04;
+
+  function nextFriday(baseDate) {
+    const d = new Date(baseDate);
+    d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));
+    return d;
   }
 
-  if (daysLeftTile) {
-    daysLeftTile.parentElement.querySelector("p").innerHTML =
-      `<strong>${daysLeft}</strong> days until next payday`;
+  const userPayDay = nextFriday(today); // base: Friday
+  const userSoFiDay = new Date(userPayDay);
+  userSoFiDay.setDate(userPayDay.getDate() - 2);
+
+  // Tanci’s paydays
+  function nextTanciPay() {
+    const d = new Date(today);
+    let pay1 = new Date(d.getFullYear(), d.getMonth(), 15);
+    let pay2 = new Date(d.getFullYear(), d.getMonth(), 30);
+
+    if (pay1 < d) pay1.setMonth(pay1.getMonth() + 1);
+    if (pay2 < d) pay2.setMonth(pay2.getMonth() + 1);
+
+    return (pay1 < pay2) ? pay1 : pay2;
   }
 
-  console.log("Next My Pay:", nextMyPay.toDateString());
-  console.log("Next Tanci Pay:", nextTanciPay.toDateString());
+  const tanciNext = nextTanciPay();
+
+  nextPayEl.textContent = `Your next: $${bofaAmount.toFixed(2)} on ${userPayDay.toDateString()} (+$${sofiAmount.toFixed(2)} to SoFi on ${userSoFiDay.toDateString()})
+  | Tanci next: $${tanciPay.toFixed(2)} on ${tanciNext.toDateString()}`;
+
+  // Spendable calculation (dummy: sum of accounts - sum of bills)
+  const accountsTotal = window.dummyData.accounts.reduce((sum, a) => sum + a.balance, 0);
+  const billsTotal = window.dummyData.bills.reduce((sum, b) => sum + b.amount, 0);
+  const spendable = accountsTotal - billsTotal;
+
+  spendableEl.textContent = `$${spendable.toFixed(2)}`;
 });

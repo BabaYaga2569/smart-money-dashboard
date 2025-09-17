@@ -2,40 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goals - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Goals</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html" class="active">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item active">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main-content">
-    <h1>Goals</h1>
-    <div class="card">
-      <h2>🏝️ Jamaica Trip</h2>
-      <p>43% funded ($2,150 of $5,000)</p>
-    </div>
-    <div class="card">
-      <h2>💻 New Laptop</h2>
-      <p>40% funded ($400 of $1,000)</p>
-    </div>
-    <div class="card">
-      <h2>💰 Emergency Fund</h2>
-      <p>25% funded ($2,500 of $10,000)</p>
-    </div>
+  <div class="main">
+    <h1>Savings Goals</h1>
+
+    <div id="goalsList"></div>
+
+    <form id="addGoalForm">
+      <h2>Add New Goal</h2>
+      <label>Name <input type="text" id="goalName" required></label>
+      <label>Target Amount <input type="number" id="goalTarget" required></label>
+      <button type="submit">Add Goal</button>
+    </form>
   </div>
+
+  <script>
+    function renderGoals() {
+      const goalsList = document.getElementById("goalsList");
+      if (!window.dummyData) return;
+
+      goalsList.innerHTML = window.dummyData.goals.map((g, i) => `
+        <div class="goal">
+          <h3>${g.name}</h3>
+          <p>Saved: $${g.saved} / $${g.target}</p>
+          <progress value="${g.saved}" max="${g.target}"></progress>
+          <button onclick="addToGoal(${i}, 50)">+ $50</button>
+          <button onclick="addToGoal(${i}, 100)">+ $100</button>
+        </div>
+      `).join("");
+    }
+
+    function addToGoal(index, amount) {
+      window.dummyData.goals[index].saved += amount;
+      renderGoals();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderGoals();
+
+      document.getElementById("addGoalForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById("goalName").value;
+        const target = parseFloat(document.getElementById("goalTarget").value);
+        window.dummyData.goals.push({ name, target, saved: 0 });
+        renderGoals();
+        e.target.reset();
+      };
+    });
+  </script>
 </body>
 </html>

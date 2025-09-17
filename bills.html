@@ -2,46 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bills - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Bills</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html" class="active">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item active">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main-content">
-    <h1>Bills</h1>
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Due Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Rent</td><td>$1200</td><td>2024-09-25</td><td style="color:orange">Upcoming</td></tr>
-          <tr><td>Electric</td><td>$150</td><td>2024-09-15</td><td style="color:limegreen">Paid</td></tr>
-          <tr><td>Internet</td><td>$75</td><td>2024-09-20</td><td style="color:orange">Upcoming</td></tr>
-          <tr><td>Credit Card</td><td>$200</td><td>2024-09-10</td><td style="color:red">Overdue</td></tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="main">
+    <h1>Recurring Bills</h1>
+
+    <div id="billsList"></div>
+
+    <form id="addBillForm">
+      <h2>Add New Bill</h2>
+      <label>Name <input type="text" id="billName" required></label>
+      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
+      <label>Due Date <input type="date" id="billDueDate" required></label>
+      <button type="submit">Add Bill</button>
+    </form>
   </div>
+
+  <script>
+    function renderBills() {
+      const billsList = document.getElementById("billsList");
+      if (!window.dummyData) return;
+
+      billsList.innerHTML = window.dummyData.bills.map((b, i) => `
+        <div class="bill">
+          <h3>${b.name}</h3>
+          <p>Amount: $${b.amount}</p>
+          <p>Due: ${b.dueDate}</p>
+          <button onclick="markPaid(${i})">Mark Paid</button>
+          <button onclick="deleteBill(${i})">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    function markPaid(index) {
+      // Fake "mark as paid" → just push due date forward 1 month
+      let bill = window.dummyData.bills[index];
+      let nextDue = new Date(bill.dueDate);
+      nextDue.setMonth(nextDue.getMonth() + 1);
+      bill.dueDate = nextDue.toISOString().split("T")[0];
+      renderBills();
+    }
+
+    function deleteBill(index) {
+      window.dummyData.bills.splice(index, 1);
+      renderBills();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderBills();
+
+      document.getElementById("addBillForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById("billName").value;
+        const amount = parseFloat(document.getElementById("billAmount").value);
+        const dueDate = document.getElementById("billDueDate").value;
+        window.dummyData.bills.push({ name, amount, dueDate });
+        renderBills();
+        e.target.reset();
+      };
+    });
+  </script>
 </body>
 </html>

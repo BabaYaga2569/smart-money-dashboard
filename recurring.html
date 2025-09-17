@@ -2,50 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recurring Bills - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Recurring</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html" class="active">Recurring</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item active">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main-content">
-    <h1>Recurring Bills</h1>
-    <div class="card">
-      <h2>Monthly</h2>
-      <ul>
-        <li>Rent – $1200 (Due 1st)</li>
-        <li>Internet – $75 (Due 2nd)</li>
-        <li>Car Loan – $400 (Due 10th)</li>
-      </ul>
-    </div>
+  <div class="main">
+    <h1>Recurring Subscriptions</h1>
 
-    <div class="card">
-      <h2>Quarterly</h2>
-      <ul>
-        <li>Car Insurance – $300 (Due Jan, Apr, Jul, Oct)</li>
-      </ul>
-    </div>
+    <div id="recurringList"></div>
 
-    <div class="card">
-      <h2>Annual</h2>
-      <ul>
-        <li>Amazon Prime – $139 (Due March)</li>
-      </ul>
-    </div>
+    <form id="addRecurringForm">
+      <h2>Add New Subscription</h2>
+      <label>Name <input type="text" id="recurringName" required></label>
+      <label>Amount <input type="number" id="recurringAmount" step="0.01" required></label>
+      <label>Frequency 
+        <select id="recurringFrequency">
+          <option value="Monthly">Monthly</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Yearly">Yearly</option>
+        </select>
+      </label>
+      <button type="submit">Add</button>
+    </form>
   </div>
+
+  <script>
+    function renderRecurring() {
+      const list = document.getElementById("recurringList");
+      if (!window.dummyData) return;
+
+      list.innerHTML = window.dummyData.recurring.map((r, i) => `
+        <div class="recurring">
+          <h3>${r.name}</h3>
+          <p>Amount: $${r.amount}</p>
+          <p>Frequency: ${r.frequency}</p>
+          <button onclick="deleteRecurring(${i})">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    function deleteRecurring(index) {
+      window.dummyData.recurring.splice(index, 1);
+      renderRecurring();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderRecurring();
+
+      document.getElementById("addRecurringForm").onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById("recurringName").value;
+        const amount = parseFloat(document.getElementById("recurringAmount").value);
+        const frequency = document.getElementById("recurringFrequency").value;
+        window.dummyData.recurring.push({ name, amount, frequency });
+        renderRecurring();
+        e.target.reset();
+      };
+    });
+  </script>
 </body>
 </html>

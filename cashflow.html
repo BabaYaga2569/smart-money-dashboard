@@ -2,56 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cash Flow - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Cashflow</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="theme.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html" class="active">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item active">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main-content">
-    <h1>Cash Flow</h1>
-    <div class="card">
-      <canvas id="cashflowChart"></canvas>
+  <div class="main">
+    <h1>Cashflow Overview</h1>
+
+    <div class="cashflow-summary">
+      <p><strong>Total Income:</strong> $<span id="totalIncome">0.00</span></p>
+      <p><strong>Total Expenses:</strong> $<span id="totalExpenses">0.00</span></p>
+      <p><strong>Net:</strong> $<span id="netFlow">0.00</span></p>
     </div>
+
+    <h2>Recent Transactions</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="cashflowTransactions"></tbody>
+    </table>
   </div>
 
   <script>
-    const ctx = document.getElementById("cashflowChart").getContext("2d");
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
-        datasets: [
-          { label: "Income", data: [3200, 3400, 3000, 3600, 3800, 3900, 3500, 4000], backgroundColor: "limegreen" },
-          { label: "Expenses", data: [2500, 2700, 2600, 2800, 3000, 3100, 2900, 2950], backgroundColor: "red" }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "top", labels: { color: "white" } },
-          title: { display: true, text: "Income vs Expenses", color: "white" }
-        },
-        scales: {
-          x: { ticks: { color: "white" } },
-          y: { ticks: { color: "white" } }
-        }
-      }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!window.dummyData) return;
+
+      const income = window.dummyData.transactions
+        .filter(tx => tx.type === "income")
+        .reduce((sum, tx) => sum + tx.amount, 0);
+
+      const expenses = window.dummyData.transactions
+        .filter(tx => tx.type === "expense")
+        .reduce((sum, tx) => sum + tx.amount, 0);
+
+      document.getElementById("totalIncome").textContent = income.toFixed(2);
+      document.getElementById("totalExpenses").textContent = expenses.toFixed(2);
+      document.getElementById("netFlow").textContent = (income - expenses).toFixed(2);
+
+      const tbody = document.getElementById("cashflowTransactions");
+      tbody.innerHTML = window.dummyData.transactions
+        .slice(0, 10)
+        .map(tx => `
+          <tr>
+            <td>${tx.date}</td>
+            <td>${tx.description}</td>
+            <td>${tx.category}</td>
+            <td class="${tx.type === "income" ? "positive" : "negative"}">
+              $${tx.amount}
+            </td>
+          </tr>
+        `).join("");
     });
   </script>
 </body>

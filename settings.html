@@ -2,48 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings - Smart Money Cockpit</title>
+  <title>Smart Money Tracker - Settings</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>🚀 Cockpit</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="settings.html" class="active">Settings</a></li>
-    </ul>
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="settings.html" class="nav-item active">⚙️ Settings</a>
   </div>
 
   <div class="main">
     <h1>Settings</h1>
 
     <div class="settings-section">
-      <h2>Theme</h2>
-      <label>Theme Color: <input type="color" id="themeColor"></label>
-      <label>Accent Color: <input type="color" id="accentColor"></label>
-      <label>Background Color: <input type="color" id="bgColor"></label>
-      <label>Text Color: <input type="color" id="textColor"></label>
-      <button onclick="saveCustomTheme()">Apply Theme</button>
+      <h2>Theme Color</h2>
+      <input type="color" id="themeColorPicker" value="#39ff14">
+      <button id="applyTheme">Apply</button>
     </div>
 
     <div class="settings-section">
-      <h2>Presets</h2>
-      <button onclick="applyPreset('default')">Default (Neon)</button>
-      <button onclick="applyPreset('blue')">Ocean Blue</button>
-      <button onclick="applyPreset('orange')">Sunset Orange</button>
-      <button onclick="applyPreset('purple')">Midnight Purple</button>
+      <h2>Preset Themes</h2>
+      <button onclick="setPreset('default')">Default</button>
+      <button onclick="setPreset('dark')">Dark</button>
+      <button onclick="setPreset('ocean')">Ocean</button>
+      <button onclick="setPreset('sunset')">Sunset</button>
+    </div>
+
+    <div class="settings-section">
+      <h2>Current Theme</h2>
+      <p id="currentTheme">Default</p>
     </div>
   </div>
-
-  <!-- Load the theme manager -->
-  <script src="assets/js/theme.js"></script>
 </body>
 </html>
