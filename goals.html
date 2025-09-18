@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Goals - Smart Money</title>
+  <title>Goals</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,15 +22,24 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Goals</h1>
-    <ul id="goalsList"></ul>
+    <div id="goals-list"></div>
   </div>
 
-  <script>
-    const goals = JSON.parse(localStorage.getItem("goals")) || [];
-    document.getElementById("goalsList").innerHTML =
-      goals.map(g => `<li>${g.name} — $${g.saved} of $${g.target} (${((g.saved / g.target) * 100).toFixed(1)}%)</li>`).join("");
-  </script>
+<script>
+  window.onload = () => {
+    const container = document.getElementById("goals-list");
+    container.innerHTML = demoData.goals
+      .map(g => `
+        <div class="tile">
+          <h3>${g.name}</h3>
+          <p>Target: $${g.target}</p>
+          <p>Saved: $${g.saved}</p>
+          <p>Progress: ${(g.saved / g.target * 100).toFixed(1)}%</p>
+        </div>
+      `).join("");
+  };
+</script>
 </body>
 </html>

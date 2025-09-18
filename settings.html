@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings - Smart Money</title>
+  <title>Settings</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
+  <script src="theme.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -22,37 +22,10 @@
     <a href="settings.html" class="active">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Settings</h1>
-
-    <div class="tile">
-      <h3>Theme Colors</h3>
-      <label>Background: <input type="color" id="bgPicker" value="#121212"></label><br>
-      <label>Accent: <input type="color" id="accentPicker" value="#39ff14"></label><br>
-      <button id="applyTheme">Apply</button>
-    </div>
-
-    <div class="tile">
-      <h3>Data</h3>
-      <button id="resetData">Reset All Demo Data</button>
-    </div>
+    <label>Theme Color: <input type="color" id="theme-color"></label>
+    <button onclick="applyTheme()">Apply</button>
   </div>
-
-  <script>
-    document.getElementById("applyTheme").onclick = () => {
-      const bg = document.getElementById("bgPicker").value;
-      const accent = document.getElementById("accentPicker").value;
-      localStorage.setItem("theme", JSON.stringify({ bg, accent }));
-      document.body.style.background = bg;
-      document.body.style.color = "#fff";
-      alert("Theme updated!");
-    };
-
-    document.getElementById("resetData").onclick = () => {
-      localStorage.clear();
-      alert("All demo data cleared. Refresh to reseed.");
-      location.reload();
-    };
-  </script>
 </body>
 </html>

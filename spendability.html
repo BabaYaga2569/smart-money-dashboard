@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spendability - Smart Money</title>
+  <title>Spendability</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,41 +22,28 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
-    <h1>Spendability</h1>
-    <div id="spendCard"></div>
-
-    <div class="tile">
-      <label>Enter spend check:</label>
-      <input type="number" id="spendInput">
-      <button onclick="checkSpend()">Check</button>
-      <p id="spendResult"></p>
-    </div>
+  <div class="content">
+    <h1>Spendability Checker</h1>
+    <input type="number" id="spend-input" placeholder="Enter amount">
+    <button onclick="checkSpend()">Check</button>
+    <div id="spend-result"></div>
   </div>
 
-  <script>
-    const accts = JSON.parse(localStorage.getItem("accounts")) || [];
-    const bills = JSON.parse(localStorage.getItem("bills")) || [];
-    let total = accts.reduce((s, a) => s + a.balance, 0);
-    let billTotal = bills.reduce((s, b) => s + b.amount, 0);
-    let spendable = total - billTotal;
-
-    document.getElementById("spendCard").innerHTML = `
-      <div class="tile">
-        <p>Total Balance: $${total.toFixed(2)}</p>
-        <p>Upcoming Bills: $${billTotal.toFixed(2)}</p>
-        <p>Spendable Now: <span class="${spendable < 0 ? 'neg' : 'pos'}">$${spendable.toFixed(2)}</span></p>
-      </div>
-    `;
-
-    function checkSpend() {
-      const amt = parseFloat(document.getElementById("spendInput").value);
-      if (amt <= spendable) {
-        document.getElementById("spendResult").innerText = `✅ Safe to spend $${amt.toFixed(2)}`;
-      } else {
-        document.getElementById("spendResult").innerText = `❌ Overshoot by $${(amt - spendable).toFixed(2)}`;
-      }
+<script>
+  function checkSpend() {
+    const amt = parseFloat(document.getElementById("spend-input").value);
+    const bal = demoData.accounts.reduce((a, b) => a + b.balance, 0);
+    const bills = demoData.bills.reduce((a, b) => a + b.amount, 0);
+    const available = bal - bills;
+    const res = document.getElementById("spend-result");
+    if (amt <= available) {
+      res.textContent = `✅ You can afford $${amt}. Available: $${available}`;
+      res.style.color = "lightgreen";
+    } else {
+      res.textContent = `❌ Not safe. Available: $${available}`;
+      res.style.color = "red";
     }
-  </script>
+  }
+</script>
 </body>
 </html>

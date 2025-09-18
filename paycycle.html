@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Paycycle - Smart Money</title>
+  <title>Paycycle</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="payCycle.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="payCycle.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -24,19 +22,9 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Paycycle</h1>
-    <div id="paycycleList"></div>
+    <div id="paycycle-display"></div>
   </div>
-
-  <script>
-    const pays = JSON.parse(localStorage.getItem("paycycle")) || [];
-    document.getElementById("paycycleList").innerHTML =
-      pays.map(p => `
-        <div class="tile">
-          <p>${p.name} → ${p.account}: $${p.amount.toFixed(2)} on ${p.date}</p>
-        </div>
-      `).join("");
-  </script>
 </body>
 </html>

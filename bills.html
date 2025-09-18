@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bills - Smart Money</title>
+  <title>Bills</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,15 +22,18 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Bills</h1>
-    <ul id="billsList"></ul>
+    <div id="bills-list"></div>
   </div>
 
-  <script>
-    const bills = JSON.parse(localStorage.getItem("bills")) || [];
-    document.getElementById("billsList").innerHTML =
-      bills.map(b => `<li>${b.name} — $${b.amount} (${b.frequency})</li>`).join("");
-  </script>
+<script>
+  window.onload = () => {
+    const container = document.getElementById("bills-list");
+    container.innerHTML = demoData.bills
+      .map(b => `<div class="tile"><h3>${b.name}</h3><p>Amount: $${b.amount}</p><p>Frequency: ${b.frequency}</p></div>`)
+      .join("");
+  };
+</script>
 </body>
 </html>

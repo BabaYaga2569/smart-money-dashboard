@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cashflow - Smart Money</title>
+  <title>Cashflow</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,24 +22,24 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Cashflow</h1>
-    <div id="cashSummary"></div>
+    <div id="cashflow-list"></div>
   </div>
 
-  <script>
-    const txs = JSON.parse(localStorage.getItem("transactions")) || [];
-    let income = txs.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-    let expenses = txs.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-    let net = income - expenses;
-
-    document.getElementById("cashSummary").innerHTML = `
-      <div class="tile">
-        <p>Income: $${income.toFixed(2)}</p>
-        <p>Expenses: $${expenses.toFixed(2)}</p>
-        <p>Net: <span class="${net < 0 ? 'neg' : 'pos'}">$${net.toFixed(2)}</span></p>
-      </div>
-    `;
-  </script>
+<script>
+  window.onload = () => {
+    const container = document.getElementById("cashflow-list");
+    container.innerHTML = demoData.cashflow
+      .map(c => `
+        <div class="tile">
+          <h3>${c.month}</h3>
+          <p>Income: $${c.income}</p>
+          <p>Expenses: $${c.expenses}</p>
+          <p>Net: $${c.income - c.expenses}</p>
+        </div>
+      `).join("");
+  };
+</script>
 </body>
 </html>

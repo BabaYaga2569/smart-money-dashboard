@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Transactions - Smart Money</title>
+  <title>Transactions</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,7 +22,7 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="content">
     <h1>Transactions</h1>
     <table>
       <thead>
@@ -34,21 +33,23 @@
           <th>Amount</th>
         </tr>
       </thead>
-      <tbody id="transactionTable"></tbody>
+      <tbody id="tx-table"></tbody>
     </table>
   </div>
 
-  <script>
-    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    document.getElementById("transactionTable").innerHTML =
-      transactions.map(t => `
+<script>
+  window.onload = () => {
+    const table = document.getElementById("tx-table");
+    table.innerHTML = demoData.transactions
+      .map(t => `
         <tr>
           <td>${t.date}</td>
-          <td>${t.description}</td>
+          <td>${t.desc}</td>
           <td>${t.category}</td>
-          <td class="${t.amount < 0 ? 'neg' : 'pos'}">$${t.amount.toFixed(2)}</td>
+          <td>$${t.amount}</td>
         </tr>
       `).join("");
-  </script>
+  };
+</script>
 </body>
 </html>
