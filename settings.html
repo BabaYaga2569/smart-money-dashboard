@@ -20,24 +20,21 @@
     <a href="settings.html" class="nav-item active">⚙️ Settings</a>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <h1>Settings</h1>
-
-    <div class="settings-section">
+    <div class="card">
       <h2>Theme Color</h2>
       <input type="color" id="themeColorPicker" value="#39ff14">
       <button id="applyTheme">Apply</button>
     </div>
-
-    <div class="settings-section">
+    <div class="card">
       <h2>Preset Themes</h2>
       <button onclick="setPreset('default')">Default</button>
       <button onclick="setPreset('dark')">Dark</button>
       <button onclick="setPreset('ocean')">Ocean</button>
       <button onclick="setPreset('sunset')">Sunset</button>
     </div>
-
-    <div class="settings-section">
+    <div class="card">
       <h2>Current Theme</h2>
       <p id="currentTheme">Default</p>
     </div>
