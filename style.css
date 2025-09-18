@@ -1,27 +1,33 @@
-/* Global Styles */
+/* Global styles */
+:root {
+  --bg-color: #0b0e14;
+  --card-bg: #161b25;
+  --text-color: #e6e6e6;
+  --accent-color: #39ff14; /* default neon green */
+}
+
 body {
-  margin: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
   font-family: Arial, sans-serif;
-  background: #0b0e14;
-  color: #f0f0f0;
+  margin: 0;
   display: flex;
 }
 
-/* Sidebar */
 .sidebar {
-  width: 220px;
+  width: 240px;
   background: #11151d;
-  height: 100vh;
+  padding: 20px 0;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  height: 100vh;
 }
 
 .sidebar h2 {
   text-align: center;
-  color: var(--theme-color, #39ff14);
+  color: var(--accent-color);
   margin-bottom: 30px;
-  text-shadow: 0 0 8px var(--theme-color, #39ff14);
+  text-shadow: 0 0 10px var(--accent-color);
 }
 
 .nav-item {
@@ -29,114 +35,133 @@ body {
   display: block;
   color: #ccc;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .nav-item:hover,
 .nav-item.active {
   background: #1a1f2a;
-  color: var(--theme-color, #39ff14);
+  color: var(--accent-color);
 }
 
-/* Main */
-.main {
+.main-content {
   flex: 1;
   padding: 20px;
 }
 
-h1 {
-  margin-top: 0;
-  color: var(--theme-color, #39ff14);
-}
-
-/* Tiles */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
 .tile {
-  background: #161b25;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 
-.tile h3 {
-  margin: 0 0 10px;
+.tile h2 {
+  margin-top: 0;
+  color: var(--accent-color);
 }
 
-.tile button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: var(--theme-color, #39ff14);
+.card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+button {
+  background: var(--accent-color);
   border: none;
-  border-radius: 4px;
-  color: #111;
-  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
-/* Data Tables */
-.data-table {
+button:hover {
+  opacity: 0.9;
+}
+
+input, select {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid var(--accent-color);
+  background: #1a1a1a;
+  color: var(--text-color);
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
-.data-table th, .data-table td {
+th, td {
   padding: 10px;
-  border: 1px solid #333;
-  text-align: left;
+  border-bottom: 1px solid #333;
 }
 
-.data-table th {
-  background: #222;
+th {
+  background: #1a1f2a;
 }
 
 .positive {
   color: #39ff14;
-  font-weight: bold;
 }
 
 .negative {
-  color: #ff4444;
-  font-weight: bold;
+  color: #ff3131;
 }
 
-/* Forms */
-form {
-  margin-top: 20px;
-  background: #161b25;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-label {
-  display: block;
-  margin: 10px 0;
-}
-
-input, select, button {
+/* Goals progress bar */
+.progress-bar {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: none;
-  border-radius: 4px;
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-button {
-  background: var(--theme-color, #39ff14);
-  color: #111;
+.progress {
+  height: 10px;
+  background: var(--accent-color);
+  width: 0;
+}
+
+/* Spendability results glow */
+#spendResult, 
+#spendResultPage {
+  margin-top: 10px;
   font-weight: bold;
-  cursor: pointer;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
-/* Settings */
-.settings-section {
-  margin-bottom: 20px;
-  background: #161b25;
-  padding: 15px;
-  border-radius: 8px;
+#spendResult.positive,
+#spendResultPage.positive {
+  background: rgba(57, 255, 20, 0.15);
+  color: #39ff14;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+}
+
+#spendResult.negative,
+#spendResultPage.negative {
+  background: rgba(255, 49, 49, 0.15);
+  color: #ff3131;
+  box-shadow: 0 0 10px rgba(255, 49, 49, 0.7);
+}
+
+#spendResult.fade-out,
+#spendResultPage.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease;
 }

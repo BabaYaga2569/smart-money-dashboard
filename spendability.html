@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spendability - Smart Money Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
+  <script src="seedAccounts.js" defer></script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>💸 Smart Money</h2>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
+    <a href="goals.html" class="nav-item">🎯 Goals</a>
+    <a href="bills.html" class="nav-item">📑 Bills</a>
+    <a href="categories.html" class="nav-item">📊 Categories</a>
+    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
+    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item active">🛒 Spendability</a>
+    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Spendability</h1>
+    <p>Check if a purchase fits into your cash flow without dipping into money needed for bills.</p>
+    
+    <div class="card">
+      <h2>Quick Check</h2>
+      <input type="number" id="spendCheckPage" placeholder="Enter amount">
+      <button onclick="checkSpendPage()">Check</button>
+      <p id="spendResultPage"></p>
+    </div>
+
+    <div class="card">
+      <h2>Available Cash</h2>
+      <p>Accounts Total: <span id="accountsTotalPage">$0.00</span></p>
+      <p>Upcoming Bills: <span id="billsUpcomingPage">$0.00</span></p>
+      <p>Free Cash After Bills: <span id="freeCashPage">$0.00</span></p>
+    </div>
+  </div>
+
+  <script>
+    function getFreeCash() {
+      if (!window.dummyData) return 0;
+      const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
+      const upcomingBills = window.dummyData.recurring.reduce((s,b)=>s+b.amount,0);
+      return accountsTotal - upcomingBills;
+    }
+
+    function checkSpendPage() {
+      const input = document.getElementById("spendCheckPage");
+      const result = document.getElementById("spendResultPage");
+      const amount = parseFloat(input.value);
+      if (isNaN(amount)) {
+        result.textContent = "⚠️ Please enter a valid number.";
+        result.className = "";
+        return;
+      }
+      const freeCash = getFreeCash();
+      if (amount <= freeCash) {
+        result.textContent = `✅ Safe: You can spend $${amount.toFixed(2)}. Remaining after bills: $${(freeCash-amount).toFixed(2)}.`;
+        result.className = "positive";
+      } else {
+        result.textContent = `❌ Not Safe: Spending $${amount.toFixed(2)} would leave you short by $${(amount-freeCash).toFixed(2)}.`;
+        result.className = "negative";
+      }
+      setTimeout(() => {
+        result.classList.add("fade-out");
+        setTimeout(() => {
+          result.textContent = "";
+          result.className = "";
+          result.classList.remove("fade-out");
+        }, 1000);
+      }, 5000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!window.dummyData) return;
+      const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
+      document.getElementById("accountsTotalPage").textContent = `$${accountsTotal.toFixed(2)}`;
+      document.getElementById("billsUpcomingPage").textContent = `$${window.dummyData.recurring.reduce((s,b)=>s+b.amount,0).toFixed(2)}`;
+      document.getElementById("freeCashPage").textContent = `$${getFreeCash().toFixed(2)}`;
+    });
+  </script>
+</body>
+</html>

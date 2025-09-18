@@ -1,30 +1,43 @@
-// Handle theme switching + persistence
-function applyTheme(color, presetName = null) {
-  document.documentElement.style.setProperty('--theme-color', color);
-  localStorage.setItem('themeColor', color);
-  if (presetName) localStorage.setItem('themePreset', presetName);
-  const currentTheme = document.getElementById("currentTheme");
-  if (currentTheme) currentTheme.textContent = presetName || color;
+// Apply theme colors across app
+function applyTheme(color) {
+  document.documentElement.style.setProperty('--accent-color', color);
+  localStorage.setItem('accentColor', color);
+  updateThemeLabel(color);
 }
 
 function setPreset(name) {
-  const presets = {
-    default: "#39ff14",
-    dark: "#888888",
-    ocean: "#1e90ff",
-    sunset: "#ff4500"
-  };
-  applyTheme(presets[name], name);
+  let color;
+  switch (name) {
+    case 'dark': color = '#39ff14'; break;
+    case 'ocean': color = '#00c3ff'; break;
+    case 'sunset': color = '#ff914d'; break;
+    default: color = '#39ff14'; break;
+  }
+  applyTheme(color);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const savedColor = localStorage.getItem('themeColor') || "#39ff14";
-  const savedPreset = localStorage.getItem('themePreset') || "default";
-  applyTheme(savedColor, savedPreset);
+function updateThemeLabel(color) {
+  const label = document.getElementById("currentTheme");
+  if (!label) return;
+  let name = "Custom";
+  if (color === "#39ff14") name = "Default";
+  if (color === "#00c3ff") name = "Ocean";
+  if (color === "#ff914d") name = "Sunset";
+  label.textContent = name;
+}
 
+// Load stored theme on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const savedColor = localStorage.getItem('accentColor');
+  if (savedColor) {
+    document.documentElement.style.setProperty('--accent-color', savedColor);
+    updateThemeLabel(savedColor);
+  }
   const picker = document.getElementById("themeColorPicker");
   const applyBtn = document.getElementById("applyTheme");
   if (picker && applyBtn) {
-    applyBtn.onclick = () => applyTheme(picker.value);
+    applyBtn.addEventListener("click", () => {
+      applyTheme(picker.value);
+    });
   }
 });

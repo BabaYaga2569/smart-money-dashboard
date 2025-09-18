@@ -1,51 +1,65 @@
-// Pay cycle logic
-document.addEventListener("DOMContentLoaded", () => {
-  const spendableEl = document.getElementById("spendableNow");
-  const nextPayEl = document.getElementById("nextPayDisplay");
+// paycycle.js
+// Tracks Steve + Tanci pay cycles with real amounts and dates
 
-  if (!spendableEl || !nextPayEl) return;
-
+function getNextPaydays() {
   const today = new Date();
 
-  // Your pay (biweekly, split into SoFi early + BofA main)
-  const payAmount = 1883.81;
-  const sofiAmount = 400;
-  const bofaAmount = payAmount - sofiAmount;
+  // --- Steve ---
+  // Biweekly: $400 to SoFi on Wed, $1483.81 to BofA on Fri
+  // Anchor: 2025-09-19 (Fri) is a payday
+  const steveBase = new Date("2025-09-19");
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const daysSinceBase = Math.floor((today - steveBase) / msPerDay);
+  const weeksOffset = Math.ceil(daysSinceBase / 14);
+  const nextFriday = new Date(steveBase.getTime() + weeksOffset * 14 * msPerDay);
+  const nextWednesday = new Date(nextFriday.getTime() - 2 * msPerDay);
 
-  // Wife's pay (15th + 30th)
-  const tanciPay = 1851.04;
+  const stevePay = [
+    { date: nextWednesday, amount: 400.00, account: "SoFi" },
+    { date: nextFriday, amount: 1483.81, account: "BofA" }
+  ];
 
-  function nextFriday(baseDate) {
-    const d = new Date(baseDate);
-    d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));
+  // --- Tanci ---
+  // 15th + 30th (move to Friday if weekend)
+  function adjustWeekend(d) {
+    if (d.getDay() === 6) d.setDate(d.getDate() - 1); // Saturday → Friday
+    if (d.getDay() === 0) d.setDate(d.getDate() - 2); // Sunday → Friday
     return d;
   }
 
-  const userPayDay = nextFriday(today); // base: Friday
-  const userSoFiDay = new Date(userPayDay);
-  userSoFiDay.setDate(userPayDay.getDate() - 2);
+  const tanciDates = [];
+  const month = today.getMonth();
+  const year = today.getFullYear();
 
-  // Tanci’s paydays
-  function nextTanciPay() {
-    const d = new Date(today);
-    let pay1 = new Date(d.getFullYear(), d.getMonth(), 15);
-    let pay2 = new Date(d.getFullYear(), d.getMonth(), 30);
+  let d15 = adjustWeekend(new Date(year, month, 15));
+  let d30 = adjustWeekend(new Date(year, month, 30));
 
-    if (pay1 < d) pay1.setMonth(pay1.getMonth() + 1);
-    if (pay2 < d) pay2.setMonth(pay2.getMonth() + 1);
+  if (d15 <= today) d15 = adjustWeekend(new Date(year, month + 1, 15));
+  if (d30 <= today) d30 = adjustWeekend(new Date(year, month + 1, 30));
 
-    return (pay1 < pay2) ? pay1 : pay2;
-  }
+  const nextTanci = (d15 < d30) ? d15 : d30;
 
-  const tanciNext = nextTanciPay();
+  const tanciPay = [
+    { date: nextTanci, amount: 1851.04, account: "USAA" }
+  ];
 
-  nextPayEl.textContent = `Your next: $${bofaAmount.toFixed(2)} on ${userPayDay.toDateString()} (+$${sofiAmount.toFixed(2)} to SoFi on ${userSoFiDay.toDateString()})
-  | Tanci next: $${tanciPay.toFixed(2)} on ${tanciNext.toDateString()}`;
+  return [...stevePay, ...tanciPay].sort((a, b) => a.date - b.date);
+}
 
-  // Spendable calculation (dummy: sum of accounts - sum of bills)
-  const accountsTotal = window.dummyData.accounts.reduce((sum, a) => sum + a.balance, 0);
-  const billsTotal = window.dummyData.bills.reduce((sum, b) => sum + b.amount, 0);
-  const spendable = accountsTotal - billsTotal;
+function formatDate(d) {
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
 
-  spendableEl.textContent = `$${spendable.toFixed(2)}`;
-});
+function getNextPaySummary() {
+  const pays = getNextPaydays();
+  const next = pays[0];
+  const daysLeft = Math.ceil((next.date - new Date()) / (1000 * 60 * 60 * 24));
+  return {
+    date: formatDate(next.date),
+    daysLeft,
+    amount: next.amount,
+    account: next.account
+  };
+}
+
+window.paycycle = { getNextPaydays, getNextPaySummary };

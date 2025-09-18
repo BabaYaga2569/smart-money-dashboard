@@ -18,66 +18,28 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main">
-    <h1>Recurring Bills</h1>
-
+  <div class="main-content">
+    <h1>Upcoming Bills</h1>
     <div id="billsList"></div>
-
-    <form id="addBillForm">
-      <h2>Add New Bill</h2>
-      <label>Name <input type="text" id="billName" required></label>
-      <label>Amount <input type="number" id="billAmount" step="0.01" required></label>
-      <label>Due Date <input type="date" id="billDueDate" required></label>
-      <button type="submit">Add Bill</button>
-    </form>
   </div>
 
   <script>
     function renderBills() {
-      const billsList = document.getElementById("billsList");
+      const list = document.getElementById("billsList");
       if (!window.dummyData) return;
-
-      billsList.innerHTML = window.dummyData.bills.map((b, i) => `
-        <div class="bill">
-          <h3>${b.name}</h3>
-          <p>Amount: $${b.amount}</p>
-          <p>Due: ${b.dueDate}</p>
-          <button onclick="markPaid(${i})">Mark Paid</button>
-          <button onclick="deleteBill(${i})">Delete</button>
+      list.innerHTML = window.dummyData.recurring.map(bill => `
+        <div class="card">
+          <h3>${bill.name}</h3>
+          <p>Amount: $${bill.amount.toFixed(2)}</p>
+          <p>Frequency: ${bill.frequency}</p>
         </div>
       `).join("");
     }
-
-    function markPaid(index) {
-      // Fake "mark as paid" → just push due date forward 1 month
-      let bill = window.dummyData.bills[index];
-      let nextDue = new Date(bill.dueDate);
-      nextDue.setMonth(nextDue.getMonth() + 1);
-      bill.dueDate = nextDue.toISOString().split("T")[0];
-      renderBills();
-    }
-
-    function deleteBill(index) {
-      window.dummyData.bills.splice(index, 1);
-      renderBills();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      renderBills();
-
-      document.getElementById("addBillForm").onsubmit = (e) => {
-        e.preventDefault();
-        const name = document.getElementById("billName").value;
-        const amount = parseFloat(document.getElementById("billAmount").value);
-        const dueDate = document.getElementById("billDueDate").value;
-        window.dummyData.bills.push({ name, amount, dueDate });
-        renderBills();
-        e.target.reset();
-      };
-    });
+    document.addEventListener("DOMContentLoaded", renderBills);
   </script>
 </body>
 </html>

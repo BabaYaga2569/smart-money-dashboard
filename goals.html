@@ -18,55 +18,34 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <h1>Savings Goals</h1>
-
     <div id="goalsList"></div>
-
-    <form id="addGoalForm">
-      <h2>Add New Goal</h2>
-      <label>Name <input type="text" id="goalName" required></label>
-      <label>Target Amount <input type="number" id="goalTarget" required></label>
-      <button type="submit">Add Goal</button>
-    </form>
   </div>
 
   <script>
     function renderGoals() {
-      const goalsList = document.getElementById("goalsList");
+      const list = document.getElementById("goalsList");
       if (!window.dummyData) return;
-
-      goalsList.innerHTML = window.dummyData.goals.map((g, i) => `
-        <div class="goal">
-          <h3>${g.name}</h3>
-          <p>Saved: $${g.saved} / $${g.target}</p>
-          <progress value="${g.saved}" max="${g.target}"></progress>
-          <button onclick="addToGoal(${i}, 50)">+ $50</button>
-          <button onclick="addToGoal(${i}, 100)">+ $100</button>
-        </div>
-      `).join("");
+      list.innerHTML = window.dummyData.goals.map(goal => {
+        const pct = Math.min((goal.progress / goal.target) * 100, 100);
+        return `
+          <div class="card">
+            <h3>${goal.name}</h3>
+            <p>Target: $${goal.target.toFixed(2)}</p>
+            <p>Progress: $${goal.progress.toFixed(2)} (${pct.toFixed(0)}%)</p>
+            <div class="progress-bar">
+              <div class="progress" style="width:${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
-
-    function addToGoal(index, amount) {
-      window.dummyData.goals[index].saved += amount;
-      renderGoals();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      renderGoals();
-
-      document.getElementById("addGoalForm").onsubmit = (e) => {
-        e.preventDefault();
-        const name = document.getElementById("goalName").value;
-        const target = parseFloat(document.getElementById("goalTarget").value);
-        window.dummyData.goals.push({ name, target, saved: 0 });
-        renderGoals();
-        e.target.reset();
-      };
-    });
+    document.addEventListener("DOMContentLoaded", renderGoals);
   </script>
 </body>
 </html>

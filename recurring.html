@@ -18,62 +18,28 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item active">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <h1>Recurring Subscriptions</h1>
-
     <div id="recurringList"></div>
-
-    <form id="addRecurringForm">
-      <h2>Add New Subscription</h2>
-      <label>Name <input type="text" id="recurringName" required></label>
-      <label>Amount <input type="number" id="recurringAmount" step="0.01" required></label>
-      <label>Frequency 
-        <select id="recurringFrequency">
-          <option value="Monthly">Monthly</option>
-          <option value="Weekly">Weekly</option>
-          <option value="Yearly">Yearly</option>
-        </select>
-      </label>
-      <button type="submit">Add</button>
-    </form>
   </div>
 
   <script>
     function renderRecurring() {
       const list = document.getElementById("recurringList");
       if (!window.dummyData) return;
-
-      list.innerHTML = window.dummyData.recurring.map((r, i) => `
-        <div class="recurring">
+      list.innerHTML = window.dummyData.recurring.map(r => `
+        <div class="card">
           <h3>${r.name}</h3>
-          <p>Amount: $${r.amount}</p>
+          <p>Amount: $${r.amount.toFixed(2)}</p>
           <p>Frequency: ${r.frequency}</p>
-          <button onclick="deleteRecurring(${i})">Delete</button>
         </div>
       `).join("");
     }
-
-    function deleteRecurring(index) {
-      window.dummyData.recurring.splice(index, 1);
-      renderRecurring();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      renderRecurring();
-
-      document.getElementById("addRecurringForm").onsubmit = (e) => {
-        e.preventDefault();
-        const name = document.getElementById("recurringName").value;
-        const amount = parseFloat(document.getElementById("recurringAmount").value);
-        const frequency = document.getElementById("recurringFrequency").value;
-        window.dummyData.recurring.push({ name, amount, frequency });
-        renderRecurring();
-        e.target.reset();
-      };
-    });
+    document.addEventListener("DOMContentLoaded", renderRecurring);
   </script>
 </body>
 </html>

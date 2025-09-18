@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Accounts</title>
+  <title>Paycycle - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
+  <script src="paycycle.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
@@ -16,39 +16,43 @@
     <a href="bills.html" class="nav-item">📑 Bills</a>
     <a href="categories.html" class="nav-item">📊 Categories</a>
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item active">🏦 Accounts</a>
+    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item active">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Accounts</h1>
+    <h1>Paycycle</h1>
+    <p>Track upcoming paychecks for Steve & Tanci.</p>
+
     <div class="card">
+      <h2>Next Paydays</h2>
       <table>
         <thead>
           <tr>
+            <th>Date</th>
             <th>Account</th>
-            <th>Balance</th>
-            <th>Type</th>
+            <th>Amount</th>
           </tr>
         </thead>
-        <tbody id="accountsTable"></tbody>
+        <tbody id="payTable"></tbody>
       </table>
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (!window.dummyData) return;
-      const table = document.getElementById("accountsTable");
-      table.innerHTML = window.dummyData.accounts.map(acct => `
-        <tr>
-          <td>${acct.name}</td>
-          <td>$${acct.balance.toFixed(2)}</td>
-          <td>${acct.type}</td>
-        </tr>
-      `).join("");
+      const table = document.getElementById("payTable");
+      const pays = window.paycycle.getNextPaydays();
+      table.innerHTML = pays.map(p =>
+        `<tr>
+          <td>${p.date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</td>
+          <td>${p.account}</td>
+          <td>$${p.amount.toFixed(2)}</td>
+        </tr>`
+      ).join("");
     });
   </script>
 </body>

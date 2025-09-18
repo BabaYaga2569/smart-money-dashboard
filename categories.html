@@ -18,21 +18,23 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <h1>Spending Categories</h1>
-
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Total Spent</th>
-        </tr>
-      </thead>
-      <tbody id="categoriesTable"></tbody>
-    </table>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Total Spent</th>
+          </tr>
+        </thead>
+        <tbody id="categoriesTable"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -40,8 +42,10 @@
       if (!window.dummyData) return {};
       const categories = {};
       window.dummyData.transactions.forEach(tx => {
-        if (!categories[tx.category]) categories[tx.category] = 0;
-        categories[tx.category] += tx.amount;
+        if (tx.type === "expense") {
+          if (!categories[tx.category]) categories[tx.category] = 0;
+          categories[tx.category] += tx.amount;
+        }
       });
       return categories;
     }

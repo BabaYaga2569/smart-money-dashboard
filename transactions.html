@@ -18,39 +18,39 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <div class="main">
-    <h1>All Transactions</h1>
-
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody id="transactionsTable"></tbody>
-    </table>
+  <div class="main-content">
+    <h1>Transactions</h1>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsTable"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const tbody = document.getElementById("transactionsTable");
-      if (window.dummyData) {
-        tbody.innerHTML = window.dummyData.transactions
-          .map(tx => `
-            <tr>
-              <td>${tx.date}</td>
-              <td>${tx.description}</td>
-              <td>${tx.category}</td>
-              <td>$${tx.amount}</td>
-            </tr>
-          `).join("");
-      }
+      if (!window.dummyData) return;
+      const table = document.getElementById("transactionsTable");
+      table.innerHTML = window.dummyData.transactions.map(tx => `
+        <tr>
+          <td>${tx.date}</td>
+          <td>${tx.description}</td>
+          <td>${tx.category}</td>
+          <td class="${tx.type === "income" ? "positive" : "negative"}">$${tx.amount.toFixed(2)}</td>
+        </tr>
+      `).join("");
     });
   </script>
 </body>
