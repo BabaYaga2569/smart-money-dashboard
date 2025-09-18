@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Dashboard</title>
+  <title>Spendability - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -11,7 +11,7 @@
 <body>
   <div class="sidebar">
     <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item active">🏠 Dashboard</a>
+    <a href="index.html" class="nav-item">🏠 Dashboard</a>
     <a href="transactions.html" class="nav-item">🧾 Transactions</a>
     <a href="goals.html" class="nav-item">🎯 Goals</a>
     <a href="bills.html" class="nav-item">📑 Bills</a>
@@ -19,63 +19,34 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="spendability.html" class="nav-item active">🛒 Spendability</a>
     <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Dashboard</h1>
-    <div class="tiles">
-      <!-- Accounts -->
-      <div class="tile">
-        <h2>💵 Accounts</h2>
-        <p>Total Balance: <span id="accountsTotal">$0.00</span></p>
-        <a href="accounts.html">View All →</a>
-      </div>
+    <h1>Spendability</h1>
+    <p>Check if a purchase fits into your cash flow without dipping into money needed for bills <strong>before your next payday</strong>.</p>
+    
+    <!-- Quick Spendability Check -->
+    <div class="card">
+      <h2>Quick Check</h2>
+      <input type="number" id="spendCheckPage" placeholder="Enter amount">
+      <button onclick="checkSpendPage()">Check</button>
+      <p id="spendResultPage"></p>
+    </div>
 
-      <!-- Bills -->
-      <div class="tile">
-        <h2>📑 Bills</h2>
-        <p>Upcoming: <span id="billsUpcoming">$0.00</span></p>
-        <a href="bills.html">View All →</a>
-      </div>
-
-      <!-- Goals -->
-      <div class="tile">
-        <h2>🎯 Goals</h2>
-        <p>Active Goals: <span id="goalsCount">0</span></p>
-        <a href="goals.html">View All →</a>
-      </div>
-
-      <!-- Transactions -->
-      <div class="tile">
-        <h2>🧾 Transactions</h2>
-        <p>Recent: <span id="transactionsCount">0</span></p>
-        <a href="transactions.html">View All →</a>
-      </div>
-
-      <!-- Spendability -->
-      <div class="tile">
-        <h2>🛒 Spendability</h2>
-        <p>Check if you can safely spend before next payday.</p>
-        <input type="number" id="spendCheck" placeholder="Enter amount">
-        <button onclick="checkSpend()">Check</button>
-        <p id="spendResult"></p>
-        <a href="spendability.html">View All →</a>
-      </div>
-
-      <!-- Paycycle -->
-      <div class="tile">
-        <h2>📅 Paycycle</h2>
-        <p id="paySummary">Loading...</p>
-        <a href="paycycle.html">View All →</a>
-      </div>
+    <!-- Overview -->
+    <div class="card">
+      <h2>Overview</h2>
+      <p>Accounts Total: <span id="accountsTotalPage">$0.00</span></p>
+      <p>Upcoming Bills: <span id="billsUpcomingPage">$0.00</span></p>
+      <p>Free Cash After Bills: <span id="freeCashPage">$0.00</span></p>
+      <p>Next Payday: <span id="nextPayday">Loading...</span></p>
     </div>
   </div>
 
   <script>
-    // Dashboard data loaders
     function getFreeCash() {
       if (!window.dummyData) return 0;
       const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
@@ -83,23 +54,29 @@
       return accountsTotal - upcomingBills;
     }
 
-    function checkSpend() {
-      const input = document.getElementById("spendCheck");
-      const result = document.getElementById("spendResult");
+    function checkSpendPage() {
+      const input = document.getElementById("spendCheckPage");
+      const result = document.getElementById("spendResultPage");
       const amount = parseFloat(input.value);
       if (isNaN(amount)) {
         result.textContent = "⚠️ Please enter a valid number.";
         result.className = "";
         return;
       }
+
       const freeCash = getFreeCash();
+      const summary = window.paycycle.getNextPaySummary();
+
       if (amount <= freeCash) {
-        result.textContent = `✅ Safe: You can spend $${amount.toFixed(2)}. Remaining after bills: $${(freeCash-amount).toFixed(2)}.`;
+        result.textContent = 
+          `✅ Safe: You can spend $${amount.toFixed(2)} and still make it until ${summary.date} (${summary.daysLeft} days). Remaining after bills: $${(freeCash-amount).toFixed(2)}.`;
         result.className = "positive";
       } else {
-        result.textContent = `❌ Not Safe: Spending $${amount.toFixed(2)} would leave you short by $${(amount-freeCash).toFixed(2)}.`;
+        result.textContent = 
+          `❌ Not Safe: Spending $${amount.toFixed(2)} would leave you short before ${summary.date}. Shortfall: $${(amount-freeCash).toFixed(2)}.`;
         result.className = "negative";
       }
+
       setTimeout(() => {
         result.classList.add("fade-out");
         setTimeout(() => {
@@ -113,17 +90,15 @@
     document.addEventListener("DOMContentLoaded", () => {
       if (window.dummyData) {
         const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
-        document.getElementById("accountsTotal").textContent = `$${accountsTotal.toFixed(2)}`;
-        document.getElementById("billsUpcoming").textContent = `$${window.dummyData.recurring.reduce((s,b)=>s+b.amount,0).toFixed(2)}`;
-        document.getElementById("goalsCount").textContent = window.dummyData.goals.length;
-        document.getElementById("transactionsCount").textContent = window.dummyData.transactions.length;
+        document.getElementById("accountsTotalPage").textContent = `$${accountsTotal.toFixed(2)}`;
+        document.getElementById("billsUpcomingPage").textContent = `$${window.dummyData.recurring.reduce((s,b)=>s+b.amount,0).toFixed(2)}`;
+        document.getElementById("freeCashPage").textContent = `$${getFreeCash().toFixed(2)}`;
       }
 
-      // Paycycle summary
       if (window.paycycle) {
         const summary = window.paycycle.getNextPaySummary();
-        document.getElementById("paySummary").textContent =
-          `Next: ${summary.date} (${summary.daysLeft} days) — $${summary.amount.toFixed(2)} → ${summary.account}`;
+        document.getElementById("nextPayday").textContent = 
+          `${summary.date} (${summary.daysLeft} days) — $${summary.amount.toFixed(2)} → ${summary.account}`;
       }
     });
   </script>
