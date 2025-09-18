@@ -2,57 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cashflow - Smart Money Tracker</title>
+  <title>Cashflow - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item active">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html" class="active">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Cashflow</h1>
-    <div id="cashflowSummary"></div>
+    <div id="cashSummary"></div>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const div = document.getElementById("cashflowSummary");
-      if (!window.dummyData) return;
+    const txs = JSON.parse(localStorage.getItem("transactions")) || [];
+    let income = txs.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+    let expenses = txs.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    let net = income - expenses;
 
-      const income = window.dummyData.transactions
-        .filter(t => t.type === "income")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const expenses = window.dummyData.transactions
-        .filter(t => t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const net = income - expenses;
-
-      div.innerHTML = `
-        <div class="card">
-          <h3>Total Income: $${income.toFixed(2)}</h3>
-          <h3>Total Expenses: $${expenses.toFixed(2)}</h3>
-          <h3 class="${net < 0 ? 'negative' : 'positive'}">
-            Net Cashflow: $${net.toFixed(2)}
-          </h3>
-        </div>
-      `;
-    });
+    document.getElementById("cashSummary").innerHTML = `
+      <div class="tile">
+        <p>Income: $${income.toFixed(2)}</p>
+        <p>Expenses: $${expenses.toFixed(2)}</p>
+        <p>Net: <span class="${net < 0 ? 'neg' : 'pos'}">$${net.toFixed(2)}</span></p>
+      </div>
+    `;
   </script>
 </body>
 </html>

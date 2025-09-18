@@ -2,44 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Accounts - Smart Money Tracker</title>
+  <title>Accounts - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item active">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html" class="active">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Accounts</h1>
-    <div id="accountsList"></div>
+    <ul id="accountList"></ul>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("accountsList");
-      if (!window.dummyData) return;
-
-      container.innerHTML = window.dummyData.accounts.map(acc => `
-        <div class="card">
-          <h3>${acc.name}</h3>
-          <p>Balance: $${acc.balance.toFixed(2)}</p>
-        </div>
-      `).join("");
-    });
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+    document.getElementById("accountList").innerHTML =
+      accounts.map(a => `<li>${a.name}: $${a.balance.toFixed(2)}</li>`).join("");
   </script>
 </body>
 </html>

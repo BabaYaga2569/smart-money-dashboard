@@ -2,75 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings - Smart Money Tracker</title>
+  <title>Settings - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item active">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html" class="active">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Settings</h1>
-    <div class="card">
-      <h3>Theme Options</h3>
-      <label for="colorPrimary">Primary Color:</label>
-      <input type="color" id="colorPrimary" value="#2ecc71">
 
-      <label for="colorAccent">Accent Color:</label>
-      <input type="color" id="colorAccent" value="#3498db">
-
+    <div class="tile">
+      <h3>Theme Colors</h3>
+      <label>Background: <input type="color" id="bgPicker" value="#121212"></label><br>
+      <label>Accent: <input type="color" id="accentPicker" value="#39ff14"></label><br>
       <button id="applyTheme">Apply</button>
     </div>
 
-    <div class="card">
-      <h3>Preset Themes</h3>
-      <select id="presetTheme">
-        <option value="">-- Select Preset --</option>
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-        <option value="forest">Forest</option>
-        <option value="sunset">Sunset</option>
-      </select>
-      <button id="applyPreset">Apply Preset</button>
+    <div class="tile">
+      <h3>Data</h3>
+      <button id="resetData">Reset All Demo Data</button>
     </div>
   </div>
 
   <script>
     document.getElementById("applyTheme").onclick = () => {
-      const primary = document.getElementById("colorPrimary").value;
-      const accent = document.getElementById("colorAccent").value;
-      localStorage.setItem("theme-primary", primary);
-      localStorage.setItem("theme-accent", accent);
-      applyTheme(primary, accent);
+      const bg = document.getElementById("bgPicker").value;
+      const accent = document.getElementById("accentPicker").value;
+      localStorage.setItem("theme", JSON.stringify({ bg, accent }));
+      document.body.style.background = bg;
+      document.body.style.color = "#fff";
+      alert("Theme updated!");
     };
 
-    document.getElementById("applyPreset").onclick = () => {
-      const preset = document.getElementById("presetTheme").value;
-      const themes = {
-        dark: {primary: "#1e1e1e", accent: "#f39c12"},
-        light: {primary: "#f4f4f4", accent: "#3498db"},
-        forest: {primary: "#2ecc71", accent: "#27ae60"},
-        sunset: {primary: "#e67e22", accent: "#c0392b"}
-      };
-      if (themes[preset]) {
-        const {primary, accent} = themes[preset];
-        localStorage.setItem("theme-primary", primary);
-        localStorage.setItem("theme-accent", accent);
-        applyTheme(primary, accent);
-      }
+    document.getElementById("resetData").onclick = () => {
+      localStorage.clear();
+      alert("All demo data cleared. Refresh to reseed.");
+      location.reload();
     };
   </script>
 </body>

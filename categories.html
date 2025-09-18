@@ -2,60 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Categories - Smart Money Tracker</title>
+  <title>Categories - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item active">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html" class="active">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Categories</h1>
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="categoriesTable"></tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="catTable"></tbody>
+    </table>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!window.dummyData) return;
-      const table = document.getElementById("categoriesTable");
-
-      const grouped = {};
-      window.dummyData.transactions.forEach(t => {
-        if (!grouped[t.category]) grouped[t.category] = 0;
-        grouped[t.category] += t.amount * (t.type === "expense" ? 1 : -1);
-      });
-
-      table.innerHTML = Object.keys(grouped).map(c => `
-        <tr>
-          <td>${c}</td>
-          <td>$${grouped[c].toFixed(2)}</td>
-        </tr>
-      `).join("");
+    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    const categories = {};
+    transactions.forEach(t => {
+      categories[t.category] = (categories[t.category] || 0) + t.amount;
     });
+    document.getElementById("catTable").innerHTML =
+      Object.entries(categories).map(([cat, total]) =>
+        `<tr><td>${cat}</td><td>$${total.toFixed(2)}</td></tr>`).join("");
   </script>
 </body>
 </html>

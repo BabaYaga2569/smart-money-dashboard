@@ -2,50 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Goals - Smart Money Tracker</title>
+  <title>Goals - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item active">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html" class="active">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Goals</h1>
-    <div id="goalsList"></div>
+    <ul id="goalsList"></ul>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("goalsList");
-      if (!window.dummyData) return;
-
-      container.innerHTML = window.dummyData.goals.map(g => {
-        const pct = (g.progress / g.target * 100).toFixed(1);
-        return `
-          <div class="card">
-            <h3>${g.name}</h3>
-            <p>$${g.progress.toFixed(2)} of $${g.target.toFixed(2)} (${pct}%)</p>
-            <div class="progress-bar">
-              <div class="progress" style="width:${pct}%"></div>
-            </div>
-          </div>
-        `;
-      }).join("");
-    });
+    const goals = JSON.parse(localStorage.getItem("goals")) || [];
+    document.getElementById("goalsList").innerHTML =
+      goals.map(g => `<li>${g.name} — $${g.saved} of $${g.target} (${((g.saved / g.target) * 100).toFixed(1)}%)</li>`).join("");
   </script>
 </body>
 </html>

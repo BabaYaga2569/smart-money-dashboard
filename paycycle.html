@@ -2,31 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Paycycle - Smart Money Tracker</title>
+  <title>Paycycle - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
+  <script src="payCycle.js" defer></script>
   <script src="seedAccounts.js" defer></script>
-  <script src="paycycle.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item active">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="paycycle.html" class="active">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Paycycle</h1>
-    <div id="paycycleTile"></div>
+    <div id="paycycleList"></div>
   </div>
+
+  <script>
+    const pays = JSON.parse(localStorage.getItem("paycycle")) || [];
+    document.getElementById("paycycleList").innerHTML =
+      pays.map(p => `
+        <div class="tile">
+          <p>${p.name} → ${p.account}: $${p.amount.toFixed(2)} on ${p.date}</p>
+        </div>
+      `).join("");
+  </script>
 </body>
 </html>

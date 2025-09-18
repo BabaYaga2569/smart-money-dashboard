@@ -2,76 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spendability - Smart Money Tracker</title>
+  <title>Spendability - Smart Money</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
-  <script src="paycycle.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
-    <a href="transactions.html" class="nav-item">🧾 Transactions</a>
-    <a href="goals.html" class="nav-item">🎯 Goals</a>
-    <a href="bills.html" class="nav-item">📑 Bills</a>
-    <a href="categories.html" class="nav-item">📊 Categories</a>
-    <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
-    <a href="accounts.html" class="nav-item">🏦 Accounts</a>
-    <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item active">🛒 Spendability</a>
-    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
-    <a href="settings.html" class="nav-item">⚙️ Settings</a>
+    <h2>💡 Smart Money</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="goals.html">Goals</a>
+    <a href="bills.html">Bills</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cashflow</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="spendability.html" class="active">Spendability</a>
+    <a href="paycycle.html">Paycycle</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main-content">
+  <div class="main">
     <h1>Spendability</h1>
-    <div id="spendTile"></div>
-    <div class="card">
-      <label for="spendInput">Enter an amount to check:</label>
-      <input type="number" id="spendInput" placeholder="e.g. 150">
-      <button id="checkSpend">Can I spend this?</button>
+    <div id="spendCard"></div>
+
+    <div class="tile">
+      <label>Enter spend check:</label>
+      <input type="number" id="spendInput">
+      <button onclick="checkSpend()">Check</button>
       <p id="spendResult"></p>
     </div>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const spendTile = document.getElementById("spendTile");
-      const input = document.getElementById("spendInput");
-      const result = document.getElementById("spendResult");
+    const accts = JSON.parse(localStorage.getItem("accounts")) || [];
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    let total = accts.reduce((s, a) => s + a.balance, 0);
+    let billTotal = bills.reduce((s, b) => s + b.amount, 0);
+    let spendable = total - billTotal;
 
-      if (!window.dummyData) return;
+    document.getElementById("spendCard").innerHTML = `
+      <div class="tile">
+        <p>Total Balance: $${total.toFixed(2)}</p>
+        <p>Upcoming Bills: $${billTotal.toFixed(2)}</p>
+        <p>Spendable Now: <span class="${spendable < 0 ? 'neg' : 'pos'}">$${spendable.toFixed(2)}</span></p>
+      </div>
+    `;
 
-      const totalBalance = window.dummyData.accounts.reduce((sum, a) => sum + a.balance, 0);
-      const recurring = window.dummyData.recurring.reduce((sum, b) => sum + b.amount, 0);
-      const spendable = totalBalance - recurring;
-
-      spendTile.innerHTML = `
-        <div class="card">
-          <h3>Total Balance: $${totalBalance.toFixed(2)}</h3>
-          <h3>Upcoming Bills: $${recurring.toFixed(2)}</h3>
-          <h3 class="${spendable < 0 ? 'negative' : 'positive'}">
-            Spendable Now: $${spendable.toFixed(2)}
-          </h3>
-        </div>
-      `;
-
-      document.getElementById("checkSpend").onclick = () => {
-        const amt = parseFloat(input.value);
-        if (isNaN(amt) || amt <= 0) {
-          result.textContent = "Enter a valid number.";
-          return;
-        }
-        if (amt <= spendable) {
-          result.textContent = `✅ Yes! You can safely spend $${amt.toFixed(2)}.`;
-          result.className = "positive";
-        } else {
-          result.textContent = `❌ Not safe. You’d overspend by $${(amt - spendable).toFixed(2)}.`;
-          result.className = "negative";
-        }
-      };
-    });
+    function checkSpend() {
+      const amt = parseFloat(document.getElementById("spendInput").value);
+      if (amt <= spendable) {
+        document.getElementById("spendResult").innerText = `✅ Safe to spend $${amt.toFixed(2)}`;
+      } else {
+        document.getElementById("spendResult").innerText = `❌ Overshoot by $${(amt - spendable).toFixed(2)}`;
+      }
+    }
   </script>
 </body>
 </html>
