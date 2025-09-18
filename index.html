@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spendability - Smart Money Tracker</title>
+  <title>Dashboard - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
   <script src="paycycle.js" defer></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💸 Smart Money</h2>
-    <a href="index.html" class="nav-item">🏠 Dashboard</a>
+    <a href="index.html" class="nav-item active">🏠 Dashboard</a>
     <a href="transactions.html" class="nav-item">🧾 Transactions</a>
     <a href="goals.html" class="nav-item">🎯 Goals</a>
     <a href="bills.html" class="nav-item">📑 Bills</a>
@@ -19,87 +20,75 @@
     <a href="cashflow.html" class="nav-item">💵 Cashflow</a>
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
-    <a href="spendability.html" class="nav-item active">🛒 Spendability</a>
+    <a href="spendability.html" class="nav-item">🛒 Spendability</a>
     <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main-content">
-    <h1>Spendability</h1>
-    <p>Check if a purchase fits into your cash flow without dipping into money needed for bills <strong>before your next payday</strong>.</p>
-    
-    <!-- Quick Spendability Check -->
-    <div class="card">
-      <h2>Quick Check</h2>
-      <input type="number" id="spendCheckPage" placeholder="Enter amount">
-      <button onclick="checkSpendPage()">Check</button>
-      <p id="spendResultPage"></p>
-    </div>
+    <h1>Dashboard</h1>
 
-    <!-- Overview -->
-    <div class="card">
-      <h2>Overview</h2>
-      <p>Accounts Total: <span id="accountsTotalPage">$0.00</span></p>
-      <p>Upcoming Bills: <span id="billsUpcomingPage">$0.00</span></p>
-      <p>Free Cash After Bills: <span id="freeCashPage">$0.00</span></p>
-      <p>Next Payday: <span id="nextPayday">Loading...</span></p>
+    <div class="grid">
+      <!-- Spendability -->
+      <div class="card" id="spendTile">
+        <h3>Spendability</h3>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Paycycle -->
+      <div class="card" id="paycycleTile">
+        <h3>Next Payday</h3>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Accounts -->
+      <div class="card" id="accountsTile">
+        <h3>Accounts</h3>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Transactions -->
+      <div class="card" id="transactionsTile">
+        <h3>Recent Transactions</h3>
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 
   <script>
-    function getFreeCash() {
-      if (!window.dummyData) return 0;
-      const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
-      const upcomingBills = window.dummyData.recurring.reduce((s,b)=>s+b.amount,0);
-      return accountsTotal - upcomingBills;
-    }
-
-    function checkSpendPage() {
-      const input = document.getElementById("spendCheckPage");
-      const result = document.getElementById("spendResultPage");
-      const amount = parseFloat(input.value);
-      if (isNaN(amount)) {
-        result.textContent = "⚠️ Please enter a valid number.";
-        result.className = "";
-        return;
-      }
-
-      const freeCash = getFreeCash();
-      const summary = window.paycycle.getNextPaySummary();
-
-      if (amount <= freeCash) {
-        result.textContent = 
-          `✅ Safe: You can spend $${amount.toFixed(2)} and still make it until ${summary.date} (${summary.daysLeft} days). Remaining after bills: $${(freeCash-amount).toFixed(2)}.`;
-        result.className = "positive";
-      } else {
-        result.textContent = 
-          `❌ Not Safe: Spending $${amount.toFixed(2)} would leave you short before ${summary.date}. Shortfall: $${(amount-freeCash).toFixed(2)}.`;
-        result.className = "negative";
-      }
-
-      setTimeout(() => {
-        result.classList.add("fade-out");
-        setTimeout(() => {
-          result.textContent = "";
-          result.className = "";
-          result.classList.remove("fade-out");
-        }, 1000);
-      }, 5000);
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
+      // Spendability summary
+      const spendTile = document.getElementById("spendTile");
       if (window.dummyData) {
-        const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
-        document.getElementById("accountsTotalPage").textContent = `$${accountsTotal.toFixed(2)}`;
-        document.getElementById("billsUpcomingPage").textContent = `$${window.dummyData.recurring.reduce((s,b)=>s+b.amount,0).toFixed(2)}`;
-        document.getElementById("freeCashPage").textContent = `$${getFreeCash().toFixed(2)}`;
+        const totalBalance = window.dummyData.accounts.reduce((s, a) => s + a.balance, 0);
+        const recurring = window.dummyData.recurring.reduce((s, b) => s + b.amount, 0);
+        const spendable = totalBalance - recurring;
+
+        spendTile.innerHTML = `
+          <h3>Spendability</h3>
+          <p>Total Balance: $${totalBalance.toFixed(2)}</p>
+          <p>Upcoming Bills: $${recurring.toFixed(2)}</p>
+          <p class="${spendable < 0 ? 'negative' : 'positive'}">
+            Spendable Now: $${spendable.toFixed(2)}
+          </p>
+          <a href="spendability.html">View All →</a>
+        `;
       }
 
-      if (window.paycycle) {
-        const summary = window.paycycle.getNextPaySummary();
-        document.getElementById("nextPayday").textContent = 
-          `${summary.date} (${summary.daysLeft} days) — $${summary.amount.toFixed(2)} → ${summary.account}`;
-      }
+      // Accounts tile
+      const accountsTile = document.getElementById("accountsTile");
+      accountsTile.innerHTML = window.dummyData
+        ? window.dummyData.accounts.map(a => `<p>${a.name}: $${a.balance.toFixed(2)}</p>`).join("") + `<a href="accounts.html">View All →</a>`
+        : "No accounts found.";
+
+      // Transactions tile
+      const transactionsTile = document.getElementById("transactionsTile");
+      transactionsTile.innerHTML = window.dummyData
+        ? window.dummyData.transactions.slice(0, 3).map(t => `
+            <p>${t.date} — ${t.description} — $${t.amount.toFixed(2)}</p>
+          `).join("") + `<a href="transactions.html">View All →</a>`
+        : "No transactions.";
     });
   </script>
 </body>

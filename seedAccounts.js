@@ -1,27 +1,33 @@
-// Dummy safe-to-demo data
 window.dummyData = {
   accounts: [
-    { name: "Checking", balance: 1850.75, type: "Checking" },
-    { name: "Savings", balance: 4200.00, type: "Savings" },
-    { name: "SoFi", balance: 400.00, type: "Checking" }
+    { name: "BofA Checking", balance: 1483.81 },
+    { name: "SoFi", balance: 400.00 },
+    { name: "USAA", balance: 2500.00 },
+    { name: "Capital One", balance: 1200.00 }
   ],
   transactions: [
-    { date: "2025-09-01", description: "Paycheck", category: "Income", type: "income", amount: 1883.81 },
-    { date: "2025-09-02", description: "Rent", category: "Housing", type: "expense", amount: 950 },
-    { date: "2025-09-03", description: "Groceries", category: "Food", type: "expense", amount: 120 },
-    { date: "2025-09-04", description: "Gas", category: "Transport", type: "expense", amount: 60 },
-    { date: "2025-09-05", description: "Dining Out", category: "Food", type: "expense", amount: 45 },
-    { date: "2025-09-06", description: "Netflix", category: "Entertainment", type: "expense", amount: 16 },
-    { date: "2025-09-07", description: "Utilities", category: "Bills", type: "expense", amount: 150 },
-  ],
-  recurring: [
-    { name: "Rent", amount: 950, frequency: "Monthly" },
-    { name: "Utilities", amount: 150, frequency: "Monthly" },
-    { name: "Netflix", amount: 16, frequency: "Monthly" },
-    { name: "Phone Bill", amount: 60, frequency: "Monthly" }
+    { date: "2025-09-01", name: "Paycheck - Steve", amount: 1883.81, type: "income" },
+    { date: "2025-09-01", name: "Paycheck - Tanci", amount: 1851.04, type: "income" },
+    { date: "2025-09-03", name: "Groceries", amount: 150.00, type: "expense" },
+    { date: "2025-09-05", name: "Gas", amount: 60.00, type: "expense" },
+    { date: "2025-09-07", name: "Dining", amount: 80.00, type: "expense" }
   ],
   goals: [
-    { name: "Emergency Fund", target: 5000, progress: 1800 },
-    { name: "Vacation", target: 3000, progress: 1200 }
+    { name: "Trip to Jamaica", target: 3000, progress: 1200 },
+    { name: "New Car", target: 10000, progress: 4000 }
+  ],
+  bills: [
+    { name: "Rent", amount: 1200.00, due: "2025-09-05" },
+    { name: "Utilities", amount: 300.00, due: "2025-09-10" },
+    { name: "Phone", amount: 120.00, due: "2025-09-12" }
+  ],
+  categories: [
+    { name: "Groceries", budget: 600 },
+    { name: "Gas", budget: 300 },
+    { name: "Dining", budget: 250 }
+  ],
+  recurring: [
+    { name: "Netflix", amount: 15.99, frequency: "Monthly" },
+    { name: "Car Insurance", amount: 120.00, frequency: "Monthly" }
   ]
 };

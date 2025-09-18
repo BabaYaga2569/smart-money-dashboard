@@ -1,65 +1,48 @@
-// paycycle.js
-// Tracks Steve + Tanci pay cycles with real amounts and dates
+document.addEventListener("DOMContentLoaded", () => {
+  const tile = document.getElementById("paycycleTile");
+  if (!tile) return;
 
-function getNextPaydays() {
   const today = new Date();
 
-  // --- Steve ---
-  // Biweekly: $400 to SoFi on Wed, $1483.81 to BofA on Fri
-  // Anchor: 2025-09-19 (Fri) is a payday
-  const steveBase = new Date("2025-09-19");
-  const msPerDay = 1000 * 60 * 60 * 24;
-  const daysSinceBase = Math.floor((today - steveBase) / msPerDay);
-  const weeksOffset = Math.ceil(daysSinceBase / 14);
-  const nextFriday = new Date(steveBase.getTime() + weeksOffset * 14 * msPerDay);
-  const nextWednesday = new Date(nextFriday.getTime() - 2 * msPerDay);
+  // Steve’s pay
+  const stevePay = { main: 1483.81, sofi: 400.00, cycle: 14 }; 
+  // Tanci’s pay (15th & 30th, adjust if weekend)
+  const tanciPay = 1851.04;
 
-  const stevePay = [
-    { date: nextWednesday, amount: 400.00, account: "SoFi" },
-    { date: nextFriday, amount: 1483.81, account: "BofA" }
-  ];
-
-  // --- Tanci ---
-  // 15th + 30th (move to Friday if weekend)
-  function adjustWeekend(d) {
-    if (d.getDay() === 6) d.setDate(d.getDate() - 1); // Saturday → Friday
-    if (d.getDay() === 0) d.setDate(d.getDate() - 2); // Sunday → Friday
-    return d;
+  function nextPayDate(baseDay, cycle) {
+    let next = new Date(baseDay);
+    while (next <= today) {
+      next.setDate(next.getDate() + cycle);
+    }
+    return next;
   }
 
-  const tanciDates = [];
-  const month = today.getMonth();
-  const year = today.getFullYear();
+  function formatDate(date) {
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
 
-  let d15 = adjustWeekend(new Date(year, month, 15));
-  let d30 = adjustWeekend(new Date(year, month, 30));
+  // Steve’s next (split SoFi early, BofA later)
+  const steveBase = new Date("2025-09-05");
+  const nextSteve = nextPayDate(steveBase, 14);
 
-  if (d15 <= today) d15 = adjustWeekend(new Date(year, month + 1, 15));
-  if (d30 <= today) d30 = adjustWeekend(new Date(year, month + 1, 30));
+  // SoFi early (2 days before)
+  const steveSofi = new Date(nextSteve);
+  steveSofi.setDate(steveSofi.getDate() - 2);
 
-  const nextTanci = (d15 < d30) ? d15 : d30;
+  // Tanci’s next
+  let nextTanci = new Date(today.getFullYear(), today.getMonth(), (today.getDate() < 15 ? 15 : 30));
+  if (nextTanci.getDay() === 0) nextTanci.setDate(nextTanci.getDate() - 2); // Sunday → Friday
+  if (nextTanci.getDay() === 6) nextTanci.setDate(nextTanci.getDate() - 1); // Saturday → Friday
 
-  const tanciPay = [
-    { date: nextTanci, amount: 1851.04, account: "USAA" }
-  ];
-
-  return [...stevePay, ...tanciPay].sort((a, b) => a.date - b.date);
-}
-
-function formatDate(d) {
-  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-}
-
-function getNextPaySummary() {
-  const pays = getNextPaydays();
-  const next = pays[0];
-  const daysLeft = Math.ceil((next.date - new Date()) / (1000 * 60 * 60 * 24));
-  return {
-    date: formatDate(next.date),
-    daysLeft,
-    amount: next.amount,
-    account: next.account
-  };
-}
-
-window.paycycle = { getNextPaydays, getNextPaySummary };
+  tile.innerHTML = `
+    <div class="card">
+      <h3>Steve’s Next Pay</h3>
+      <p>SoFi: $${stevePay.sofi.toFixed(2)} → ${formatDate(steveSofi)}</p>
+      <p>BofA: $${stevePay.main.toFixed(2)} → ${formatDate(nextSteve)}</p>
+    </div>
+    <div class="card">
+      <h3>Tanci’s Next Pay</h3>
+      <p>Amount: $${tanciPay.toFixed(2)} → ${formatDate(nextTanci)}</p>
+    </div>
+  `;
+});

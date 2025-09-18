@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Categories</title>
+  <title>Categories - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,17 +19,18 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Spending Categories</h1>
+    <h1>Categories</h1>
     <div class="card">
       <table>
         <thead>
           <tr>
             <th>Category</th>
-            <th>Total Spent</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody id="categoriesTable"></tbody>
@@ -38,25 +39,20 @@
   </div>
 
   <script>
-    function calculateCategories() {
-      if (!window.dummyData) return {};
-      const categories = {};
-      window.dummyData.transactions.forEach(tx => {
-        if (tx.type === "expense") {
-          if (!categories[tx.category]) categories[tx.category] = 0;
-          categories[tx.category] += tx.amount;
-        }
-      });
-      return categories;
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
+      if (!window.dummyData) return;
       const table = document.getElementById("categoriesTable");
-      const cats = calculateCategories();
-      table.innerHTML = Object.entries(cats).map(([cat, total]) => `
+
+      const grouped = {};
+      window.dummyData.transactions.forEach(t => {
+        if (!grouped[t.category]) grouped[t.category] = 0;
+        grouped[t.category] += t.amount * (t.type === "expense" ? 1 : -1);
+      });
+
+      table.innerHTML = Object.keys(grouped).map(c => `
         <tr>
-          <td>${cat}</td>
-          <td>$${total.toFixed(2)}</td>
+          <td>${c}</td>
+          <td>$${grouped[c].toFixed(2)}</td>
         </tr>
       `).join("");
     });

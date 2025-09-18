@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Accounts</title>
+  <title>Accounts - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,35 +19,25 @@
     <a href="accounts.html" class="nav-item active">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
     <h1>Accounts</h1>
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Account</th>
-            <th>Balance</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody id="accountsTable"></tbody>
-      </table>
-    </div>
+    <div id="accountsList"></div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("accountsList");
       if (!window.dummyData) return;
-      const table = document.getElementById("accountsTable");
-      table.innerHTML = window.dummyData.accounts.map(acct => `
-        <tr>
-          <td>${acct.name}</td>
-          <td>$${acct.balance.toFixed(2)}</td>
-          <td>${acct.type}</td>
-        </tr>
+
+      container.innerHTML = window.dummyData.accounts.map(acc => `
+        <div class="card">
+          <h3>${acc.name}</h3>
+          <p>Balance: $${acc.balance.toFixed(2)}</p>
+        </div>
       `).join("");
     });
   </script>

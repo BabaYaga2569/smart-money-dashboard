@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Recurring</title>
+  <title>Recurring - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,27 +19,28 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item active">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Recurring Subscriptions</h1>
+    <h1>Recurring Items</h1>
     <div id="recurringList"></div>
   </div>
 
   <script>
-    function renderRecurring() {
-      const list = document.getElementById("recurringList");
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("recurringList");
       if (!window.dummyData) return;
-      list.innerHTML = window.dummyData.recurring.map(r => `
+
+      container.innerHTML = window.dummyData.recurring.map(item => `
         <div class="card">
-          <h3>${r.name}</h3>
-          <p>Amount: $${r.amount.toFixed(2)}</p>
-          <p>Frequency: ${r.frequency}</p>
+          <h3>${item.name}</h3>
+          <p>Amount: $${item.amount.toFixed(2)}</p>
+          <p>Frequency: ${item.frequency}</p>
         </div>
       `).join("");
-    }
-    document.addEventListener("DOMContentLoaded", renderRecurring);
+    });
   </script>
 </body>
 </html>

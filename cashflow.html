@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Cashflow</title>
+  <title>Cashflow - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,56 +19,39 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Cashflow Overview</h1>
-    <div class="card">
-      <p><strong>Total Income:</strong> $<span id="totalIncome">0.00</span></p>
-      <p><strong>Total Expenses:</strong> $<span id="totalExpenses">0.00</span></p>
-      <p><strong>Net Flow:</strong> $<span id="netFlow">0.00</span></p>
-    </div>
-
-    <div class="card">
-      <h2>Recent Transactions</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody id="cashflowTransactions"></tbody>
-      </table>
-    </div>
+    <h1>Cashflow</h1>
+    <div id="cashflowSummary"></div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const div = document.getElementById("cashflowSummary");
       if (!window.dummyData) return;
 
-      const income = window.dummyData.transactions.filter(tx => tx.type === "income")
-        .reduce((s,tx)=>s+tx.amount,0);
+      const income = window.dummyData.transactions
+        .filter(t => t.type === "income")
+        .reduce((sum, t) => sum + t.amount, 0);
 
-      const expenses = window.dummyData.transactions.filter(tx => tx.type === "expense")
-        .reduce((s,tx)=>s+tx.amount,0);
+      const expenses = window.dummyData.transactions
+        .filter(t => t.type === "expense")
+        .reduce((sum, t) => sum + t.amount, 0);
 
-      document.getElementById("totalIncome").textContent = income.toFixed(2);
-      document.getElementById("totalExpenses").textContent = expenses.toFixed(2);
-      document.getElementById("netFlow").textContent = (income-expenses).toFixed(2);
+      const net = income - expenses;
 
-      const tbody = document.getElementById("cashflowTransactions");
-      tbody.innerHTML = window.dummyData.transactions.slice(0,10).map(tx => `
-        <tr>
-          <td>${tx.date}</td>
-          <td>${tx.description}</td>
-          <td>${tx.category}</td>
-          <td class="${tx.type === "income" ? "positive" : "negative"}">$${tx.amount.toFixed(2)}</td>
-        </tr>
-      `).join("");
+      div.innerHTML = `
+        <div class="card">
+          <h3>Total Income: $${income.toFixed(2)}</h3>
+          <h3>Total Expenses: $${expenses.toFixed(2)}</h3>
+          <h3 class="${net < 0 ? 'negative' : 'positive'}">
+            Net Cashflow: $${net.toFixed(2)}
+          </h3>
+        </div>
+      `;
     });
   </script>
 </body>

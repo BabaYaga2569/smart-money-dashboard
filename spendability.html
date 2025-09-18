@@ -26,80 +26,51 @@
 
   <div class="main-content">
     <h1>Spendability</h1>
-    <p>Check if a purchase fits into your cash flow without dipping into money needed for bills <strong>before your next payday</strong>.</p>
-    
-    <!-- Quick Spendability Check -->
+    <div id="spendTile"></div>
     <div class="card">
-      <h2>Quick Check</h2>
-      <input type="number" id="spendCheckPage" placeholder="Enter amount">
-      <button onclick="checkSpendPage()">Check</button>
-      <p id="spendResultPage"></p>
-    </div>
-
-    <!-- Overview -->
-    <div class="card">
-      <h2>Overview</h2>
-      <p>Accounts Total: <span id="accountsTotalPage">$0.00</span></p>
-      <p>Upcoming Bills: <span id="billsUpcomingPage">$0.00</span></p>
-      <p>Free Cash After Bills: <span id="freeCashPage">$0.00</span></p>
-      <p>Next Payday: <span id="nextPayday">Loading...</span></p>
+      <label for="spendInput">Enter an amount to check:</label>
+      <input type="number" id="spendInput" placeholder="e.g. 150">
+      <button id="checkSpend">Can I spend this?</button>
+      <p id="spendResult"></p>
     </div>
   </div>
 
   <script>
-    function getFreeCash() {
-      if (!window.dummyData) return 0;
-      const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
-      const upcomingBills = window.dummyData.recurring.reduce((s,b)=>s+b.amount,0);
-      return accountsTotal - upcomingBills;
-    }
-
-    function checkSpendPage() {
-      const input = document.getElementById("spendCheckPage");
-      const result = document.getElementById("spendResultPage");
-      const amount = parseFloat(input.value);
-      if (isNaN(amount)) {
-        result.textContent = "⚠️ Please enter a valid number.";
-        result.className = "";
-        return;
-      }
-
-      const freeCash = getFreeCash();
-      const summary = window.paycycle.getNextPaySummary();
-
-      if (amount <= freeCash) {
-        result.textContent = 
-          `✅ Safe: You can spend $${amount.toFixed(2)} and still make it until ${summary.date} (${summary.daysLeft} days). Remaining after bills: $${(freeCash-amount).toFixed(2)}.`;
-        result.className = "positive";
-      } else {
-        result.textContent = 
-          `❌ Not Safe: Spending $${amount.toFixed(2)} would leave you short before ${summary.date}. Shortfall: $${(amount-freeCash).toFixed(2)}.`;
-        result.className = "negative";
-      }
-
-      setTimeout(() => {
-        result.classList.add("fade-out");
-        setTimeout(() => {
-          result.textContent = "";
-          result.className = "";
-          result.classList.remove("fade-out");
-        }, 1000);
-      }, 5000);
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
-      if (window.dummyData) {
-        const accountsTotal = window.dummyData.accounts.reduce((s,a)=>s+a.balance,0);
-        document.getElementById("accountsTotalPage").textContent = `$${accountsTotal.toFixed(2)}`;
-        document.getElementById("billsUpcomingPage").textContent = `$${window.dummyData.recurring.reduce((s,b)=>s+b.amount,0).toFixed(2)}`;
-        document.getElementById("freeCashPage").textContent = `$${getFreeCash().toFixed(2)}`;
-      }
+      const spendTile = document.getElementById("spendTile");
+      const input = document.getElementById("spendInput");
+      const result = document.getElementById("spendResult");
 
-      if (window.paycycle) {
-        const summary = window.paycycle.getNextPaySummary();
-        document.getElementById("nextPayday").textContent = 
-          `${summary.date} (${summary.daysLeft} days) — $${summary.amount.toFixed(2)} → ${summary.account}`;
-      }
+      if (!window.dummyData) return;
+
+      const totalBalance = window.dummyData.accounts.reduce((sum, a) => sum + a.balance, 0);
+      const recurring = window.dummyData.recurring.reduce((sum, b) => sum + b.amount, 0);
+      const spendable = totalBalance - recurring;
+
+      spendTile.innerHTML = `
+        <div class="card">
+          <h3>Total Balance: $${totalBalance.toFixed(2)}</h3>
+          <h3>Upcoming Bills: $${recurring.toFixed(2)}</h3>
+          <h3 class="${spendable < 0 ? 'negative' : 'positive'}">
+            Spendable Now: $${spendable.toFixed(2)}
+          </h3>
+        </div>
+      `;
+
+      document.getElementById("checkSpend").onclick = () => {
+        const amt = parseFloat(input.value);
+        if (isNaN(amt) || amt <= 0) {
+          result.textContent = "Enter a valid number.";
+          return;
+        }
+        if (amt <= spendable) {
+          result.textContent = `✅ Yes! You can safely spend $${amt.toFixed(2)}.`;
+          result.className = "positive";
+        } else {
+          result.textContent = `❌ Not safe. You’d overspend by $${(amt - spendable).toFixed(2)}.`;
+          result.className = "negative";
+        }
+      };
     });
   </script>
 </body>

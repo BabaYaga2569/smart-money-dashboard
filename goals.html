@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Goals</title>
+  <title>Goals - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,33 +19,33 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Savings Goals</h1>
+    <h1>Goals</h1>
     <div id="goalsList"></div>
   </div>
 
   <script>
-    function renderGoals() {
-      const list = document.getElementById("goalsList");
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("goalsList");
       if (!window.dummyData) return;
-      list.innerHTML = window.dummyData.goals.map(goal => {
-        const pct = Math.min((goal.progress / goal.target) * 100, 100);
+
+      container.innerHTML = window.dummyData.goals.map(g => {
+        const pct = (g.progress / g.target * 100).toFixed(1);
         return `
           <div class="card">
-            <h3>${goal.name}</h3>
-            <p>Target: $${goal.target.toFixed(2)}</p>
-            <p>Progress: $${goal.progress.toFixed(2)} (${pct.toFixed(0)}%)</p>
+            <h3>${g.name}</h3>
+            <p>$${g.progress.toFixed(2)} of $${g.target.toFixed(2)} (${pct}%)</p>
             <div class="progress-bar">
               <div class="progress" style="width:${pct}%"></div>
             </div>
           </div>
         `;
       }).join("");
-    }
-    document.addEventListener("DOMContentLoaded", renderGoals);
+    });
   </script>
 </body>
 </html>

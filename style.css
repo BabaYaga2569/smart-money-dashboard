@@ -1,23 +1,17 @@
-/* Global styles */
-:root {
-  --bg-color: #0b0e14;
-  --card-bg: #161b25;
-  --text-color: #e6e6e6;
-  --accent-color: #39ff14; /* default neon green */
-}
-
+/* Global Styles */
 body {
-  background: var(--bg-color);
-  color: var(--text-color);
-  font-family: Arial, sans-serif;
   margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg, #0e1117);
+  color: var(--text, #f0f0f0);
   display: flex;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 240px;
-  background: #11151d;
-  padding: 20px 0;
+  width: 220px;
+  background: var(--sidebar, #1a1f2a);
+  color: var(--text, #f0f0f0);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -25,63 +19,64 @@ body {
 
 .sidebar h2 {
   text-align: center;
-  color: var(--accent-color);
-  margin-bottom: 30px;
-  text-shadow: 0 0 10px var(--accent-color);
+  margin: 20px 0;
+  color: var(--accent, #2ecc71);
 }
 
 .nav-item {
   padding: 12px 20px;
-  display: block;
-  color: #ccc;
   text-decoration: none;
-  transition: all 0.3s ease;
+  color: var(--text, #f0f0f0);
+  display: block;
+  transition: all 0.2s ease;
 }
 
-.nav-item:hover,
-.nav-item.active {
-  background: #1a1f2a;
-  color: var(--accent-color);
+.nav-item:hover, .nav-item.active {
+  background: var(--accent, #2ecc71);
+  color: #fff;
 }
 
+/* Main Content */
 .main-content {
   flex: 1;
   padding: 20px;
+  overflow-y: auto;
 }
 
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.tile {
-  background: var(--card-bg);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.6);
-}
-
-.tile h2 {
+h1 {
   margin-top: 0;
-  color: var(--accent-color);
+  color: var(--accent, #2ecc71);
 }
 
+/* Cards */
 .card {
-  background: var(--card-bg);
-  padding: 20px;
+  background: var(--card, #161b22);
+  padding: 15px;
   border-radius: 10px;
-  margin: 10px 0;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.card h3 {
+  margin: 8px 0;
+}
+
+.positive {
+  color: #2ecc71;
+}
+
+.negative {
+  color: #e74c3c;
 }
 
 button {
-  background: var(--accent-color);
+  background: var(--accent, #2ecc71);
   border: none;
-  padding: 8px 15px;
+  padding: 8px 14px;
   border-radius: 6px;
+  color: #fff;
   cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 button:hover {
@@ -90,78 +85,10 @@ button:hover {
 
 input, select {
   padding: 8px;
-  margin: 5px 0;
   border-radius: 6px;
-  border: 1px solid var(--accent-color);
-  background: #1a1a1a;
-  color: var(--text-color);
-}
-
-table {
+  border: 1px solid #444;
+  margin: 6px 0;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #333;
-}
-
-th {
-  background: #1a1f2a;
-}
-
-.positive {
-  color: #39ff14;
-}
-
-.negative {
-  color: #ff3131;
-}
-
-/* Goals progress bar */
-.progress-bar {
-  width: 100%;
-  height: 10px;
-  background: #333;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.progress {
-  height: 10px;
-  background: var(--accent-color);
-  width: 0;
-}
-
-/* Spendability results glow */
-#spendResult, 
-#spendResultPage {
-  margin-top: 10px;
-  font-weight: bold;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-#spendResult.positive,
-#spendResultPage.positive {
-  background: rgba(57, 255, 20, 0.15);
-  color: #39ff14;
-  box-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
-}
-
-#spendResult.negative,
-#spendResultPage.negative {
-  background: rgba(255, 49, 49, 0.15);
-  color: #ff3131;
-  box-shadow: 0 0 10px rgba(255, 49, 49, 0.7);
-}
-
-#spendResult.fade-out,
-#spendResultPage.fade-out {
-  opacity: 0;
-  transition: opacity 1s ease;
+  background: #222;
+  color: #fff;
 }

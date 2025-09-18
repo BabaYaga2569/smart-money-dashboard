@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Bills</title>
+  <title>Bills - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
   <script src="seedAccounts.js" defer></script>
@@ -19,27 +19,28 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Upcoming Bills</h1>
+    <h1>Bills</h1>
     <div id="billsList"></div>
   </div>
 
   <script>
-    function renderBills() {
-      const list = document.getElementById("billsList");
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("billsList");
       if (!window.dummyData) return;
-      list.innerHTML = window.dummyData.recurring.map(bill => `
+
+      container.innerHTML = window.dummyData.recurring.map(b => `
         <div class="card">
-          <h3>${bill.name}</h3>
-          <p>Amount: $${bill.amount.toFixed(2)}</p>
-          <p>Frequency: ${bill.frequency}</p>
+          <h3>${b.name}</h3>
+          <p>Amount: $${b.amount.toFixed(2)}</p>
+          <p>Frequency: ${b.frequency}</p>
         </div>
       `).join("");
-    }
-    document.addEventListener("DOMContentLoaded", renderBills);
+    });
   </script>
 </body>
 </html>

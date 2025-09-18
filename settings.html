@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money Tracker - Settings</title>
+  <title>Settings - Smart Money Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="theme.js" defer></script>
 </head>
@@ -18,30 +18,60 @@
     <a href="accounts.html" class="nav-item">🏦 Accounts</a>
     <a href="recurring.html" class="nav-item">🔁 Recurring</a>
     <a href="spendability.html" class="nav-item">🛒 Spendability</a>
+    <a href="paycycle.html" class="nav-item">📅 Paycycle</a>
     <a href="settings.html" class="nav-item active">⚙️ Settings</a>
   </div>
 
   <div class="main-content">
     <h1>Settings</h1>
-
     <div class="card">
-      <h2>Theme Color</h2>
-      <input type="color" id="themeColorPicker" value="#39ff14">
+      <h3>Theme Options</h3>
+      <label for="colorPrimary">Primary Color:</label>
+      <input type="color" id="colorPrimary" value="#2ecc71">
+
+      <label for="colorAccent">Accent Color:</label>
+      <input type="color" id="colorAccent" value="#3498db">
+
       <button id="applyTheme">Apply</button>
     </div>
 
     <div class="card">
-      <h2>Preset Themes</h2>
-      <button onclick="setPreset('default')">Default</button>
-      <button onclick="setPreset('dark')">Dark</button>
-      <button onclick="setPreset('ocean')">Ocean</button>
-      <button onclick="setPreset('sunset')">Sunset</button>
-    </div>
-
-    <div class="card">
-      <h2>Current Theme</h2>
-      <p id="currentTheme">Default</p>
+      <h3>Preset Themes</h3>
+      <select id="presetTheme">
+        <option value="">-- Select Preset --</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+        <option value="forest">Forest</option>
+        <option value="sunset">Sunset</option>
+      </select>
+      <button id="applyPreset">Apply Preset</button>
     </div>
   </div>
+
+  <script>
+    document.getElementById("applyTheme").onclick = () => {
+      const primary = document.getElementById("colorPrimary").value;
+      const accent = document.getElementById("colorAccent").value;
+      localStorage.setItem("theme-primary", primary);
+      localStorage.setItem("theme-accent", accent);
+      applyTheme(primary, accent);
+    };
+
+    document.getElementById("applyPreset").onclick = () => {
+      const preset = document.getElementById("presetTheme").value;
+      const themes = {
+        dark: {primary: "#1e1e1e", accent: "#f39c12"},
+        light: {primary: "#f4f4f4", accent: "#3498db"},
+        forest: {primary: "#2ecc71", accent: "#27ae60"},
+        sunset: {primary: "#e67e22", accent: "#c0392b"}
+      };
+      if (themes[preset]) {
+        const {primary, accent} = themes[preset];
+        localStorage.setItem("theme-primary", primary);
+        localStorage.setItem("theme-accent", accent);
+        applyTheme(primary, accent);
+      }
+    };
+  </script>
 </body>
 </html>
