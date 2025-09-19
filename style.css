@@ -109,3 +109,33 @@ body {
   color: #00ff99;
   font-weight: bold;
 }
+/* Transactions table */
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.transactions-table th, 
+.transactions-table td {
+  padding: 10px;
+  text-align: left;
+}
+
+.transactions-table th {
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.transactions-table tr:nth-child(even) {
+  background: #1e1e1e;
+}
+
+.transactions-table td.positive {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.transactions-table td.negative {
+  color: #F44336;
+  font-weight: bold;
+}
