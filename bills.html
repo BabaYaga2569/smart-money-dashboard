@@ -2,38 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bills</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bills - Smart Money</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html" class="active">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="bills.html" class="active">Bills</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="cashflow.html">Cashflow</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="paycycle.html">Paycycle</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
-  <div class="content">
+  <div class="main-content">
     <h1>Bills</h1>
-    <div id="bills-list"></div>
-  </div>
+    <div class="card-container">
+      <div class="card">
+        <h2>Netflix</h2>
+        <p>Amount: $15.99</p>
+        <p>Frequency: Monthly</p>
+        <button class="btn-small">Edit</button>
+      </div>
 
-<script>
-  window.onload = () => {
-    const container = document.getElementById("bills-list");
-    container.innerHTML = demoData.bills
-      .map(b => `<div class="tile"><h3>${b.name}</h3><p>Amount: $${b.amount}</p><p>Frequency: ${b.frequency}</p></div>`)
-      .join("");
-  };
-</script>
+      <div class="card">
+        <h2>Car Insurance</h2>
+        <p>Amount: $120.00</p>
+        <p>Frequency: Monthly</p>
+        <button class="btn-small">Edit</button>
+      </div>
+
+      <div class="card">
+        <h2>Electric</h2>
+        <p>Amount: $150.00</p>
+        <p>Frequency: Monthly</p>
+        <button class="btn-small">Edit</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
