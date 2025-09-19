@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <title>Smart Money - Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
-  <script src="payCycle.js"></script>
 </head>
 <body>
   <div class="sidebar">
@@ -23,61 +21,96 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
+  <div class="main">
     <h1>Dashboard</h1>
 
-    <div class="tile">
-      <h3>Spendability</h3>
-      <p>Total Balance: $5633.81</p>
-      <p>Upcoming Bills: $135.99</p>
-      <p>Spendable Now: $5447.82</p>
-      <a href="spendability.html">View All →</a>
-    </div>
+    <!-- GRID START -->
+    <div class="dashboard-grid">
 
-    <div class="tile">
-      <h3>Next Pay</h3>
-      <div id="paycycle-summary"></div>
-      <a href="paycycle.html">View All →</a>
-    </div>
+      <!-- Spendability -->
+      <div class="tile">
+        <h2>Spendability</h2>
+        <p>Total Balance: <strong>$5,633.81</strong></p>
+        <p>Upcoming Bills: <strong>$135.99</strong></p>
+        <p>Spendable Now: <span class="positive">$5,447.82</span></p>
+        <a href="spendability.html">View All →</a>
+      </div>
 
-    <div class="tile">
-      <h3>Accounts</h3>
-      <ul id="accounts-summary"></ul>
-      <a href="accounts.html">View All →</a>
-    </div>
+      <!-- Next Pay -->
+      <div class="tile">
+        <h2>Next Pay</h2>
+        <p>Steve → SoFi: $400.00 (09/17/2025)</p>
+        <p>Steve → BofA: $1,483.81 (09/19/2025)</p>
+        <p>Tanci → USAA: $1,851.04 (09/30/2025)</p>
+        <a href="paycycle.html">View All →</a>
+      </div>
 
-    <div class="tile">
-      <h3>Goals</h3>
-      <ul>
-        <li>Trip to Jamaica: 40% funded</li>
-        <li>New Car: 40% funded</li>
-      </ul>
-      <a href="goals.html">View All →</a>
-    </div>
+      <!-- Accounts -->
+      <div class="tile">
+        <h2>Accounts</h2>
+        <ul>
+          <li>BofA Checking — $1,483.81</li>
+          <li>SoFi — $400.00</li>
+          <li>USAA — $2,500.00</li>
+          <li>Capital One — $1,200.00</li>
+        </ul>
+        <a href="accounts.html">View All →</a>
+      </div>
 
-    <div class="tile">
-      <h3>Recent Transactions</h3>
-      <ul id="tx-summary"></ul>
-      <a href="transactions.html">View All →</a>
+      <!-- Goals -->
+      <div class="tile">
+        <h2>Goals</h2>
+        <ul>
+          <li>Trip to Jamaica — 40% funded</li>
+          <li>New Car — 40% funded</li>
+        </ul>
+        <a href="goals.html">View All →</a>
+      </div>
+
+      <!-- Bills -->
+      <div class="tile">
+        <h2>Bills</h2>
+        <ul>
+          <li>Netflix — $15.99 (Monthly)</li>
+          <li>Car Insurance — $120.00 (Monthly)</li>
+        </ul>
+        <a href="bills.html">View All →</a>
+      </div>
+
+      <!-- Categories -->
+      <div class="tile">
+        <h2>Categories</h2>
+        <ul>
+          <li>Income — $3,734.85</li>
+          <li>Food — $150.00</li>
+          <li>Transport — $60.00</li>
+        </ul>
+        <a href="categories.html">View All →</a>
+      </div>
+
+      <!-- Cashflow -->
+      <div class="tile">
+        <h2>Cashflow</h2>
+        <p>Income: $3,734.85</p>
+        <p>Expenses: $345.99</p>
+        <p>Net: <span class="positive">$3,388.86</span></p>
+        <a href="cashflow.html">View All →</a>
+      </div>
+
+      <!-- Transactions -->
+      <div class="tile">
+        <h2>Recent Transactions</h2>
+        <ul>
+          <li>09/01/25 — Paycheck — +$1,883.81</li>
+          <li>09/01/25 — Paycheck — +$1,851.04</li>
+          <li>09/03/25 — Groceries — -$150.00</li>
+          <li>09/07/25 — Gas — -$60.00</li>
+        </ul>
+        <a href="transactions.html">View All →</a>
+      </div>
+
     </div>
+    <!-- GRID END -->
   </div>
-
-<script>
-  // Dashboard data injection
-  window.onload = () => {
-    const accList = document.getElementById("accounts-summary");
-    accList.innerHTML = demoData.accounts
-      .map(a => `<li>${a.name}: $${a.balance}</li>`)
-      .join("");
-
-    const txList = document.getElementById("tx-summary");
-    txList.innerHTML = demoData.transactions
-      .slice(0, 3)
-      .map(t => `<li>${t.date} — ${t.desc} (${t.category}) $${t.amount}</li>`)
-      .join("");
-
-    renderPayCycle("paycycle-summary");
-  };
-</script>
 </body>
 </html>
