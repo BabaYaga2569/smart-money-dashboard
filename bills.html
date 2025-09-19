@@ -12,7 +12,7 @@
     <a href="index.html">Dashboard</a>
     <a href="transactions.html">Transactions</a>
     <a href="goals.html">Goals</a>
-    <a href="bills.html" class="active">Bills</a>
+    <a class="active" href="bills.html">Bills</a>
     <a href="categories.html">Categories</a>
     <a href="cashflow.html">Cashflow</a>
     <a href="accounts.html">Accounts</a>
@@ -22,29 +22,48 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <h1>Bills</h1>
-    <div class="card-container">
-      <div class="card">
-        <h2>Netflix</h2>
-        <p>Amount: $15.99</p>
-        <p>Frequency: Monthly</p>
-        <button class="btn-small">Edit</button>
-      </div>
-
-      <div class="card">
-        <h2>Car Insurance</h2>
-        <p>Amount: $120.00</p>
-        <p>Frequency: Monthly</p>
-        <button class="btn-small">Edit</button>
-      </div>
-
-      <div class="card">
-        <h2>Electric</h2>
-        <p>Amount: $150.00</p>
-        <p>Frequency: Monthly</p>
-        <button class="btn-small">Edit</button>
-      </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Netflix</td>
+            <td>$15.99</td>
+            <td>Monthly</td>
+            <td>
+              <button class="btn-small">Edit</button>
+              <button class="btn-small btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Car Insurance</td>
+            <td>$120.00</td>
+            <td>Monthly</td>
+            <td>
+              <button class="btn-small">Edit</button>
+              <button class="btn-small btn-danger">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Electric</td>
+            <td>$150.00</td>
+            <td>Monthly</td>
+            <td>
+              <button class="btn-small">Edit</button>
+              <button class="btn-small btn-danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </body>
