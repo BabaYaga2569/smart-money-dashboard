@@ -1,43 +1,43 @@
-// theme.js
-document.addEventListener("DOMContentLoaded", () => {
-  const colorPicker = document.getElementById("colorPicker");
-  const applyBtn = document.getElementById("applyTheme");
-  const currentThemeDisplay = document.getElementById("currentTheme");
-  const presetContainer = document.getElementById("presetColors");
-
-  // Preset colors
-  const presets = [
-    "#FF0000", "#FF7F00", "#FFD700",
-    "#00FF00", "#00CED1", "#0055FF",
-    "#8A2BE2", "#FF1493", "#FFA500", "#C0C0C0"
-  ];
-
-  // Render swatches
-  presets.forEach(color => {
-    const swatch = document.createElement("div");
-    swatch.classList.add("swatch");
-    swatch.style.backgroundColor = color;
-    swatch.title = color;
-    swatch.addEventListener("click", () => applyTheme(color));
-    presetContainer.appendChild(swatch);
-  });
-
-  // Apply button
-  applyBtn.addEventListener("click", () => {
-    const color = colorPicker.value;
-    applyTheme(color);
-  });
-
-  function applyTheme(color) {
-    document.documentElement.style.setProperty("--accent-color", color);
-    localStorage.setItem("accentColor", color);
-    currentThemeDisplay.textContent = `Accent Color: ${color}`;
+// Preset themes
+const themes = {
+  default: {
+    "--bg-color": "#1e1e2f",
+    "--sidebar-color": "#2c2c3c",
+    "--tile-bg": "#2e2e40",
+    "--tile-hover": "#3a3a55",
+    "--text-color": "#f5f5f5",
+    "--accent-color": "#0055ff"
+  },
+  green: {
+    "--bg-color": "#0f1a14",
+    "--sidebar-color": "#1b2d21",
+    "--tile-bg": "#243528",
+    "--tile-hover": "#2e4030",
+    "--text-color": "#e6ffe6",
+    "--accent-color": "#25de8b"
+  },
+  orange: {
+    "--bg-color": "#1f140f",
+    "--sidebar-color": "#2e1c14",
+    "--tile-bg": "#3a241a",
+    "--tile-hover": "#4d2f20",
+    "--text-color": "#fff2e6",
+    "--accent-color": "#ff9800"
   }
+};
 
-  // Load saved theme
-  const savedColor = localStorage.getItem("accentColor");
-  if (savedColor) {
-    applyTheme(savedColor);
-    colorPicker.value = savedColor;
-  }
+// Apply selected theme
+function applyTheme(themeName) {
+  const theme = themes[themeName];
+  if (!theme) return;
+  Object.keys(theme).forEach(key => {
+    document.documentElement.style.setProperty(key, theme[key]);
+  });
+  localStorage.setItem("theme", themeName);
+}
+
+// Load saved theme
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("theme") || "default";
+  applyTheme(saved);
 });

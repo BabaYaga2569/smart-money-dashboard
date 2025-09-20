@@ -3,97 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money - Dashboard</title>
+  <title>MySmartMoneyTracker - Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js" defer></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
+    <h2>💰 Tracker</h2>
     <a href="index.html" class="active">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
     <a href="accounts.html">Accounts</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="bills.html">Bills</a>
     <a href="recurring.html">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="goals.html">Goals</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="paycycle.html">Pay Cycle</a>
     <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
     <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
-  <div class="main-content">
+  <!-- Main Content -->
+  <div class="main grid-page">
     <h1>Dashboard</h1>
     <div class="dashboard-grid">
+      
+      <!-- Spendability -->
       <div class="tile">
         <h2>Spendability</h2>
-        <p>Total Balance: <strong>$5,633.81</strong></p>
-        <p>Upcoming Bills: <strong>$135.99</strong></p>
-        <p>Spendable Now: <span class="pill pill-income">$5,447.82</span></p>
-        <a href="spendability.html">View All →</a>
+        <p>See if you can spend without hurting your pay cycle.</p>
+        <button onclick="location.href='spendability.html'">View All</button>
       </div>
 
+      <!-- Next Pay -->
       <div class="tile">
         <h2>Next Pay</h2>
-        <p>Steve → SoFi: $400.00 (09/17/2025)</p>
-        <p>Steve → BoA: $1,483.81 (09/19/2025)</p>
-        <p>Tanci → USAA: $1,851.04 (09/30/2025)</p>
-        <a href="paycycle.html">View All →</a>
+        <p>Next deposit: <strong>09/19/2025 - $1,483.81</strong></p>
+        <button onclick="location.href='paycycle.html'">View All</button>
       </div>
 
+      <!-- Accounts -->
       <div class="tile">
         <h2>Accounts</h2>
-        <ul>
-          <li>BoA Checking — $1,483.81</li>
-          <li>SoFi — $400.00</li>
-          <li>USAA — $2,500.00</li>
-          <li>Capital One — $1,200.00</li>
-        </ul>
-        <a href="accounts.html">View All →</a>
+        <p>Bank balances at a glance.</p>
+        <button onclick="location.href='accounts.html'">View All</button>
       </div>
 
+      <!-- Transactions -->
       <div class="tile">
         <h2>Recent Transactions</h2>
         <ul>
-          <li>09/01/25 — Paycheck (+$1,883.81)</li>
-          <li>09/01/25 — Paycheck (+$1,851.04)</li>
-          <li>09/03/25 — Groceries (−$150.00)</li>
-          <li>09/07/25 — Gas (−$60.00)</li>
+          <li>Walmart - $82.14</li>
+          <li>Shell Gas - $45.22</li>
+          <li>Costco - $131.47</li>
         </ul>
-        <a href="transactions.html">View All →</a>
+        <button onclick="location.href='transactions.html'">View All</button>
       </div>
 
-      <div class="tile">
-        <h2>Goals</h2>
-        <p>Trip to Jamaica — 40% funded</p>
-        <p>New Car — 40% funded</p>
-        <a href="goals.html">View All →</a>
-      </div>
-
+      <!-- Bills -->
       <div class="tile">
         <h2>Bills</h2>
-        <p>Netflix — $15.99 (Monthly)</p>
-        <p>Car Insurance — $120.00 (Monthly)</p>
-        <a href="bills.html">View All →</a>
+        <p>Upcoming bills due soon.</p>
+        <button onclick="location.href='bills.html'">View All</button>
       </div>
 
+      <!-- Recurring -->
+      <div class="tile">
+        <h2>Recurring</h2>
+        <p>Subscriptions & regular expenses.</p>
+        <button onclick="location.href='recurring.html'">View All</button>
+      </div>
+
+      <!-- Categories -->
       <div class="tile">
         <h2>Categories</h2>
-        <p><span class="pill pill-income">Income</span> $3,734.85</p>
-        <p><span class="pill pill-groceries">Food</span> −$150.00</p>
-        <p><span class="pill pill-transport">Transport</span> −$60.00</p>
-        <a href="categories.html">View All →</a>
+        <p>Spending by category.</p>
+        <button onclick="location.href='categories.html'">View All</button>
       </div>
 
+      <!-- Goals -->
       <div class="tile">
-        <h2>Cashflow</h2>
-        <p>Income: $3,734.85</p>
-        <p>Expenses: $345.99</p>
-        <p>Net: <span class="pill pill-income">$3,388.86</span></p>
-        <a href="cashflow.html">View All →</a>
+        <h2>Goals</h2>
+        <p>Track your savings goals.</p>
+        <button onclick="location.href='goals.html'">View All</button>
       </div>
+
+      <!-- Cash Flow -->
+      <div class="tile">
+        <h2>Cash Flow</h2>
+        <p>Money in vs money out.</p>
+        <button onclick="location.href='cashflow.html'">View All</button>
+      </div>
+
     </div>
   </div>
 </body>

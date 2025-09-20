@@ -1,139 +1,161 @@
-/* ============ THEME ============ */
-:root{
-  --bg: #0f1218;
-  --panel: #1a1f29;
-  --panel-2:#222935;
-  --text:#e9eef6;
-  --muted:#a8b2c3;
-  --accent: var(--accent-color, #5aa2ff);
-  --success:#25de8b;
-  --danger:#ff6b6b;
-  --warning:#ffd166;
-  --shadow: 0 6px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+/* ========= GLOBAL THEME VARIABLES ========= */
+:root {
+  --bg-color: #1e1e2f;
+  --sidebar-color: #2c2c3c;
+  --tile-bg: #2e2e40;
+  --tile-hover: #3a3a55;
+  --text-color: #f5f5f5;
+  --accent-color: #0055ff;
+  --success-color: #00c853;
+  --danger-color: #ff1744;
+  --warning-color: #ff9800;
 }
 
-/* ============ RESET ============ */
-*,*::before,*::after{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background: radial-gradient(1200px 800px at 20% -10%, rgba(90,162,255,.12), transparent 60%),
-              radial-gradient(1000px 700px at 110% 10%, rgba(37,222,139,.07), transparent 55%),
-              var(--bg);
-  color:var(--text);
-  font: 14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+/* ========= BASE ========= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-/* ============ LINKS & TEXT ============ */
-a{color:var(--accent); text-decoration:none}
-a:hover{opacity:.9}
-h1{margin:0 0 18px; font-size:32px; letter-spacing:.2px}
-h2{margin:0 0 12px; font-size:20px}
-small, .muted{color:var(--muted)}
-
-/* ============ SIDEBAR ============ */
-.sidebar{
-  position:fixed; inset:0 auto 0 0;
-  width:240px;
-  background:#141a22;
-  padding:18px 14px;
-  box-shadow: 2px 0 18px rgba(0,0,0,.35);
-  overflow-y:auto;
-  z-index:10;
-}
-.sidebar h2{margin:0 0 12px; font-size:18px; color:var(--accent)}
-.sidebar a{
-  display:block; padding:10px 12px; margin:4px 0;
-  color:var(--muted); border-radius:10px;
-}
-.sidebar a:hover, .sidebar a.active{
-  background:rgba(255,255,255,.06); color:var(--text);
+/* ========= SIDEBAR ========= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100%;
+  background: var(--sidebar-color);
+  padding: 20px;
 }
 
-/* ============ MAIN LAYOUT ============ */
-/* This is the critical fix so nothing slides under the sidebar */
-.main{
-  margin-left:240px;          /* keep in sync with .sidebar width */
-  padding:28px 32px;
-  min-width:0;
+.sidebar h2 {
+  color: var(--accent-color);
+  margin-bottom: 20px;
 }
 
-/* Optional container max width (looks nicer on ultrawide) */
-.main{max-width:1400px}
-
-/* ============ GRID ============ */
-.dashboard-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap:24px;
-  align-items:start;
+.sidebar a {
+  display: block;
+  color: var(--text-color);
+  text-decoration: none;
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.2s;
 }
 
-/* ============ TILE / CARD ============ */
-.tile{
-  background:var(--panel);
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  padding:18px 20px;
-}
-.tile h2{color:#fff}
-.tile p, .tile li, .tile td{color:var(--muted)}
-
-/* ============ TABLES ============ */
-table{width:100%; border-collapse:collapse}
-th,td{padding:10px 12px; text-align:left}
-thead th{
-  color:var(--muted); font-weight:600;
-  border-bottom:1px solid rgba(255,255,255,.10);
-}
-tbody tr{border-bottom:1px solid rgba(255,255,255,.06)}
-tbody tr:last-child{border-bottom:none}
-
-/* ============ BADGES & AMOUNTS ============ */
-.badge,.tag,.pill{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:2px 8px; border-radius:999px; font-weight:700; font-size:12px
-}
-.positive{
-  color:var(--success);
-  background:rgba(37,222,139,.14);
-  padding:2px 8px; border-radius:999px; font-weight:800
-}
-.negative{color:var(--danger)}
-.neutral{color:var(--muted)}
-
-/* ============ BUTTONS ============ */
-button,.btn{
-  border:0; border-radius:10px;
-  background:var(--accent); color:#fff;
-  padding:8px 12px; cursor:pointer; font-weight:700
-}
-.btn.secondary{background:rgba(255,255,255,.08); color:var(--text)}
-.edit-btn{background:#2ecc71}
-.delete-btn{background:#e74c3c}
-.edit-btn,.delete-btn{padding:6px 10px; border-radius:8px}
-
-/* ============ FORMS (settings/theme) ============ */
-input[type="color"]{
-  width:42px; height:28px;
-  border:0; border-radius:8px; background:#0000;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);
+.sidebar a:hover,
+.sidebar a.active {
+  background: var(--accent-color);
 }
 
-/* ============ SPENDABILITY QUICK CHECK ============ */
-.spend-check{
-  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-}
-.spend-check input{
-  background:var(--panel-2); color:var(--text);
-  border:0; padding:10px 12px; border-radius:10px; width:180px;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+/* ========= MAIN CONTAINER ========= */
+.main {
+  margin-left: 220px; /* Keep content clear of sidebar */
+  padding: 20px;
+  min-height: 100vh;
 }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 880px){
-  .main{margin-left:0; padding:22px 16px}
-  .sidebar{position:fixed; transform:translateX(0)} /* (kept visible) */
+/* ========= DASHBOARD GRID ========= */
+.grid-page .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ========= TILE / CARD ========= */
+.tile {
+  background: var(--tile-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.tile h2 {
+  margin-top: 0;
+}
+
+.tile button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  background: var(--accent-color);
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tile button:hover {
+  background: var(--tile-hover);
+}
+
+/* ========= TABLES ========= */
+.table-page .tile {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.table-page table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-page th,
+.table-page td {
+  padding: 12px;
+  text-align: left;
+}
+
+.table-page th {
+  background: var(--tile-hover);
+}
+
+.table-page tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ========= FORMS ========= */
+.form-page .tile {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: none;
+  background: #444;
+  color: var(--text-color);
+}
+
+button, .btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn.primary { background: var(--accent-color); color: #fff; }
+.btn.success { background: var(--success-color); color: #fff; }
+.btn.danger  { background: var(--danger-color); color: #fff; }
+
+/* ========= SPENDABILITY INPUT ========= */
+.spend-check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.spend-check input {
+  width: 180px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #333;
+  color: var(--text-color);
 }
