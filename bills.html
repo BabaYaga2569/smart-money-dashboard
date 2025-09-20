@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money - Bills</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -23,53 +24,42 @@
   </div>
 
   <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Bills</h1>
-    <div class="tile">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Frequency</th>
-            <th>Due Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Netflix</td>
-            <td>$15.99</td>
-            <td>Monthly</td>
-            <td>2025-09-10</td>
-            <td>
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Car Insurance</td>
-            <td>$120.00</td>
-            <td>Monthly</td>
-            <td>2025-09-15</td>
-            <td>
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Electric</td>
-            <td>$150.00</td>
-            <td>Monthly</td>
-            <td>2025-09-20</td>
-            <td>
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Bill</th>
+          <th>Amount</th>
+          <th>Due Date</th>
+          <th>Frequency</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Netflix</td>
+          <td>$15.99</td>
+          <td>2025-09-10</td>
+          <td>Monthly</td>
+          <td><span class="pill pill-bills">Upcoming</span></td>
+        </tr>
+        <tr>
+          <td>Car Insurance</td>
+          <td>$120.00</td>
+          <td>2025-09-15</td>
+          <td>Monthly</td>
+          <td><span class="pill pill-bills">Upcoming</span></td>
+        </tr>
+        <tr>
+          <td>Electric</td>
+          <td>$150.00</td>
+          <td>2025-09-20</td>
+          <td>Monthly</td>
+          <td><span class="pill pill-bills">Upcoming</span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>
