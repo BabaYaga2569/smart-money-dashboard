@@ -13,37 +13,43 @@ body {
   min-height: 100vh;
 }
 
-/* === SIDEBAR === */
+/* Sidebar */
 .sidebar {
-  width: 220px;
-  background: #1e1e1e;
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
+    width: 220px; /* Sidebar width */
+    background: #222;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    padding: 20px;
 }
 
-.sidebar h2 {
-  color: #32cd32;
-  margin-bottom: 20px;
+/* Main Content */
+.main {
+    margin-left: 240px; /* Pushes content away from sidebar */
+    padding: 20px;
 }
 
-.sidebar a {
-  display: block;
-  padding: 10px;
-  margin-bottom: 8px;
-  color: #bbb;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: 0.2s;
+/* Dashboard Grid (works across all pages) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
 }
 
-.sidebar a:hover,
-.sidebar a.active {
-  background: #0055ff;
-  color: #fff;
+/* Tile Styling */
+.tile {
+    background: #2a2a2a;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    color: #fff;
+    transition: transform 0.2s ease;
+}
+
+.tile:hover {
+    transform: scale(1.03);
 }
 
 /* === MAIN CONTENT === */
@@ -101,6 +107,7 @@ tbody tr:nth-child(even) {
 tbody tr:hover {
   background: #333;
 }
+
 
 /* === CATEGORY PILLS === */
 .pill {
