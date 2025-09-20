@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money - Transactions</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -23,58 +24,49 @@
   </div>
 
   <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Transactions</h1>
-    <div class="tile">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Account</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2025-09-01</td>
-            <td>Paycheck (Steve)</td>
-            <td>Income</td>
-            <td>BoA</td>
-            <td class="positive">+$1,883.81</td>
-          </tr>
-          <tr>
-            <td>2025-09-01</td>
-            <td>Paycheck (Tanci)</td>
-            <td>Income</td>
-            <td>USAA</td>
-            <td class="positive">+$1,851.04</td>
-          </tr>
-          <tr>
-            <td>2025-09-03</td>
-            <td>Groceries - Walmart</td>
-            <td>Food</td>
-            <td>BoA</td>
-            <td class="negative">-$150.00</td>
-          </tr>
-          <tr>
-            <td>2025-09-07</td>
-            <td>Gas - Chevron</td>
-            <td>Transport</td>
-            <td>SoFi</td>
-            <td class="negative">-$60.00</td>
-          </tr>
-          <tr>
-            <td>2025-09-10</td>
-            <td>Netflix</td>
-            <td>Bills</td>
-            <td>Capital One</td>
-            <td class="negative">-$15.99</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Account</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-09-01</td>
+          <td>Paycheck</td>
+          <td><span class="pill pill-income">Income</span></td>
+          <td>BoA</td>
+          <td style="color:#2ecc71;">+$1,883.81</td>
+        </tr>
+        <tr>
+          <td>2025-09-01</td>
+          <td>Paycheck</td>
+          <td><span class="pill pill-income">Income</span></td>
+          <td>USAA</td>
+          <td style="color:#2ecc71;">+$1,851.04</td>
+        </tr>
+        <tr>
+          <td>2025-09-03</td>
+          <td>Walmart - Groceries</td>
+          <td><span class="pill pill-groceries">Groceries</span></td>
+          <td>BoA</td>
+          <td style="color:#e74c3c;">−$150.00</td>
+        </tr>
+        <tr>
+          <td>2025-09-07</td>
+          <td>Gas Station</td>
+          <td><span class="pill pill-transport">Transport</span></td>
+          <td>SoFi</td>
+          <td style="color:#e74c3c;">−$60.00</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>
