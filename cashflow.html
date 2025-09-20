@@ -1,61 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money - Cashflow</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Cash Flow</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html" class="active">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html" class="active">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
   <div class="main-content">
-    <h1>Cashflow</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Month</th>
-          <th>Income</th>
-          <th>Expenses</th>
-          <th>Net</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>September 2025</td>
-          <td class="positive">$3,734.85</td>
-          <td class="negative">$345.99</td>
-          <td class="positive">$3,388.86</td>
-        </tr>
-        <tr>
-          <td>August 2025</td>
-          <td class="positive">$3,600.00</td>
-          <td class="negative">$600.00</td>
-          <td class="positive">$3,000.00</td>
-        </tr>
-        <tr>
-          <td>July 2025</td>
-          <td class="positive">$3,200.00</td>
-          <td class="negative">$500.00</td>
-          <td class="positive">$2,700.00</td>
-        </tr>
-      </tbody>
-    </table>
+    <h1>Cash Flow</h1>
+    <canvas id="cashflowChart"></canvas>
   </div>
+
+  <!-- Scripts -->
+  <script src="theme.js"></script>
+  <script>
+    const ctx = document.getElementById('cashflowChart').getContext('2d');
+    const cashflowChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Income", "Bills", "Spending"],
+        datasets: [{
+          label: "Cash Flow",
+          data: [1883.81 + 400 + 1851.04, -1739.99, -250],
+          backgroundColor: ["#4CAF50", "#F44336", "#FF9800"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
 </body>
 </html>

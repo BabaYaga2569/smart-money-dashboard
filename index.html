@@ -1,102 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MySmartMoneyTracker - Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💰 Tracker</h2>
-    <a href="index.html" class="active">Dashboard</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="bills.html">Bills</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="categories.html">Categories</a>
-    <a href="goals.html">Goals</a>
-    <a href="cashflow.html">Cash Flow</a>
-    <a href="paycycle.html">Pay Cycle</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main Content -->
-  <div class="main grid-page">
+  <div class="main-content">
     <h1>Dashboard</h1>
+
     <div class="dashboard-grid">
-      
       <!-- Spendability -->
-      <div class="tile">
-        <h2>Spendability</h2>
-        <p>See if you can spend without hurting your pay cycle.</p>
-        <button onclick="location.href='spendability.html'">View All</button>
+      <div class="tile" id="spendabilityTile">
+        <h3>Spendability</h3>
+        <p>Available to spend until next payday:</p>
+        <h2 id="spendableAmount">$0.00</h2>
+        <button onclick="window.location.href='spendability.html'">View All</button>
       </div>
 
       <!-- Next Pay -->
       <div class="tile">
-        <h2>Next Pay</h2>
-        <p>Next deposit: <strong>09/19/2025 - $1,483.81</strong></p>
-        <button onclick="location.href='paycycle.html'">View All</button>
+        <h3>Next Pay</h3>
+        <p id="nextPayDate">Loading...</p>
+        <p id="nextPayAmount"></p>
+        <button onclick="window.location.href='paycycle.html'">View All</button>
       </div>
 
       <!-- Accounts -->
       <div class="tile">
-        <h2>Accounts</h2>
-        <p>Bank balances at a glance.</p>
-        <button onclick="location.href='accounts.html'">View All</button>
-      </div>
-
-      <!-- Transactions -->
-      <div class="tile">
-        <h2>Recent Transactions</h2>
-        <ul>
-          <li>Walmart - $82.14</li>
-          <li>Shell Gas - $45.22</li>
-          <li>Costco - $131.47</li>
+        <h3>Accounts</h3>
+        <ul id="accountsList">
+          <!-- Populated from seedaccounts.js -->
         </ul>
-        <button onclick="location.href='transactions.html'">View All</button>
-      </div>
-
-      <!-- Bills -->
-      <div class="tile">
-        <h2>Bills</h2>
-        <p>Upcoming bills due soon.</p>
-        <button onclick="location.href='bills.html'">View All</button>
-      </div>
-
-      <!-- Recurring -->
-      <div class="tile">
-        <h2>Recurring</h2>
-        <p>Subscriptions & regular expenses.</p>
-        <button onclick="location.href='recurring.html'">View All</button>
-      </div>
-
-      <!-- Categories -->
-      <div class="tile">
-        <h2>Categories</h2>
-        <p>Spending by category.</p>
-        <button onclick="location.href='categories.html'">View All</button>
-      </div>
-
-      <!-- Goals -->
-      <div class="tile">
-        <h2>Goals</h2>
-        <p>Track your savings goals.</p>
-        <button onclick="location.href='goals.html'">View All</button>
+        <button onclick="window.location.href='accounts.html'">View All</button>
       </div>
 
       <!-- Cash Flow -->
       <div class="tile">
-        <h2>Cash Flow</h2>
-        <p>Money in vs money out.</p>
-        <button onclick="location.href='cashflow.html'">View All</button>
+        <h3>Cash Flow</h3>
+        <p>Overview of inflow vs outflow</p>
+        <canvas id="cashflowChart"></canvas>
+        <button onclick="window.location.href='cashflow.html'">View All</button>
       </div>
 
+      <!-- Bills -->
+      <div class="tile">
+        <h3>Bills</h3>
+        <ul id="upcomingBills">
+          <li>Loading upcoming bills...</li>
+        </ul>
+        <button onclick="window.location.href='bills.html'">View All</button>
+      </div>
+
+      <!-- Recurring -->
+      <div class="tile">
+        <h3>Recurring</h3>
+        <ul id="recurringList">
+          <li>Loading recurring...</li>
+        </ul>
+        <button onclick="window.location.href='recurring.html'">View All</button>
+      </div>
+
+      <!-- Goals -->
+      <div class="tile">
+        <h3>Goals</h3>
+        <p>Track your progress toward savings goals</p>
+        <button onclick="window.location.href='goals.html'">View All</button>
+      </div>
+
+      <!-- Categories -->
+      <div class="tile">
+        <h3>Categories</h3>
+        <p>Breakdown by category</p>
+        <button onclick="window.location.href='categories.html'">View All</button>
+      </div>
+
+      <!-- Transactions -->
+      <div class="tile">
+        <h3>Recent Transactions</h3>
+        <ul id="recentTransactions">
+          <li>Loading...</li>
+        </ul>
+        <button onclick="window.location.href='transactions.html'">View All</button>
+      </div>
+
+      <!-- Settings -->
+      <div class="tile">
+        <h3>Settings</h3>
+        <p>Personalize your Smart Money experience</p>
+        <button onclick="window.location.href='settings.html'">View All</button>
+      </div>
     </div>
   </div>
+
+  <!-- Scripts -->
+  <script src="theme.js"></script>
+  <script src="paycycle.js"></script>
+  <script src="spendability.js"></script>
+  <script src="seedaccounts.js"></script>
 </body>
 </html>

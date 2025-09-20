@@ -1,60 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money - Spendability</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Spendability</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html" class="active">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html" class="active">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
   <div class="main-content">
     <h1>Spendability</h1>
-    <div class="tile">
-      <h2>How much can I spend?</h2>
-      <p>Enter an amount to check:</p>
-      <input type="number" id="spendInput" placeholder="Enter amount">
-      <button onclick="checkSpend()">Check</button>
-      <p id="spendResult"></p>
-    </div>
+    <p>Money available to spend until next payday:</p>
+    <h2 id="spendableAmount">$0.00</h2>
+    <form id="spendCheckForm">
+      <label for="spendInput">Check if you can spend:</label>
+      <input type="number" id="spendInput" placeholder="Enter amount" required />
+      <button type="submit">Check</button>
+    </form>
+    <p id="spendCheckResult"></p>
   </div>
 
-  <script>
-    function checkSpend() {
-      const balance = 2000; // Dummy balance after bills
-      const input = parseFloat(document.getElementById('spendInput').value);
-      const result = document.getElementById('spendResult');
-
-      if (isNaN(input)) {
-        result.textContent = "Enter a valid amount.";
-        result.className = "negative";
-        return;
-      }
-
-      if (input <= balance) {
-        result.textContent = `✅ Yes, you can spend $${input.toFixed(2)} safely.`;
-        result.className = "positive";
-      } else {
-        result.textContent = `❌ No, spending $${input.toFixed(2)} would overdraw.`;
-        result.className = "negative";
-      }
-    }
-  </script>
+  <script src="theme.js"></script>
+  <script src="spendability.js"></script>
 </body>
 </html>

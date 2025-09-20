@@ -1,26 +1,44 @@
+// === seedaccounts.js ===
+// Dummy accounts + transactions for demo
+
 document.addEventListener("DOMContentLoaded", () => {
-  if (!localStorage.getItem("accounts")) {
-    const seed = {
-      accounts: [
-        { name: "BofA Checking", balance: 1483.81 },
-        { name: "SoFi", balance: 400.00 },
-        { name: "USAA", balance: 2500.00 },
-        { name: "Capital One", balance: 1200.00 }
-      ],
-      bills: [
-        { name: "Netflix", amount: 15.99, frequency: "Monthly" },
-        { name: "Car Insurance", amount: 120.00, frequency: "Monthly" }
-      ],
-      transactions: [
-        { date: "2025-09-01", description: "Paycheck", category: "Income", amount: 1883.81 },
-        { date: "2025-09-01", description: "Paycheck", category: "Income", amount: 1851.04 },
-        { date: "2025-09-03", description: "Groceries", category: "Food", amount: -150.00 }
-      ],
-      goals: [
-        { name: "Trip to Jamaica", target: 3000, saved: 1200 },
-        { name: "New Car", target: 10000, saved: 4000 }
-      ]
-    };
-    Object.keys(seed).forEach(k => localStorage.setItem(k, JSON.stringify(seed[k])));
+  if (document.getElementById("accountsTable")) {
+    const accounts = [
+      { bank: "Bank of America", balance: 1245.55 },
+      { bank: "SoFi", balance: 600.12 },
+      { bank: "USAA", balance: 2100.00 },
+    ];
+
+    const tbody = document.querySelector("#accountsTable tbody");
+    tbody.innerHTML = "";
+    accounts.forEach(acc => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${acc.bank}</td>
+        <td>$${acc.balance.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  if (document.getElementById("transactionsTable")) {
+    const transactions = [
+      { date: "2025-09-18", desc: "Groceries", category: "Food", amount: -120.45 },
+      { date: "2025-09-17", desc: "Gas Station", category: "Transport", amount: -40.00 },
+      { date: "2025-09-15", desc: "Paycheck", category: "Income", amount: 1883.81 },
+    ];
+
+    const tbody = document.querySelector("#transactionsTable tbody");
+    tbody.innerHTML = "";
+    transactions.forEach(tx => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${tx.date}</td>
+        <td>${tx.desc}</td>
+        <td>${tx.category}</td>
+        <td style="color:${tx.amount < 0 ? 'red':'lime'}">$${tx.amount.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
   }
 });

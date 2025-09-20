@@ -1,65 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money - Bills</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Bills</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html" class="active">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html" class="active">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
   <div class="main-content">
     <h1>Bills</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Bill</th>
-          <th>Amount</th>
-          <th>Due Date</th>
-          <th>Frequency</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Netflix</td>
-          <td>$15.99</td>
-          <td>2025-09-10</td>
-          <td>Monthly</td>
-          <td><span class="pill pill-bills">Upcoming</span></td>
-        </tr>
-        <tr>
-          <td>Car Insurance</td>
-          <td>$120.00</td>
-          <td>2025-09-15</td>
-          <td>Monthly</td>
-          <td><span class="pill pill-bills">Upcoming</span></td>
-        </tr>
-        <tr>
-          <td>Electric</td>
-          <td>$150.00</td>
-          <td>2025-09-20</td>
-          <td>Monthly</td>
-          <td><span class="pill pill-bills">Upcoming</span></td>
-        </tr>
-      </tbody>
-    </table>
+    <form id="billForm">
+      <input type="text" id="billName" placeholder="Bill Name" required />
+      <input type="number" id="billAmount" placeholder="Amount" required />
+      <input type="date" id="billDueDate" required />
+      <select id="billFrequency">
+        <option value="Monthly">Monthly</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Quarterly">Quarterly</option>
+        <option value="Yearly">Yearly</option>
+      </select>
+      <button type="submit">Add Bill</button>
+    </form>
+
+    <ul id="billsList">
+      <!-- Filled by JS -->
+    </ul>
   </div>
+
+  <!-- Scripts -->
+  <script src="theme.js"></script>
+  <script>
+    let bills = [
+      { name: "Rent", amount: 1200, dueDate: "2025-10-01", frequency: "Monthly" },
+      { name: "Car Payment", amount: 450, dueDate: "2025-09-25", frequency: "Monthly" },
+      { name: "Internet", amount: 89.99, dueDate: "2025-09-23", frequency: "Monthly" }
+    ];
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const billsList = document.getElementById("billsList");
+
+    function renderBills() {
+      billsList.innerHTML = bills.map((b, i) => `
+        <li>
+          <strong>${b.name}</strong> — ${fmt.format(b.amount)} 
+          (Due: ${b.dueDate}, ${b.frequency})
+          <button onclick="deleteBill(${i})">Delete</button>
+        </li>
+      `).join("");
+    }
+
+    function deleteBill(index) {
+      bills.splice(index, 1);
+      renderBills();
+    }
+
+    document.getElementById("billForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("billName").value;
+      const amount = parseFloat(document.getElementById("billAmount").value);
+      const dueDate = document.getElementById("billDueDate").value;
+      const frequency = document.getElementById("billFrequency").value;
+      bills.push({ name, amount, dueDate, frequency });
+      e.target.reset();
+      renderBills();
+    });
+
+    renderBills();
+  </script>
 </body>
 </html>

@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Money - Paycycle</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Pay Cycle</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html" class="active">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html" class="active">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
   <div class="main-content">
-    <h1>Paycycle</h1>
-    <div class="tile">
-      <h2>Next Payday</h2>
-      <p>Bank of America: <strong>Sept 19, 2025</strong></p>
-      <p>SoFi (partial early): <strong>Sept 17, 2025</strong></p>
-      <p>Tanci’s Pay: <strong>Sept 30, 2025</strong></p>
-    </div>
+    <h1>Pay Cycle</h1>
+    <p>Next Paycheck:</p>
+    <h2 id="nextPayDate">Loading...</h2>
+    <h3 id="nextPayAmount"></h3>
+    <p>Days Left: <span id="daysLeft">0</span></p>
   </div>
+
+  <script src="theme.js"></script>
+  <script src="paycycle.js"></script>
 </body>
 </html>

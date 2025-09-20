@@ -1,62 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Smart Money - Recurring</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Recurring</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html">Accounts</a>
-    <a href="recurring.html" class="active">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html" class="active">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
-  <div class="main">
-    <h1>Recurring Expenses</h1>
-    <div class="tile">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Frequency</th>
-            <th>Next Due</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Netflix</td>
-            <td>$15.99</td>
-            <td>Monthly</td>
-            <td>2025-10-10</td>
-          </tr>
-          <tr>
-            <td>Car Insurance</td>
-            <td>$120.00</td>
-            <td>Monthly</td>
-            <td>2025-10-15</td>
-          </tr>
-          <tr>
-            <td>Gym Membership</td>
-            <td>$45.00</td>
-            <td>Monthly</td>
-            <td>2025-10-01</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="main-content">
+    <h1>Recurring</h1>
+    <form id="recurringForm">
+      <input type="text" id="recurringName" placeholder="Name" required />
+      <input type="number" id="recurringAmount" placeholder="Amount" required />
+      <select id="recurringFrequency">
+        <option value="Weekly">Weekly</option>
+        <option value="Biweekly">Biweekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Quarterly">Quarterly</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="recurringList"></ul>
   </div>
+
+  <script src="theme.js"></script>
+  <script>
+    let recurring = [
+      { name: "Gym Membership", amount: 45, frequency: "Monthly" },
+      { name: "Spotify", amount: 9.99, frequency: "Monthly" }
+    ];
+
+    function renderRecurring() {
+      const list = document.getElementById("recurringList");
+      list.innerHTML = recurring.map((r, i) => `
+        <li>
+          <strong>${r.name}</strong> — $${r.amount} (${r.frequency})
+          <button onclick="deleteRecurring(${i})">Delete</button>
+        </li>
+      `).join("");
+    }
+
+    function deleteRecurring(index) {
+      recurring.splice(index, 1);
+      renderRecurring();
+    }
+
+    document.getElementById("recurringForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("recurringName").value;
+      const amount = parseFloat(document.getElementById("recurringAmount").value);
+      const frequency = document.getElementById("recurringFrequency").value;
+      recurring.push({ name, amount, frequency });
+      e.target.reset();
+      renderRecurring();
+    });
+
+    renderRecurring();
+  </script>
 </body>
 </html>

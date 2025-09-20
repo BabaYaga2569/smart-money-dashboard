@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Smart Money - Accounts</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Money Tracker - Accounts</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>💡 Smart Money</h2>
-    <a href="index.html">Dashboard</a>
-    <a href="transactions.html">Transactions</a>
-    <a href="goals.html">Goals</a>
-    <a href="bills.html">Bills</a>
-    <a href="categories.html">Categories</a>
-    <a href="cashflow.html">Cashflow</a>
-    <a href="accounts.html" class="active">Accounts</a>
-    <a href="recurring.html">Recurring</a>
-    <a href="spendability.html">Spendability</a>
-    <a href="paycycle.html">Paycycle</a>
-    <a href="settings.html">Settings</a>
+    <h2>Smart Money</h2>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="transactions.html">Transactions</a></li>
+      <li><a href="bills.html">Bills</a></li>
+      <li><a href="accounts.html" class="active">Accounts</a></li>
+      <li><a href="cashflow.html">Cash Flow</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="recurring.html">Recurring</a></li>
+      <li><a href="paycycle.html">Pay Cycle</a></li>
+      <li><a href="spendability.html">Spendability</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
   </div>
 
   <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Accounts</h1>
-    <div class="dashboard-grid">
-
-      <div class="tile">
-        <h2>BoA Checking</h2>
-        <p>Balance: $1,483.81</p>
-      </div>
-
-      <div class="tile">
-        <h2>SoFi</h2>
-        <p>Balance: $400.00</p>
-      </div>
-
-      <div class="tile">
-        <h2>USAA</h2>
-        <p>Balance: $2,500.00</p>
-      </div>
-
-      <div class="tile">
-        <h2>Capital One</h2>
-        <p>Balance: $1,200.00</p>
-      </div>
-
-    </div>
+    <table class="accounts-table">
+      <thead>
+        <tr>
+          <th>Account</th>
+          <th>Bank</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody id="accountsBody">
+        <!-- Filled by JS -->
+      </tbody>
+    </table>
   </div>
+
+  <!-- Scripts -->
+  <script src="theme.js"></script>
+  <script src="seedaccounts.js"></script>
+  <script>
+    const accounts = [
+      { name: "Checking", bank: "Bank of America", balance: 1483.81 },
+      { name: "Savings", bank: "SoFi", balance: 400 },
+      { name: "Household", bank: "USAA", balance: 700 },
+      { name: "Credit Card", bank: "Capital One", balance: -250 }
+    ];
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const tbody = document.getElementById("accountsBody");
+    tbody.innerHTML = accounts.map(a => `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.bank}</td>
+        <td class="${a.balance < 0 ? 'negative' : 'positive'}">${fmt.format(a.balance)}</td>
+      </tr>
+    `).join("");
+  </script>
 </body>
 </html>
