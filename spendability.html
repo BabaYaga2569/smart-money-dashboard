@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spendability</title>
+  <title>Smart Money - Spendability</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,28 +22,57 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
-    <h1>Spendability Checker</h1>
-    <input type="number" id="spend-input" placeholder="Enter amount">
-    <button onclick="checkSpend()">Check</button>
-    <div id="spend-result"></div>
+  <!-- Main -->
+  <div class="main">
+    <h1>Spendability</h1>
+    <div class="dashboard-grid">
+
+      <div class="tile">
+        <h2>Available Balance</h2>
+        <p>Total Balance: <strong>$5,633.81</strong></p>
+      </div>
+
+      <div class="tile">
+        <h2>Upcoming Bills</h2>
+        <p>Netflix — $15.99</p>
+        <p>Car Insurance — $120.00</p>
+        <p>Total: <strong>$135.99</strong></p>
+      </div>
+
+      <div class="tile">
+        <h2>Spendable Now</h2>
+        <p><span class="positive">$5,447.82</span></p>
+      </div>
+
+      <div class="tile">
+        <h2>Check Purchase</h2>
+        <form onsubmit="event.preventDefault(); checkSpend();">
+          <label>Enter amount:</label><br>
+          <input type="number" id="spendInput" placeholder="e.g. 150" required>
+          <button type="submit">Can I Afford?</button>
+        </form>
+        <p id="spendResult"></p>
+      </div>
+
+    </div>
   </div>
 
-<script>
-  function checkSpend() {
-    const amt = parseFloat(document.getElementById("spend-input").value);
-    const bal = demoData.accounts.reduce((a, b) => a + b.balance, 0);
-    const bills = demoData.bills.reduce((a, b) => a + b.amount, 0);
-    const available = bal - bills;
-    const res = document.getElementById("spend-result");
-    if (amt <= available) {
-      res.textContent = `✅ You can afford $${amt}. Available: $${available}`;
-      res.style.color = "lightgreen";
-    } else {
-      res.textContent = `❌ Not safe. Available: $${available}`;
-      res.style.color = "red";
+  <script>
+    function checkSpend() {
+      const balance = 5447.82; // dummy spendable now
+      const input = parseFloat(document.getElementById("spendInput").value);
+      const result = document.getElementById("spendResult");
+      if (isNaN(input)) {
+        result.textContent = "Enter a valid number.";
+        result.style.color = "orange";
+      } else if (input <= balance) {
+        result.textContent = `Yes ✅ you can afford $${input.toFixed(2)}.`;
+        result.style.color = "lime";
+      } else {
+        result.textContent = `No ❌ that would put you over budget.`;
+        result.style.color = "red";
+      }
     }
-  }
-</script>
+  </script>
 </body>
 </html>

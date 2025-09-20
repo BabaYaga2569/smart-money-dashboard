@@ -1,57 +1,73 @@
-/* ===== Reset ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/* =========================
+   Root Variables & Theme
+   ========================= */
+:root {
+  --accent-color: #ffa500; /* default orange */
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+  --tile-bg: #1e1e1e;
+  --tile-shadow: rgba(0, 0, 0, 0.4);
 }
 
-/* ===== Global ===== */
 body {
-  background-color: #121212;
-  color: #e0e0e0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
   display: flex;
-  min-height: 100vh;
 }
 
-/* ===== Sidebar ===== */
+/* =========================
+   Sidebar
+   ========================= */
 .sidebar {
   width: 220px;
-  background: #1e1e1e;
-  padding: 20px;
+  background: #1a1a1a;
+  height: 100vh;
+  padding: 20px 0;
   position: fixed;
-  top: 0;
-  bottom: 0;
   left: 0;
+  top: 0;
+  overflow-y: auto;
 }
 
 .sidebar h2 {
-  color: #00ff6a;
-  margin-bottom: 20px;
+  color: var(--accent-color);
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .sidebar a {
   display: block;
-  color: #bbb;
-  padding: 10px;
+  padding: 12px 20px;
+  color: var(--text-color);
   text-decoration: none;
-  border-radius: 5px;
+  transition: background 0.3s, color 0.3s;
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-  background: #333;
-  color: #ffa500;
+  background: var(--accent-color);
+  color: #000;
 }
 
-/* ===== Main Content ===== */
+/* =========================
+   Main Content
+   ========================= */
 .main {
-  margin-left: 240px; /* push content aside for sidebar */
+  margin-left: 220px;
   padding: 20px;
-  flex: 1;
+  flex-grow: 1;
 }
 
-/* ===== Tiles ===== */
+h1 {
+  margin-bottom: 20px;
+  color: var(--accent-color);
+}
+
+/* =========================
+   Dashboard & Tiles
+   ========================= */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -59,52 +75,97 @@ body {
 }
 
 .tile {
-  background: #1f1f1f;
+  background: var(--tile-bg);
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 8px var(--tile-shadow);
+  transition: transform 0.2s, background 0.3s;
+}
+
+.tile:hover {
+  transform: translateY(-4px);
+  background: #2a2a2a;
 }
 
 .tile h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #ffa500;
+  margin-top: 0;
+  color: var(--accent-color);
 }
 
-/* ===== Tables (Transactions / Bills) ===== */
+.tile button {
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.tile button:hover {
+  opacity: 0.8;
+}
+
+/* =========================
+   Tables (Bills, Transactions, etc.)
+   ========================= */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 10px;
+  background: #1b1b1b;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 10px;
+  padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #333;
 }
 
 th {
-  color: #ffa500;
+  background: var(--accent-color);
+  color: #000;
 }
 
-.positive { color: #00ff6a; }
-.negative { color: #ff4d4d; }
+tr:nth-child(even) {
+  background: #2a2a2a;
+}
 
-button {
-  padding: 5px 10px;
+tr:hover {
+  background: #333;
+}
+
+/* =========================
+   Forms (Goals, Bills, Categories)
+   ========================= */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #2a2a2a;
+  color: var(--text-color);
+}
+
+button[type="submit"] {
+  background: var(--accent-color);
+  color: #000;
   border: none;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 6px;
   cursor: pointer;
-  margin-right: 5px;
 }
 
-.edit-btn {
-  background: #2ecc71;
-  color: white;
-}
-
-.delete-btn {
-  background: #e74c3c;
-  color: white;
+/* =========================
+   Utility Classes
+   ========================= */
+.text-center {
+  text-align: center;
 }

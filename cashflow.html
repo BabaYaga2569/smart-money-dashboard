@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cashflow</title>
+  <title>Smart Money - Cashflow</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,24 +22,41 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
+  <!-- Main -->
+  <div class="main">
     <h1>Cashflow</h1>
-    <div id="cashflow-list"></div>
+    <div class="tile">
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Expenses</th>
+            <th>Net</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>September 2025</td>
+            <td class="positive">$3,734.85</td>
+            <td class="negative">-$345.99</td>
+            <td class="positive">$3,388.86</td>
+          </tr>
+          <tr>
+            <td>August 2025</td>
+            <td class="positive">$3,500.00</td>
+            <td class="negative">-$600.00</td>
+            <td class="positive">$2,900.00</td>
+          </tr>
+          <tr>
+            <td>July 2025</td>
+            <td class="positive">$3,200.00</td>
+            <td class="negative">-$500.00</td>
+            <td class="positive">$2,700.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-<script>
-  window.onload = () => {
-    const container = document.getElementById("cashflow-list");
-    container.innerHTML = demoData.cashflow
-      .map(c => `
-        <div class="tile">
-          <h3>${c.month}</h3>
-          <p>Income: $${c.income}</p>
-          <p>Expenses: $${c.expenses}</p>
-          <p>Net: $${c.income - c.expenses}</p>
-        </div>
-      `).join("");
-  };
-</script>
 </body>
 </html>

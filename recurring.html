@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Recurring</title>
+  <title>Smart Money - Recurring</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,23 +22,41 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
-    <h1>Recurring Bills</h1>
-    <div id="recurring-list"></div>
+  <!-- Main -->
+  <div class="main">
+    <h1>Recurring Expenses</h1>
+    <div class="tile">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Next Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Netflix</td>
+            <td>$15.99</td>
+            <td>Monthly</td>
+            <td>2025-10-10</td>
+          </tr>
+          <tr>
+            <td>Car Insurance</td>
+            <td>$120.00</td>
+            <td>Monthly</td>
+            <td>2025-10-15</td>
+          </tr>
+          <tr>
+            <td>Gym Membership</td>
+            <td>$45.00</td>
+            <td>Monthly</td>
+            <td>2025-10-01</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-<script>
-  window.onload = () => {
-    const container = document.getElementById("recurring-list");
-    container.innerHTML = demoData.recurring
-      .map(r => `
-        <div class="tile">
-          <h3>${r.name}</h3>
-          <p>Amount: $${r.amount}</p>
-          <p>Frequency: ${r.freq}</p>
-        </div>
-      `).join("");
-  };
-</script>
 </body>
 </html>

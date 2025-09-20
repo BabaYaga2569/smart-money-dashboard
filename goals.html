@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Goals</title>
+  <title>Smart Money - Goals</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,24 +22,33 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
+  <!-- Main -->
+  <div class="main">
     <h1>Goals</h1>
-    <div id="goals-list"></div>
-  </div>
+    <div class="dashboard-grid">
 
-<script>
-  window.onload = () => {
-    const container = document.getElementById("goals-list");
-    container.innerHTML = demoData.goals
-      .map(g => `
-        <div class="tile">
-          <h3>${g.name}</h3>
-          <p>Target: $${g.target}</p>
-          <p>Saved: $${g.saved}</p>
-          <p>Progress: ${(g.saved / g.target * 100).toFixed(1)}%</p>
-        </div>
-      `).join("");
-  };
-</script>
+      <div class="tile">
+        <h2>Trip to Jamaica</h2>
+        <p>Target: $5,000</p>
+        <p>Saved: $2,000</p>
+        <p>Status: 40% funded</p>
+      </div>
+
+      <div class="tile">
+        <h2>New Car</h2>
+        <p>Target: $25,000</p>
+        <p>Saved: $6,250</p>
+        <p>Status: 25% funded</p>
+      </div>
+
+      <div class="tile">
+        <h2>Emergency Fund</h2>
+        <p>Target: $10,000</p>
+        <p>Saved: $4,000</p>
+        <p>Status: 40% funded</p>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>

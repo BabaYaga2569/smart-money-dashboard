@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Accounts</title>
+  <title>Smart Money - Accounts</title>
   <link rel="stylesheet" href="style.css">
-  <script src="seedAccounts.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,18 +22,32 @@
     <a href="settings.html">Settings</a>
   </div>
 
-  <div class="content">
+  <!-- Main -->
+  <div class="main">
     <h1>Accounts</h1>
-    <div id="accounts-list"></div>
-  </div>
+    <div class="dashboard-grid">
 
-<script>
-  window.onload = () => {
-    const container = document.getElementById("accounts-list");
-    container.innerHTML = demoData.accounts
-      .map(a => `<div class="tile"><h3>${a.name}</h3><p>Balance: $${a.balance}</p></div>`)
-      .join("");
-  };
-</script>
+      <div class="tile">
+        <h2>BoA Checking</h2>
+        <p>Balance: $1,483.81</p>
+      </div>
+
+      <div class="tile">
+        <h2>SoFi</h2>
+        <p>Balance: $400.00</p>
+      </div>
+
+      <div class="tile">
+        <h2>USAA</h2>
+        <p>Balance: $2,500.00</p>
+      </div>
+
+      <div class="tile">
+        <h2>Capital One</h2>
+        <p>Balance: $1,200.00</p>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>

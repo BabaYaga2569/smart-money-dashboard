@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Categories - Smart Money</title>
+  <title>Smart Money - Categories</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js" defer></script>
-  <script src="seedAccounts.js" defer></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -23,28 +22,41 @@
     <a href="settings.html">Settings</a>
   </div>
 
+  <!-- Main -->
   <div class="main">
     <h1>Categories</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody id="catTable"></tbody>
-    </table>
+    <div class="tile">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Income</td>
+            <td class="positive">$3,734.85</td>
+          </tr>
+          <tr>
+            <td>Food</td>
+            <td class="negative">-$150.00</td>
+          </tr>
+          <tr>
+            <td>Transport</td>
+            <td class="negative">-$60.00</td>
+          </tr>
+          <tr>
+            <td>Bills</td>
+            <td class="negative">-$135.99</td>
+          </tr>
+          <tr>
+            <td>Entertainment</td>
+            <td class="negative">-$75.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <script>
-    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    const categories = {};
-    transactions.forEach(t => {
-      categories[t.category] = (categories[t.category] || 0) + t.amount;
-    });
-    document.getElementById("catTable").innerHTML =
-      Object.entries(categories).map(([cat, total]) =>
-        `<tr><td>${cat}</td><td>$${total.toFixed(2)}</td></tr>`).join("");
-  </script>
 </body>
 </html>

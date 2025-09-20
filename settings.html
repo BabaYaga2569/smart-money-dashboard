@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings</title>
+  <title>Smart Money - Settings</title>
   <link rel="stylesheet" href="style.css">
-  <script src="theme.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html">Dashboard</a>
@@ -22,10 +22,42 @@
     <a href="settings.html" class="active">Settings</a>
   </div>
 
-  <div class="content">
+  <!-- Main -->
+  <div class="main">
     <h1>Settings</h1>
-    <label>Theme Color: <input type="color" id="theme-color"></label>
-    <button onclick="applyTheme()">Apply</button>
+    <div class="dashboard-grid">
+
+      <div class="tile">
+        <h2>Theme</h2>
+        <p>Pick a primary color:</p>
+        <input type="color" id="colorPicker" value="#ffa500">
+        <button onclick="applyTheme()">Apply</button>
+      </div>
+
+      <div class="tile">
+        <h2>Current Theme</h2>
+        <p id="currentTheme">Accent Color: Orange (#ffa500)</p>
+      </div>
+
+    </div>
   </div>
+
+  <script>
+    function applyTheme() {
+      const color = document.getElementById("colorPicker").value;
+      document.documentElement.style.setProperty("--accent-color", color);
+      document.getElementById("currentTheme").textContent =
+        `Accent Color: ${color}`;
+      localStorage.setItem("accentColor", color);
+    }
+
+    // Load saved theme
+    const saved = localStorage.getItem("accentColor");
+    if (saved) {
+      document.documentElement.style.setProperty("--accent-color", saved);
+      document.getElementById("currentTheme").textContent =
+        `Accent Color: ${saved}`;
+    }
+  </script>
 </body>
 </html>
