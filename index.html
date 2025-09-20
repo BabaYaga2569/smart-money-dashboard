@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>💡 Smart Money</h2>
     <a href="index.html" class="active">Dashboard</a>
@@ -21,12 +22,11 @@
     <a href="settings.html">Settings</a>
   </div>
 
+  <!-- Main Content -->
   <div class="main">
     <h1>Dashboard</h1>
-
-    <!-- GRID START -->
     <div class="dashboard-grid">
-
+      
       <!-- Spendability -->
       <div class="tile">
         <h2>Spendability</h2>
@@ -40,7 +40,7 @@
       <div class="tile">
         <h2>Next Pay</h2>
         <p>Steve → SoFi: $400.00 (09/17/2025)</p>
-        <p>Steve → BofA: $1,483.81 (09/19/2025)</p>
+        <p>Steve → BoA: $1,483.81 (09/19/2025)</p>
         <p>Tanci → USAA: $1,851.04 (09/30/2025)</p>
         <a href="paycycle.html">View All →</a>
       </div>
@@ -49,7 +49,7 @@
       <div class="tile">
         <h2>Accounts</h2>
         <ul>
-          <li>BofA Checking — $1,483.81</li>
+          <li>BoA Checking — $1,483.81</li>
           <li>SoFi — $400.00</li>
           <li>USAA — $2,500.00</li>
           <li>Capital One — $1,200.00</li>
@@ -57,34 +57,40 @@
         <a href="accounts.html">View All →</a>
       </div>
 
+      <!-- Recent Transactions -->
+      <div class="tile">
+        <h2>Recent Transactions</h2>
+        <ul>
+          <li>09/01/25 — Paycheck (+$1,883.81)</li>
+          <li>09/01/25 — Paycheck (+$1,851.04)</li>
+          <li>09/03/25 — Groceries (–$150.00)</li>
+          <li>09/07/25 — Gas (–$60.00)</li>
+        </ul>
+        <a href="transactions.html">View All →</a>
+      </div>
+
       <!-- Goals -->
       <div class="tile">
         <h2>Goals</h2>
-        <ul>
-          <li>Trip to Jamaica — 40% funded</li>
-          <li>New Car — 40% funded</li>
-        </ul>
+        <p>Trip to Jamaica — 40% funded</p>
+        <p>New Car — 25% funded</p>
         <a href="goals.html">View All →</a>
       </div>
 
       <!-- Bills -->
       <div class="tile">
         <h2>Bills</h2>
-        <ul>
-          <li>Netflix — $15.99 (Monthly)</li>
-          <li>Car Insurance — $120.00 (Monthly)</li>
-        </ul>
+        <p>Netflix — $15.99 (Monthly)</p>
+        <p>Car Insurance — $120.00 (Monthly)</p>
         <a href="bills.html">View All →</a>
       </div>
 
       <!-- Categories -->
       <div class="tile">
         <h2>Categories</h2>
-        <ul>
-          <li>Income — $3,734.85</li>
-          <li>Food — $150.00</li>
-          <li>Transport — $60.00</li>
-        </ul>
+        <p>Income — $3,734.85</p>
+        <p>Food — –$150.00</p>
+        <p>Transport — –$60.00</p>
         <a href="categories.html">View All →</a>
       </div>
 
@@ -97,20 +103,23 @@
         <a href="cashflow.html">View All →</a>
       </div>
 
-      <!-- Transactions -->
+      <!-- Recurring -->
       <div class="tile">
-        <h2>Recent Transactions</h2>
-        <ul>
-          <li>09/01/25 — Paycheck — +$1,883.81</li>
-          <li>09/01/25 — Paycheck — +$1,851.04</li>
-          <li>09/03/25 — Groceries — -$150.00</li>
-          <li>09/07/25 — Gas — -$60.00</li>
-        </ul>
-        <a href="transactions.html">View All →</a>
+        <h2>Recurring</h2>
+        <p>Netflix — $15.99 (Monthly)</p>
+        <p>Car Insurance — $120.00 (Monthly)</p>
+        <a href="recurring.html">View All →</a>
+      </div>
+
+      <!-- Settings -->
+      <div class="tile">
+        <h2>Settings</h2>
+        <p>Theme: Dark Mode</p>
+        <p>Accent Color: Orange</p>
+        <a href="settings.html">Open Settings →</a>
       </div>
 
     </div>
-    <!-- GRID END -->
   </div>
 </body>
 </html>
