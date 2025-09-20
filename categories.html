@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Money - Categories</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -23,40 +24,38 @@
   </div>
 
   <!-- Main -->
-  <div class="main">
+  <div class="main-content">
     <h1>Categories</h1>
-    <div class="tile">
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Income</td>
-            <td class="positive">$3,734.85</td>
-          </tr>
-          <tr>
-            <td>Food</td>
-            <td class="negative">-$150.00</td>
-          </tr>
-          <tr>
-            <td>Transport</td>
-            <td class="negative">-$60.00</td>
-          </tr>
-          <tr>
-            <td>Bills</td>
-            <td class="negative">-$135.99</td>
-          </tr>
-          <tr>
-            <td>Entertainment</td>
-            <td class="negative">-$75.00</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Budget</th>
+          <th>Spent</th>
+          <th>Remaining</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill pill-groceries">Groceries</span></td>
+          <td>$500.00</td>
+          <td>$150.00</td>
+          <td>$350.00</td>
+        </tr>
+        <tr>
+          <td><span class="pill pill-transport">Transport</span></td>
+          <td>$200.00</td>
+          <td>$60.00</td>
+          <td>$140.00</td>
+        </tr>
+        <tr>
+          <td><span class="pill pill-entertainment">Entertainment</span></td>
+          <td>$300.00</td>
+          <td>$120.00</td>
+          <td>$180.00</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>
