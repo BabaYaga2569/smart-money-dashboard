@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings - Smart Money</title>
+  <title>Smart Money - Settings</title>
   <link rel="stylesheet" href="style.css">
+  <script src="themes.js" defer></script>
 </head>
 <body>
   <!-- Sidebar -->
@@ -23,31 +24,22 @@
     <a href="settings.html" class="active">Settings</a>
   </div>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <div class="main-content">
     <h1>Settings</h1>
-
-    <!-- Color Picker -->
     <div class="tile">
-      <h2>Theme</h2>
-      <label for="colorPicker">Pick a primary color:</label>
-      <input type="color" id="colorPicker" value="#0055ff">
-      <button id="applyTheme">Apply</button>
-    </div>
-
-    <!-- Preset Colors -->
-    <div class="tile theme-section">
-      <h2>Presets</h2>
-      <div id="presetColors" class="preset-container"></div>
-    </div>
-
-    <!-- Current Theme -->
-    <div class="tile">
-      <h2>Current Theme</h2>
-      <p id="currentTheme">Accent Color: #0055ff</p>
+      <h2>Theme Settings</h2>
+      <label for="themeSelect">Pick a preset:</label>
+      <select id="themeSelect">
+        <option value="">-- Select Theme --</option>
+        <option value="default">Default</option>
+        <option value="dark">Dark Mode</option>
+        <option value="teal">Teal Glow</option>
+        <option value="purple">Royal Purple</option>
+        <option value="orange">Sunset Orange</option>
+      </select>
+      <button onclick="applyTheme()">Apply</button>
     </div>
   </div>
-
-  <script src="theme.js"></script>
 </body>
 </html>
