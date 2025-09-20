@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Money - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Smart Money</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,42 +23,31 @@
     <a href="settings.html" class="active">Settings</a>
   </div>
 
-  <!-- Main -->
-  <div class="main">
+  <!-- Main Content -->
+  <div class="main-content">
     <h1>Settings</h1>
-    <div class="dashboard-grid">
 
-      <div class="tile">
-        <h2>Theme</h2>
-        <p>Pick a primary color:</p>
-        <input type="color" id="colorPicker" value="#ffa500">
-        <button onclick="applyTheme()">Apply</button>
-      </div>
+    <!-- Color Picker -->
+    <div class="tile">
+      <h2>Theme</h2>
+      <label for="colorPicker">Pick a primary color:</label>
+      <input type="color" id="colorPicker" value="#0055ff">
+      <button id="applyTheme">Apply</button>
+    </div>
 
-      <div class="tile">
-        <h2>Current Theme</h2>
-        <p id="currentTheme">Accent Color: Orange (#ffa500)</p>
-      </div>
+    <!-- Preset Colors -->
+    <div class="tile theme-section">
+      <h2>Presets</h2>
+      <div id="presetColors" class="preset-container"></div>
+    </div>
 
+    <!-- Current Theme -->
+    <div class="tile">
+      <h2>Current Theme</h2>
+      <p id="currentTheme">Accent Color: #0055ff</p>
     </div>
   </div>
 
-  <script>
-    function applyTheme() {
-      const color = document.getElementById("colorPicker").value;
-      document.documentElement.style.setProperty("--accent-color", color);
-      document.getElementById("currentTheme").textContent =
-        `Accent Color: ${color}`;
-      localStorage.setItem("accentColor", color);
-    }
-
-    // Load saved theme
-    const saved = localStorage.getItem("accentColor");
-    if (saved) {
-      document.documentElement.style.setProperty("--accent-color", saved);
-      document.getElementById("currentTheme").textContent =
-        `Accent Color: ${saved}`;
-    }
-  </script>
+  <script src="theme.js"></script>
 </body>
 </html>

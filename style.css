@@ -1,122 +1,110 @@
-/* =========================
-   Root Variables & Theme
-   ========================= */
+/* ===========================
+   Global Styles
+=========================== */
 :root {
-  --accent-color: #ffa500; /* default orange */
+  --primary-color: #0055ff;   /* Default, overridden by theme.js */
   --bg-color: #121212;
+  --card-bg: #1e1e2f;
   --text-color: #f1f1f1;
-  --tile-bg: #1e1e1e;
-  --tile-shadow: rgba(0, 0, 0, 0.4);
+  --positive: #00ff99;
+  --negative: #ff4d4d;
 }
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg-color);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
 }
 
-/* =========================
+/* ===========================
    Sidebar
-   ========================= */
+=========================== */
 .sidebar {
   width: 220px;
-  background: #1a1a1a;
+  background: #1b1b1b;
   height: 100vh;
-  padding: 20px 0;
+  padding: 20px;
+  box-sizing: border-box;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   overflow-y: auto;
 }
 
 .sidebar h2 {
-  color: var(--accent-color);
-  text-align: center;
-  margin-bottom: 30px;
+  margin-top: 0;
+  font-size: 20px;
+  color: var(--primary-color);
 }
 
 .sidebar a {
   display: block;
-  padding: 12px 20px;
-  color: var(--text-color);
+  padding: 10px;
+  color: #bbb;
   text-decoration: none;
-  transition: background 0.3s, color 0.3s;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  transition: background 0.2s, color 0.2s;
 }
 
-.sidebar a:hover,
+.sidebar a:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
 .sidebar a.active {
-  background: var(--accent-color);
-  color: #000;
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: bold;
 }
 
-/* =========================
+/* ===========================
    Main Content
-   ========================= */
-.main {
-  margin-left: 220px;
+=========================== */
+.main-content {
+  margin-left: 240px;
   padding: 20px;
   flex-grow: 1;
 }
 
 h1 {
-  margin-bottom: 20px;
-  color: var(--accent-color);
+  margin-top: 0;
+  color: var(--primary-color);
 }
 
-/* =========================
-   Dashboard & Tiles
-   ========================= */
+/* ===========================
+   Tiles
+=========================== */
+.tile {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.tile h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
-.tile {
-  background: var(--tile-bg);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px var(--tile-shadow);
-  transition: transform 0.2s, background 0.3s;
-}
-
-.tile:hover {
-  transform: translateY(-4px);
-  background: #2a2a2a;
-}
-
-.tile h2 {
-  margin-top: 0;
-  color: var(--accent-color);
-}
-
-.tile button {
-  background: var(--accent-color);
-  color: #000;
-  border: none;
-  padding: 8px 14px;
-  margin-top: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.tile button:hover {
-  opacity: 0.8;
-}
-
-/* =========================
-   Tables (Bills, Transactions, etc.)
-   ========================= */
+/* ===========================
+   Tables
+=========================== */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  background: #1b1b1b;
-  border-radius: 6px;
-  overflow: hidden;
 }
 
 th, td {
@@ -125,47 +113,99 @@ th, td {
 }
 
 th {
-  background: var(--accent-color);
-  color: #000;
+  background: #2a2a3d;
+  color: var(--primary-color);
 }
 
 tr:nth-child(even) {
-  background: #2a2a2a;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 tr:hover {
-  background: #333;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* =========================
-   Forms (Goals, Bills, Categories)
-   ========================= */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.positive {
+  color: var(--positive);
+  font-weight: bold;
 }
 
-input, select {
-  padding: 10px;
-  border: 1px solid #444;
-  border-radius: 6px;
-  background: #2a2a2a;
-  color: var(--text-color);
+.negative {
+  color: var(--negative);
+  font-weight: bold;
 }
 
-button[type="submit"] {
-  background: var(--accent-color);
-  color: #000;
+/* ===========================
+   Buttons
+=========================== */
+button {
+  padding: 6px 12px;
   border: none;
-  padding: 10px;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.1s ease-in-out;
 }
 
-/* =========================
-   Utility Classes
-   ========================= */
-.text-center {
-  text-align: center;
+button:hover {
+  transform: scale(1.05);
+}
+
+.edit-btn {
+  background: #28a745;
+  color: white;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+#applyTheme {
+  margin-top: 10px;
+  background: var(--primary-color);
+  color: white;
+}
+
+/* ===========================
+   Theme Presets
+=========================== */
+.theme-section {
+  margin-top: 20px;
+}
+
+.preset-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.preset {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+  transition: transform 0.2s;
+}
+
+.preset:hover {
+  transform: scale(1.2);
+}
+
+/* ===========================
+   Responsive
+=========================== */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 180px;
+  }
+
+  .main-content {
+    margin-left: 200px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }
