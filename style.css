@@ -1,147 +1,139 @@
-/* === GLOBAL RESETS === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ============ THEME ============ */
+:root{
+  --bg: #0f1218;
+  --panel: #1a1f29;
+  --panel-2:#222935;
+  --text:#e9eef6;
+  --muted:#a8b2c3;
+  --accent: var(--accent-color, #5aa2ff);
+  --success:#25de8b;
+  --danger:#ff6b6b;
+  --warning:#ffd166;
+  --shadow: 0 6px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
 }
 
-body {
-  background: #121212;
-  color: #eee;
-  display: flex;
-  min-height: 100vh;
+/* ============ RESET ============ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background: radial-gradient(1200px 800px at 20% -10%, rgba(90,162,255,.12), transparent 60%),
+              radial-gradient(1000px 700px at 110% 10%, rgba(37,222,139,.07), transparent 55%),
+              var(--bg);
+  color:var(--text);
+  font: 14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 220px; /* Sidebar width */
-    background: #222;
-    color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    padding: 20px;
+/* ============ LINKS & TEXT ============ */
+a{color:var(--accent); text-decoration:none}
+a:hover{opacity:.9}
+h1{margin:0 0 18px; font-size:32px; letter-spacing:.2px}
+h2{margin:0 0 12px; font-size:20px}
+small, .muted{color:var(--muted)}
+
+/* ============ SIDEBAR ============ */
+.sidebar{
+  position:fixed; inset:0 auto 0 0;
+  width:240px;
+  background:#141a22;
+  padding:18px 14px;
+  box-shadow: 2px 0 18px rgba(0,0,0,.35);
+  overflow-y:auto;
+  z-index:10;
+}
+.sidebar h2{margin:0 0 12px; font-size:18px; color:var(--accent)}
+.sidebar a{
+  display:block; padding:10px 12px; margin:4px 0;
+  color:var(--muted); border-radius:10px;
+}
+.sidebar a:hover, .sidebar a.active{
+  background:rgba(255,255,255,.06); color:var(--text);
 }
 
-/* Main Content */
-.main {
-    margin-left: 240px; /* Pushes content away from sidebar */
-    padding: 20px;
+/* ============ MAIN LAYOUT ============ */
+/* This is the critical fix so nothing slides under the sidebar */
+.main{
+  margin-left:240px;          /* keep in sync with .sidebar width */
+  padding:28px 32px;
+  min-width:0;
 }
 
-/* Dashboard Grid (works across all pages) */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+/* Optional container max width (looks nicer on ultrawide) */
+.main{max-width:1400px}
+
+/* ============ GRID ============ */
+.dashboard-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap:24px;
+  align-items:start;
 }
 
-/* Tile Styling */
-.tile {
-    background: #2a2a2a;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    color: #fff;
-    transition: transform 0.2s ease;
+/* ============ TILE / CARD ============ */
+.tile{
+  background:var(--panel);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:18px 20px;
+}
+.tile h2{color:#fff}
+.tile p, .tile li, .tile td{color:var(--muted)}
+
+/* ============ TABLES ============ */
+table{width:100%; border-collapse:collapse}
+th,td{padding:10px 12px; text-align:left}
+thead th{
+  color:var(--muted); font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.06)}
+tbody tr:last-child{border-bottom:none}
+
+/* ============ BADGES & AMOUNTS ============ */
+.badge,.tag,.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:2px 8px; border-radius:999px; font-weight:700; font-size:12px
+}
+.positive{
+  color:var(--success);
+  background:rgba(37,222,139,.14);
+  padding:2px 8px; border-radius:999px; font-weight:800
+}
+.negative{color:var(--danger)}
+.neutral{color:var(--muted)}
+
+/* ============ BUTTONS ============ */
+button,.btn{
+  border:0; border-radius:10px;
+  background:var(--accent); color:#fff;
+  padding:8px 12px; cursor:pointer; font-weight:700
+}
+.btn.secondary{background:rgba(255,255,255,.08); color:var(--text)}
+.edit-btn{background:#2ecc71}
+.delete-btn{background:#e74c3c}
+.edit-btn,.delete-btn{padding:6px 10px; border-radius:8px}
+
+/* ============ FORMS (settings/theme) ============ */
+input[type="color"]{
+  width:42px; height:28px;
+  border:0; border-radius:8px; background:#0000;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);
 }
 
-.tile:hover {
-    transform: scale(1.03);
+/* ============ SPENDABILITY QUICK CHECK ============ */
+.spend-check{
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.spend-check input{
+  background:var(--panel-2); color:var(--text);
+  border:0; padding:10px 12px; border-radius:10px; width:180px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
 }
 
-/* === MAIN CONTENT === */
-.main-content {
-  margin-left: 240px; /* Pushes content beside sidebar */
-  padding: 20px;
-  flex: 1;
+/* ============ RESPONSIVE ============ */
+@media (max-width: 880px){
+  .main{margin-left:0; padding:22px 16px}
+  .sidebar{position:fixed; transform:translateX(0)} /* (kept visible) */
 }
-
-h1, h2 {
-  margin-bottom: 15px;
-  color: #fff;
-}
-
-/* === DASHBOARD TILES === */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.tile {
-  background: #1f1f1f;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transition: 0.2s;
-}
-
-.tile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.7);
-}
-
-/* === TABLES === */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-th, td {
-  padding: 12px 15px;
-  text-align: left;
-}
-
-thead {
-  background: #2a2a2a;
-}
-
-tbody tr:nth-child(even) {
-  background: #1a1a1a;
-}
-
-tbody tr:hover {
-  background: #333;
-}
-
-
-/* === CATEGORY PILLS === */
-.pill {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.85em;
-  font-weight: bold;
-  color: #fff;
-  display: inline-block;
-}
-
-.pill-groceries { background: #9b59b6; }  /* Purple */
-.pill-bills     { background: #f1c40f; color: #000; } /* Yellow */
-.pill-income    { background: #27ae60; }  /* Green */
-.pill-entertain { background: #2980b9; }  /* Blue */
-.pill-transport { background: #e67e22; }  /* Orange */
-.pill-loans     { background: #c0392b; }  /* Red */
-.pill-other     { background: #7f8c8d; }  /* Gray */
-.pill-fun       { background: #e84393; }  /* Pink */
-.pill-savings   { background: #16a085; }  /* Teal */
-.pill-subscribe { background: #8e44ad; }  /* Violet */
-
-/* === BUTTONS === */
-button, .btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.edit-btn { background: #27ae60; color: white; }
-.edit-btn:hover { background: #2ecc71; }
-
-.delete-btn { background: #c0392b; color: white; }
-.delete-btn:hover { background: #e74c3c; }
