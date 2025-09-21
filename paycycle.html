@@ -5,36 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Money Tracker - Pay Cycle</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="themes.js"></script>
+  <script defer src="paycycle.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Smart Money</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="paycycle.html" class="active">Pay Cycle</a></li>
-      <li><a href="spendability.html">Spendability</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💰 Tracker</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="bills.html">Bills</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="goals.html">Goals</a>
+    <a href="paycycle.html" class="active">Pay Cycle</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="main-content">
     <h1>Pay Cycle</h1>
-    <p>Next Paycheck:</p>
-    <h2 id="nextPayDate">Loading...</h2>
-    <h3 id="nextPayAmount"></h3>
-    <p>Days Left: <span id="daysLeft">0</span></p>
-  </div>
 
-  <script src="theme.js"></script>
-  <script src="paycycle.js"></script>
+    <div class="card">
+      <h2>Steve’s Pay</h2>
+      <p>SoFi deposit: <span id="sofi-date"></span> ($400)</p>
+      <p>BoA deposit: <span id="boa-date"></span> ($1,483.81)</p>
+      <p><strong>Next paycheck in:</strong> <span id="steve-countdown"></span> days</p>
+    </div>
+
+    <div class="card">
+      <h2>Tanci’s Pay</h2>
+      <p>Paydays: 15th and 30th of each month ($1,851.04 each)</p>
+      <p>Next payday: <span id="tanci-date"></span></p>
+      <p><strong>Next paycheck in:</strong> <span id="tanci-countdown"></span> days</p>
+    </div>
+  </div>
 </body>
 </html>

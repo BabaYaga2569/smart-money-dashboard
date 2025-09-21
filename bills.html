@@ -5,85 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Money Tracker - Bills</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="themes.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Smart Money</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="bills.html" class="active">Bills</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="paycycle.html">Pay Cycle</a></li>
-      <li><a href="spendability.html">Spendability</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💰 Tracker</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="bills.html" class="active">Bills</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="goals.html">Goals</a>
+    <a href="paycycle.html">Pay Cycle</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="main-content">
     <h1>Bills</h1>
-    <form id="billForm">
-      <input type="text" id="billName" placeholder="Bill Name" required />
-      <input type="number" id="billAmount" placeholder="Amount" required />
-      <input type="date" id="billDueDate" required />
-      <select id="billFrequency">
-        <option value="Monthly">Monthly</option>
-        <option value="Weekly">Weekly</option>
-        <option value="Quarterly">Quarterly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <button type="submit">Add Bill</button>
-    </form>
 
-    <ul id="billsList">
-      <!-- Filled by JS -->
-    </ul>
+    <!-- Add Bill Form -->
+    <div class="card">
+      <h2>Add Bill</h2>
+      <form id="bill-form">
+        <input type="text" id="bill-name" placeholder="Bill Name" required />
+        <input type="date" id="bill-due" required />
+        <input type="number" id="bill-amount" placeholder="Amount" required />
+        <button type="submit">Add Bill</button>
+      </form>
+    </div>
+
+    <!-- Bills Table -->
+    <div class="card">
+      <h2>Upcoming Bills</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Bill</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="bills-table">
+          <tr>
+            <td>Mortgage</td>
+            <td>09/25/25</td>
+            <td>$1,250.00</td>
+            <td><span class="status pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>Car Payment</td>
+            <td>09/28/25</td>
+            <td>$425.00</td>
+            <td><span class="status paid">Paid</span></td>
+          </tr>
+          <tr>
+            <td>Internet</td>
+            <td>09/29/25</td>
+            <td>$80.00</td>
+            <td><span class="status pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td>Power</td>
+            <td>10/01/25</td>
+            <td>$140.00</td>
+            <td><span class="status pending">Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="theme.js"></script>
   <script>
-    let bills = [
-      { name: "Rent", amount: 1200, dueDate: "2025-10-01", frequency: "Monthly" },
-      { name: "Car Payment", amount: 450, dueDate: "2025-09-25", frequency: "Monthly" },
-      { name: "Internet", amount: 89.99, dueDate: "2025-09-23", frequency: "Monthly" }
-    ];
-    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-    const billsList = document.getElementById("billsList");
-
-    function renderBills() {
-      billsList.innerHTML = bills.map((b, i) => `
-        <li>
-          <strong>${b.name}</strong> — ${fmt.format(b.amount)} 
-          (Due: ${b.dueDate}, ${b.frequency})
-          <button onclick="deleteBill(${i})">Delete</button>
-        </li>
-      `).join("");
-    }
-
-    function deleteBill(index) {
-      bills.splice(index, 1);
-      renderBills();
-    }
-
-    document.getElementById("billForm").addEventListener("submit", e => {
+    // Simple dummy add bill logic
+    document.getElementById("bill-form").addEventListener("submit", function(e) {
       e.preventDefault();
-      const name = document.getElementById("billName").value;
-      const amount = parseFloat(document.getElementById("billAmount").value);
-      const dueDate = document.getElementById("billDueDate").value;
-      const frequency = document.getElementById("billFrequency").value;
-      bills.push({ name, amount, dueDate, frequency });
-      e.target.reset();
-      renderBills();
-    });
+      const name = document.getElementById("bill-name").value;
+      const due = document.getElementById("bill-due").value;
+      const amount = document.getElementById("bill-amount").value;
 
-    renderBills();
+      const row = `<tr>
+        <td>${name}</td>
+        <td>${due}</td>
+        <td>$${parseFloat(amount).toFixed(2)}</td>
+        <td><span class="status pending">Pending</span></td>
+      </tr>`;
+      document.getElementById("bills-table").innerHTML += row;
+
+      this.reset();
+    });
   </script>
 </body>
 </html>

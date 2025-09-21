@@ -5,65 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Money Tracker - Transactions</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="themes.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Smart Money</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html" class="active">Transactions</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="paycycle.html">Pay Cycle</a></li>
-      <li><a href="spendability.html">Spendability</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💰 Tracker</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html" class="active">Transactions</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="bills.html">Bills</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="goals.html">Goals</a>
+    <a href="paycycle.html">Pay Cycle</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="main-content">
     <h1>Transactions</h1>
-    <table class="transactions-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody id="transactionsBody">
-        <!-- Filled by JS -->
-      </tbody>
-    </table>
+
+    <!-- Filter Options -->
+    <div class="card">
+      <h2>Filter</h2>
+      <form id="filter-form">
+        <input type="text" id="filter-keyword" placeholder="Search description..." />
+        <select id="filter-category">
+          <option value="">All Categories</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Dining">Dining</option>
+          <option value="Bills">Bills</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Transport">Transport</option>
+        </select>
+        <button type="submit">Apply</button>
+      </form>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="card">
+      <h2>Recent Transactions</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="transactions-table">
+          <tr>
+            <td>09/10/2025</td>
+            <td>Walmart</td>
+            <td>Groceries</td>
+            <td>-$82.15</td>
+          </tr>
+          <tr>
+            <td>09/12/2025</td>
+            <td>Netflix</td>
+            <td>Entertainment</td>
+            <td>-$15.49</td>
+          </tr>
+          <tr>
+            <td>09/13/2025</td>
+            <td>Gas Station</td>
+            <td>Transport</td>
+            <td>-$42.33</td>
+          </tr>
+          <tr>
+            <td>09/15/2025</td>
+            <td>Paycheck Deposit</td>
+            <td>Income</td>
+            <td>+$1,883.81</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="theme.js"></script>
-  <script src="seedaccounts.js"></script>
   <script>
-    const transactions = [
-      { date: "2025-09-17", description: "Paycheck (SoFi)", category: "Income", amount: 400 },
-      { date: "2025-09-19", description: "Paycheck (BofA)", category: "Income", amount: 1483.81 },
-      { date: "2025-09-19", description: "Groceries - Walmart", category: "Groceries", amount: -132.57 },
-      { date: "2025-09-20", description: "Gas - Chevron", category: "Transportation", amount: -64.22 },
-      { date: "2025-09-20", description: "Disney+ Subscription", category: "Entertainment", amount: -13.99 }
+    const allTransactions = [
+      { date: "09/10/2025", desc: "Walmart", category: "Groceries", amount: -82.15 },
+      { date: "09/12/2025", desc: "Netflix", category: "Entertainment", amount: -15.49 },
+      { date: "09/13/2025", desc: "Gas Station", category: "Transport", amount: -42.33 },
+      { date: "09/15/2025", desc: "Paycheck Deposit", category: "Income", amount: 1883.81 },
     ];
-    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-    const tbody = document.getElementById("transactionsBody");
-    tbody.innerHTML = transactions.map(t => `
-      <tr>
-        <td>${t.date}</td>
-        <td>${t.description}</td>
-        <td>${t.category}</td>
-        <td class="${t.amount < 0 ? 'negative' : 'positive'}">${fmt.format(t.amount)}</td>
-      </tr>
-    `).join("");
+
+    function renderTransactions(data) {
+      const table = document.getElementById("transactions-table");
+      table.innerHTML = "";
+      data.forEach(t => {
+        const row = `<tr>
+          <td>${t.date}</td>
+          <td>${t.desc}</td>
+          <td>${t.category}</td>
+          <td>${t.amount < 0 ? "-" : "+"}$${Math.abs(t.amount).toFixed(2)}</td>
+        </tr>`;
+        table.innerHTML += row;
+      });
+    }
+
+    document.getElementById("filter-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const keyword = document.getElementById("filter-keyword").value.toLowerCase();
+      const category = document.getElementById("filter-category").value;
+      const filtered = allTransactions.filter(t => {
+        const matchesKeyword = t.desc.toLowerCase().includes(keyword);
+        const matchesCategory = category ? t.category === category : true;
+        return matchesKeyword && matchesCategory;
+      });
+      renderTransactions(filtered);
+    });
+
+    renderTransactions(allTransactions);
   </script>
 </body>
 </html>

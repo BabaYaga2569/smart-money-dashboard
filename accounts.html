@@ -5,62 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Money Tracker - Accounts</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="themes.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Smart Money</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="accounts.html" class="active">Accounts</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="recurring.html">Recurring</a></li>
-      <li><a href="paycycle.html">Pay Cycle</a></li>
-      <li><a href="spendability.html">Spendability</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💰 Tracker</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="accounts.html" class="active">Accounts</a>
+    <a href="bills.html">Bills</a>
+    <a href="recurring.html">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="goals.html">Goals</a>
+    <a href="paycycle.html">Pay Cycle</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="main-content">
     <h1>Accounts</h1>
-    <table class="accounts-table">
-      <thead>
-        <tr>
-          <th>Account</th>
-          <th>Bank</th>
-          <th>Balance</th>
-        </tr>
-      </thead>
-      <tbody id="accountsBody">
-        <!-- Filled by JS -->
-      </tbody>
-    </table>
+
+    <!-- Add Account Form -->
+    <div class="card">
+      <h2>Add Account</h2>
+      <form id="account-form">
+        <input type="text" id="account-name" placeholder="Account Name" required />
+        <input type="number" id="account-balance" placeholder="Balance" required />
+        <button type="submit">Add Account</button>
+      </form>
+    </div>
+
+    <!-- Accounts Table -->
+    <div class="card">
+      <h2>Account Overview</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody id="accounts-table">
+          <tr>
+            <td>Bank of America</td>
+            <td>$1,250.00</td>
+          </tr>
+          <tr>
+            <td>SoFi</td>
+            <td>$400.00</td>
+          </tr>
+          <tr>
+            <td>USAA</td>
+            <td>$3,200.00</td>
+          </tr>
+          <tr>
+            <td>Capital One</td>
+            <td>$850.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="theme.js"></script>
-  <script src="seedaccounts.js"></script>
   <script>
-    const accounts = [
-      { name: "Checking", bank: "Bank of America", balance: 1483.81 },
-      { name: "Savings", bank: "SoFi", balance: 400 },
-      { name: "Household", bank: "USAA", balance: 700 },
-      { name: "Credit Card", bank: "Capital One", balance: -250 }
-    ];
-    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-    const tbody = document.getElementById("accountsBody");
-    tbody.innerHTML = accounts.map(a => `
-      <tr>
-        <td>${a.name}</td>
-        <td>${a.bank}</td>
-        <td class="${a.balance < 0 ? 'negative' : 'positive'}">${fmt.format(a.balance)}</td>
-      </tr>
-    `).join("");
+    // Simple dummy add account logic
+    document.getElementById("account-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("account-name").value;
+      const balance = document.getElementById("account-balance").value;
+
+      const row = `<tr>
+        <td>${name}</td>
+        <td>$${parseFloat(balance).toFixed(2)}</td>
+      </tr>`;
+      document.getElementById("accounts-table").innerHTML += row;
+
+      this.reset();
+    });
   </script>
 </body>
 </html>

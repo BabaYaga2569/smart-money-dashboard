@@ -5,76 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Money Tracker - Recurring</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="themes.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>Smart Money</h2>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="transactions.html">Transactions</a></li>
-      <li><a href="bills.html">Bills</a></li>
-      <li><a href="accounts.html">Accounts</a></li>
-      <li><a href="cashflow.html">Cash Flow</a></li>
-      <li><a href="goals.html">Goals</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="recurring.html" class="active">Recurring</a></li>
-      <li><a href="paycycle.html">Pay Cycle</a></li>
-      <li><a href="spendability.html">Spendability</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
+    <h2>💰 Tracker</h2>
+    <a href="index.html">Dashboard</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="bills.html">Bills</a>
+    <a href="recurring.html" class="active">Recurring</a>
+    <a href="categories.html">Categories</a>
+    <a href="cashflow.html">Cash Flow</a>
+    <a href="goals.html">Goals</a>
+    <a href="paycycle.html">Pay Cycle</a>
+    <a href="spendability.html">Spendability</a>
+    <a href="settings.html">Settings</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="main-content">
-    <h1>Recurring</h1>
-    <form id="recurringForm">
-      <input type="text" id="recurringName" placeholder="Name" required />
-      <input type="number" id="recurringAmount" placeholder="Amount" required />
-      <select id="recurringFrequency">
-        <option value="Weekly">Weekly</option>
-        <option value="Biweekly">Biweekly</option>
-        <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
-      </select>
-      <button type="submit">Add</button>
-    </form>
-    <ul id="recurringList"></ul>
+    <h1>Recurring Payments</h1>
+
+    <!-- Add Recurring Payment Form -->
+    <div class="card">
+      <h2>Add Recurring Payment</h2>
+      <form id="recurring-form">
+        <input type="text" id="recurring-name" placeholder="Name (e.g., Netflix)" required />
+        <input type="number" id="recurring-amount" placeholder="Amount" required />
+        <select id="recurring-frequency" required>
+          <option value="" disabled selected>Frequency</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Biweekly">Biweekly</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Quarterly">Quarterly</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    <!-- Recurring Payments Table -->
+    <div class="card">
+      <h2>Recurring Overview</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+          </tr>
+        </thead>
+        <tbody id="recurring-table">
+          <tr>
+            <td>Netflix</td>
+            <td>$15.49</td>
+            <td>Monthly</td>
+          </tr>
+          <tr>
+            <td>Spotify</td>
+            <td>$9.99</td>
+            <td>Monthly</td>
+          </tr>
+          <tr>
+            <td>Electric Bill</td>
+            <td>$120.00</td>
+            <td>Monthly</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <script src="theme.js"></script>
   <script>
-    let recurring = [
-      { name: "Gym Membership", amount: 45, frequency: "Monthly" },
-      { name: "Spotify", amount: 9.99, frequency: "Monthly" }
-    ];
-
-    function renderRecurring() {
-      const list = document.getElementById("recurringList");
-      list.innerHTML = recurring.map((r, i) => `
-        <li>
-          <strong>${r.name}</strong> — $${r.amount} (${r.frequency})
-          <button onclick="deleteRecurring(${i})">Delete</button>
-        </li>
-      `).join("");
-    }
-
-    function deleteRecurring(index) {
-      recurring.splice(index, 1);
-      renderRecurring();
-    }
-
-    document.getElementById("recurringForm").addEventListener("submit", e => {
+    // Add recurring payment dynamically
+    document.getElementById("recurring-form").addEventListener("submit", function(e) {
       e.preventDefault();
-      const name = document.getElementById("recurringName").value;
-      const amount = parseFloat(document.getElementById("recurringAmount").value);
-      const frequency = document.getElementById("recurringFrequency").value;
-      recurring.push({ name, amount, frequency });
-      e.target.reset();
-      renderRecurring();
-    });
+      const name = document.getElementById("recurring-name").value;
+      const amount = document.getElementById("recurring-amount").value;
+      const frequency = document.getElementById("recurring-frequency").value;
 
-    renderRecurring();
+      const row = `<tr>
+        <td>${name}</td>
+        <td>$${parseFloat(amount).toFixed(2)}</td>
+        <td>${frequency}</td>
+      </tr>`;
+      document.getElementById("recurring-table").innerHTML += row;
+
+      this.reset();
+    });
   </script>
 </body>
 </html>
