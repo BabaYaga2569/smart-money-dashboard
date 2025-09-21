@@ -1,1 +1,1 @@
-console.log('Spendability.js loaded — waiting for Plaid data');
+document.getElementById('spend-check-form')?.addEventListener('submit',e=>{e.preventDefault();let val=parseFloat(document.getElementById('spend-input').value);document.getElementById('spend-check-result').textContent= val<=150?'✅ Safe':'❌ Not Safe';});

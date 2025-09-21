@@ -1,3 +1,1 @@
-body { background:#121212; color:#e0e0e0; font-family:sans-serif; }
-button { background:#00ff66; color:#000; border:none; padding:10px; cursor:pointer; }
-button:hover { background:#00cc55; }
+body { background:#0b0e14; color:white; font-family:sans-serif; } .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;} .tile{background:#161b25;padding:20px;border-radius:8px;} aside{width:200px;float:left;} main{margin-left:220px;padding:20px;}

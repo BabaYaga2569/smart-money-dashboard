@@ -1,0 +1,1 @@
+console.log('Dummy accounts seeded: BoA, SoFi, USAA, CapOne');

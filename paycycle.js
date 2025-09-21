@@ -1,1 +1,1 @@
-console.log('Paycycle.js loaded — waiting for Plaid data');
+console.log('Pay cycle logic placeholder: SoFi early, BoA payday, Tanci 15th/30th');

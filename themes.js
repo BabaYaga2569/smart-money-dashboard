@@ -1,0 +1,1 @@
+document.getElementById('apply-theme')?.addEventListener('click',()=>{localStorage.setItem('theme',document.getElementById('theme-select').value);alert('Theme applied');});
