@@ -1,44 +1,42 @@
-// === seedaccounts.js ===
-// Dummy accounts + transactions for demo
+// seedAccounts.js - handles loading accounts into dashboard + accounts page
+
+const sampleAccounts = [
+  { name: "BoA Checking", balance: 1483.81 },
+  { name: "SoFi", balance: 400.00 },
+  { name: "USAA", balance: 2500.00 },
+  { name: "Capital One", balance: 1200.00 }
+];
+
+function formatCurrency(value) {
+  return `$${value.toFixed(2)}`;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("accountsTable")) {
-    const accounts = [
-      { bank: "Bank of America", balance: 1245.55 },
-      { bank: "SoFi", balance: 600.12 },
-      { bank: "USAA", balance: 2100.00 },
-    ];
-
-    const tbody = document.querySelector("#accountsTable tbody");
-    tbody.innerHTML = "";
-    accounts.forEach(acc => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${acc.bank}</td>
-        <td>$${acc.balance.toFixed(2)}</td>
-      `;
-      tbody.appendChild(row);
-    });
+  // Dashboard tile
+  const accountsTile = document.getElementById("accounts-tile");
+  if (accountsTile) {
+    accountsTile.innerHTML = `
+      <h2>Accounts</h2>
+      <ul>
+        ${sampleAccounts
+          .map(acc => `<li>${acc.name} — ${formatCurrency(acc.balance)}</li>`)
+          .join("")}
+      </ul>
+      <a href="accounts.html">View All →</a>
+    `;
   }
 
-  if (document.getElementById("transactionsTable")) {
-    const transactions = [
-      { date: "2025-09-18", desc: "Groceries", category: "Food", amount: -120.45 },
-      { date: "2025-09-17", desc: "Gas Station", category: "Transport", amount: -40.00 },
-      { date: "2025-09-15", desc: "Paycheck", category: "Income", amount: 1883.81 },
-    ];
-
-    const tbody = document.querySelector("#transactionsTable tbody");
-    tbody.innerHTML = "";
-    transactions.forEach(tx => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${tx.date}</td>
-        <td>${tx.desc}</td>
-        <td>${tx.category}</td>
-        <td style="color:${tx.amount < 0 ? 'red':'lime'}">$${tx.amount.toFixed(2)}</td>
+  // Full accounts page
+  const accountsList = document.getElementById("accounts-list");
+  if (accountsList) {
+    sampleAccounts.forEach(acc => {
+      const div = document.createElement("div");
+      div.className = "tile";
+      div.innerHTML = `
+        <h2>${acc.name}</h2>
+        <p>Balance: ${formatCurrency(acc.balance)}</p>
       `;
-      tbody.appendChild(row);
+      accountsList.appendChild(div);
     });
   }
 });
