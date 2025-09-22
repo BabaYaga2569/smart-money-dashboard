@@ -1,53 +1,34 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Accounts • SmartMoney</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="app.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Smart Money Tracker - Accounts</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="themes.js" defer></script>
   <script src="seedaccounts.js" defer></script>
-  <script src="paycycle.js" defer></script>
-  <script src="spendability.js" defer></script>
-
 </head>
 <body>
-
-    <aside class="sidebar">
-      <h2>💰 SmartMoney</h2>
-      <ul class="nav">
-        <li><a href="index.html">Dashboard</a></li>
-        <li><a href="accounts.html">Accounts</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="bills.html">Bills</a></li>
-        <li><a href="recurring.html">Recurring</a></li>
-        <li><a href="goals.html">Goals</a></li>
-        <li><a href="categories.html">Categories</a></li>
-        <li><a href="cashflow.html">Cash Flow</a></li>
-        <li><a href="paycycle.html">Pay Cycle</a></li>
-        <li><a href="spendability.html">Spendability</a></li>
-        <li><a href="settings.html">Settings</a></li>
-      </ul>
-    </aside>
-
-  <main class="main">
-    <header class="page"><h1>Accounts</h1><span class="muted">Smart, simple money cockpit</span></header>
-
-<div class="card">
-  <table class="table">
-    <thead><tr><th>Account</th><th>Type</th><th>Balance</th></tr></thead>
-    <tbody id="acct-body"></tbody>
-  </table>
-</div>
-<script>
-  const tb = document.getElementById('acct-body');
-  SM.accounts.forEach(a=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML = `<td>${a.name}</td><td>${a.type}</td><td>${SM.currency(a.balance)}</td>`;
-    tb.appendChild(tr);
-  });
-</script>
-
-  </main>
+  <div class="container">
+    <div class="sidebar">
+      <h2>Smart Money</h2>
+      <a href="index.html">Dashboard</a>
+      <a href="accounts.html" class="active">Accounts</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="goals.html">Goals</a>
+      <a href="bills.html">Bills</a>
+      <a href="categories.html">Categories</a>
+      <a href="cashflow.html">Cash Flow</a>
+      <a href="recurring.html">Recurring</a>
+      <a href="spendability.html">Spendability</a>
+      <a href="paycycle.html">Pay Cycle</a>
+      <a href="settings.html">Settings</a>
+    </div>
+    <div class="main">
+      <h1>Accounts</h1>
+      <table id="accountsTable">
+        <tr><th>Bank</th><th>Balance</th></tr>
+      </table>
+    </div>
+  </div>
 </body>
 </html>
