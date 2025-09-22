@@ -1,1 +1,52 @@
-<!DOCTYPE html><html><head><title>Spendability</title><script src='spendability.js' defer></script><link rel='stylesheet' href='style.css'></head><body><main><h1>Spendability</h1><form id='spend-check-form'><input type='number' id='spend-input'><button type='submit'>Check</button></form><div id='spend-check-result'></div></main></body></html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spendability • SmartMoney</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+  <script src="seedaccounts.js" defer></script>
+  <script src="paycycle.js" defer></script>
+  <script src="spendability.js" defer></script>
+
+</head>
+<body>
+
+    <aside class="sidebar">
+      <h2>💰 SmartMoney</h2>
+      <ul class="nav">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="recurring.html">Recurring</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="cashflow.html">Cash Flow</a></li>
+        <li><a href="paycycle.html">Pay Cycle</a></li>
+        <li><a href="spendability.html">Spendability</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </aside>
+
+  <main class="main">
+    <header class="page"><h1>Spendability</h1><span class="muted">Smart, simple money cockpit</span></header>
+
+<div class="card">
+  <div class="form-row">
+    <input id="spend-amount" class="input" type="number" step="0.01" placeholder="Enter amount e.g. 150" />
+    <button class="btn-primary" id="spend-btn">Check</button>
+  </div>
+  <div id="spend-out" style="margin-top:10px;"></div>
+</div>
+<script>
+  document.getElementById('spend-btn').addEventListener('click', ()=>{
+    const val = parseFloat(document.getElementById('spend-amount').value||0);
+    renderSpendability(document.getElementById('spend-out'), val);
+  });
+</script>
+
+  </main>
+</body>
+</html>

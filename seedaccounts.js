@@ -1,1 +1,1 @@
-console.log('Dummy accounts seeded: BoA, SoFi, USAA, CapOne');
+console.log('Seed loaded', window.SM);

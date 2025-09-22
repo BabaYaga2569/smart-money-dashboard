@@ -1,1 +1,43 @@
-<!DOCTYPE html><html><head><title>Pay Cycle</title><script src='paycycle.js' defer></script><link rel='stylesheet' href='style.css'></head><body><main><h1>Pay Cycle</h1><p>You: $400 SoFi 09/17, $1483.81 BoA 09/19</p><p>Tanci: $1851.04 on 15th & 30th</p></main></body></html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pay Cycle • SmartMoney</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+  <script src="seedaccounts.js" defer></script>
+  <script src="paycycle.js" defer></script>
+  <script src="spendability.js" defer></script>
+
+</head>
+<body>
+
+    <aside class="sidebar">
+      <h2>💰 SmartMoney</h2>
+      <ul class="nav">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="recurring.html">Recurring</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="cashflow.html">Cash Flow</a></li>
+        <li><a href="paycycle.html">Pay Cycle</a></li>
+        <li><a href="spendability.html">Spendability</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </aside>
+
+  <main class="main">
+    <header class="page"><h1>Pay Cycle</h1><span class="muted">Smart, simple money cockpit</span></header>
+
+<div id="pay-container" class="grid-3"></div>
+<script>
+  renderPaycycle(document.getElementById('pay-container'));
+</script>
+
+  </main>
+</body>
+</html>

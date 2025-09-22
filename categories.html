@@ -1,1 +1,65 @@
-<!DOCTYPE html><html><head><title>Categories</title><link rel='stylesheet' href='style.css'></head><body><main><h1>Categories</h1><ul><li>Groceries</li><li>Fuel</li><li>Entertainment</li><li>Utilities</li></ul></main></body></html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Categories • SmartMoney</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+  <script src="seedaccounts.js" defer></script>
+  <script src="paycycle.js" defer></script>
+  <script src="spendability.js" defer></script>
+
+</head>
+<body>
+
+    <aside class="sidebar">
+      <h2>💰 SmartMoney</h2>
+      <ul class="nav">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="recurring.html">Recurring</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="cashflow.html">Cash Flow</a></li>
+        <li><a href="paycycle.html">Pay Cycle</a></li>
+        <li><a href="spendability.html">Spendability</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </aside>
+
+  <main class="main">
+    <header class="page"><h1>Categories</h1><span class="muted">Smart, simple money cockpit</span></header>
+
+<div class="card chart-card">
+  <canvas id="catChart" height="280"></canvas>
+</div>
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Category</th><th>Budget</th><th>Spent</th><th>Remaining</th></tr></thead>
+    <tbody id="cat-body"></tbody>
+  </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('catChart').getContext('2d');
+  const labels = SM.categories.map(c=>c.name);
+  const spent = SM.categories.map(c=>c.spent);
+  new Chart(ctx, {
+    type:'pie', data:{ labels, datasets:[{ data: spent }] },
+    options:{ plugins:{ legend:{ labels:{ color:'#d7e0ff' } } } }
+  });
+  const cb = document.getElementById('cat-body');
+  SM.categories.forEach(c=>{
+    const tr=document.createElement('tr');
+    const rem = c.budget - c.spent;
+    tr.innerHTML=`<td>${c.name}</td><td>${SM.currency(c.budget)}</td><td>${SM.currency(c.spent)}</td><td>${SM.currency(rem)}</td>`;
+    cb.appendChild(tr);
+  });
+</script>
+
+  </main>
+</body>
+</html>

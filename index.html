@@ -1,40 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MySmartMoneyTracker</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard • SmartMoney</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="app.js" defer></script>
+  <script src="seedaccounts.js" defer></script>
+  <script src="paycycle.js" defer></script>
+  <script src="spendability.js" defer></script>
+
 </head>
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>SmartMoney</h2>
-    <ul>
-      <li><a href="partials/dashboard.html" data-link>Dashboard</a></li>
-      <li><a href="partials/accounts.html" data-link>Accounts</a></li>
-      <li><a href="partials/transactions.html" data-link>Transactions</a></li>
-      <li><a href="partials/bills.html" data-link>Bills</a></li>
-      <li><a href="partials/recurring.html" data-link>Recurring</a></li>
-      <li><a href="partials/goals.html" data-link>Goals</a></li>
-      <li><a href="partials/categories.html" data-link>Categories</a></li>
-      <li><a href="partials/cashflow.html" data-link>Cash Flow</a></li>
-      <li><a href="partials/paycycle.html" data-link>Pay Cycle</a></li>
-      <li><a href="partials/spendability.html" data-link>Spendability</a></li>
-      <li><a href="partials/settings.html" data-link>Settings</a></li>
-    </ul>
-  </aside>
 
-  <!-- Main Content -->
-  <main id="content">
-    <!-- Dashboard will load here by default -->
+    <aside class="sidebar">
+      <h2>💰 SmartMoney</h2>
+      <ul class="nav">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="accounts.html">Accounts</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="bills.html">Bills</a></li>
+        <li><a href="recurring.html">Recurring</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="cashflow.html">Cash Flow</a></li>
+        <li><a href="paycycle.html">Pay Cycle</a></li>
+        <li><a href="spendability.html">Spendability</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </aside>
+
+  <main class="main">
+    <header class="page"><h1>Dashboard</h1><span class="muted">Smart, simple money cockpit</span></header>
+
+<section class="grid-3">
+  <div class="card">
+    <h3>Accounts</h3>
+    <div class="value">$1,483.81 (BoA) • $400.00 (SoFi)</div>
+    <a class="footer-link" href="accounts.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Transactions</h3>
+    <div class="value">Last: Walmart −$82.15</div>
+    <a class="footer-link" href="transactions.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Bills</h3>
+    <div class="value">3 due soon • $1,570 total</div>
+    <a class="footer-link" href="bills.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Recurring</h3>
+    <div class="value">Netflix, Spotify, Electric</div>
+    <a class="footer-link" href="recurring.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Goals</h3>
+    <div class="value">Emergency Fund 30%</div>
+    <a class="footer-link" href="goals.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Categories</h3>
+    <div class="value">Top: Groceries</div>
+    <a class="footer-link" href="categories.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Cash Flow</h3>
+    <div class="value">Sep Net: +$1,200</div>
+    <a class="footer-link" href="cashflow.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Pay Cycle</h3>
+    <div id="paycycle-mini" class="value">Loading…</div>
+    <a class="footer-link" href="paycycle.html">View all →</a>
+  </div>
+  <div class="card">
+    <h3>Spendability</h3>
+    <div class="form-row">
+      <input id="spend-mini" class="input" type="number" placeholder="Amount e.g. 150" />
+      <button class="btn-primary" onclick="(function(){ const v=parseFloat(document.getElementById('spend-mini').value||0); renderSpendability(document.getElementById('spend-mini-out'), v); })()">Check</button>
+    </div>
+    <div id="spend-mini-out" class="footer-note">Check if an amount is safe to spend before next payday.</div>
+    <a class="footer-link" href="spendability.html">View all →</a>
+  </div>
+</section>
+<script>
+  (function(){{ 
+    const el = document.getElementById('paycycle-mini');
+    const nextFriday = (function(){{ const d=new Date(); const add=(5-d.getDay()+7)%7||7; d.setDate(d.getDate()+add); return d; }})();
+    const sofi = new Date(nextFriday); sofi.setDate(sofi.getDate()-2);
+    el.textContent = `$400 → SoFi ${'{'}{'}'}${{sofi.toLocaleDateString()}} | $1,483.81 → BoA ${'{'}{'}'}${{nextFriday.toLocaleDateString()}}`;
+  }})();
+</script>
+
   </main>
-
-  <!-- Scripts -->
-  <script src="theme.js"></script>
-  <script src="paycycle.js"></script>
-  <script src="spendability.js"></script>
-  <script src="seedaccounts.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>
